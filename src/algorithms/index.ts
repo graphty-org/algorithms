@@ -16,3 +16,6 @@ export * from "./components/index.js";
 
 // Minimum spanning tree algorithms
 export * from "./mst/index.js";
+
+// Community detection algorithms
+export * from "./community/index.js";
