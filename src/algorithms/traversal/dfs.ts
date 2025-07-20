@@ -127,7 +127,7 @@ function dfsRecursive(
     }
 
     // Recursively visit neighbors
-    for (const neighbor of graph.neighbors(node)) {
+    for (const neighbor of Array.from(graph.neighbors(node))) {
         if (!visited.has(neighbor)) {
             dfsRecursive(graph, neighbor, visited, order, tree, options, depth + 1, node);
         }
@@ -150,7 +150,7 @@ export function hasCycleDFS(graph: Graph): boolean {
     const visited = new Set<NodeId>();
 
     // Check each unvisited node for cycles
-    for (const node of graph.nodes()) {
+    for (const node of Array.from(graph.nodes())) {
         if (!visited.has(node.id)) {
             if (graph.isDirected) {
                 const recursionStack = new Set<NodeId>();
@@ -181,7 +181,7 @@ function hasCycleUtilDirected(
     recursionStack.add(node);
 
     // Check all neighbors
-    for (const neighbor of graph.neighbors(node)) {
+    for (const neighbor of Array.from(graph.neighbors(node))) {
         if (!visited.has(neighbor)) {
             if (hasCycleUtilDirected(graph, neighbor, visited, recursionStack)) {
                 return true;
@@ -208,7 +208,7 @@ function hasCycleUtilUndirected(
     visited.add(node);
 
     // Check all neighbors
-    for (const neighbor of graph.neighbors(node)) {
+    for (const neighbor of Array.from(graph.neighbors(node))) {
         if (!visited.has(neighbor)) {
             if (hasCycleUtilUndirected(graph, neighbor, visited, node)) {
                 return true;
@@ -239,7 +239,7 @@ export function topologicalSort(graph: Graph): NodeId[] | null {
     const stack: NodeId[] = [];
 
     // Perform DFS from each unvisited node
-    for (const node of graph.nodes()) {
+    for (const node of Array.from(graph.nodes())) {
         if (!visited.has(node.id)) {
             topologicalSortUtil(graph, node.id, visited, stack);
         }
@@ -261,7 +261,7 @@ function topologicalSortUtil(
     visited.add(node);
 
     // Visit all neighbors first
-    for (const neighbor of graph.neighbors(node)) {
+    for (const neighbor of Array.from(graph.neighbors(node))) {
         if (!visited.has(neighbor)) {
             topologicalSortUtil(graph, neighbor, visited, stack);
         }
@@ -283,7 +283,7 @@ export function findStronglyConnectedComponents(graph: Graph): NodeId[][] {
     const finishOrder: NodeId[] = [];
 
     // Step 1: Get nodes in order of finishing times
-    for (const node of graph.nodes()) {
+    for (const node of Array.from(graph.nodes())) {
         if (!visited.has(node.id)) {
             dfsFinishOrder(graph, node.id, visited, finishOrder);
         }
@@ -319,7 +319,7 @@ function dfsFinishOrder(
 ): void {
     visited.add(node);
 
-    for (const neighbor of graph.neighbors(node)) {
+    for (const neighbor of Array.from(graph.neighbors(node))) {
         if (!visited.has(neighbor)) {
             dfsFinishOrder(graph, neighbor, visited, finishOrder);
         }
@@ -340,7 +340,7 @@ function dfsCollectComponent(
     visited.add(node);
     component.push(node);
 
-    for (const neighbor of graph.neighbors(node)) {
+    for (const neighbor of Array.from(graph.neighbors(node))) {
         if (!visited.has(neighbor)) {
             dfsCollectComponent(graph, neighbor, visited, component);
         }
@@ -354,12 +354,12 @@ function createTransposeGraph(graph: Graph): Graph {
     const transpose = new Graph({directed: true});
 
     // Add all nodes
-    for (const node of graph.nodes()) {
+    for (const node of Array.from(graph.nodes())) {
         transpose.addNode(node.id, node.data);
     }
 
     // Add reverse edges
-    for (const edge of graph.edges()) {
+    for (const edge of Array.from(graph.edges())) {
         transpose.addEdge(edge.target, edge.source, edge.weight, edge.data);
     }
 

@@ -246,5 +246,44 @@ describe("PriorityQueue", () => {
             expect(pq.dequeue()).toBe(item2);
             expect(pq.dequeue()).toBe(item1);
         });
+
+        it("should handle very large queue efficiently", () => {
+            const pq = new PriorityQueue<number>();
+            const items = 1000;
+
+            // Add items in reverse order to test heap operations
+            for (let i = items; i > 0; i--) {
+                pq.enqueue(i, i);
+            }
+
+            expect(pq.size()).toBe(items);
+
+            // Should dequeue in ascending order
+            for (let i = 1; i <= items; i++) {
+                expect(pq.dequeue()).toBe(i);
+            }
+
+            expect(pq.isEmpty()).toBe(true);
+        });
+
+        it("should handle dequeue from empty queue gracefully", () => {
+            const pq = new PriorityQueue<string>();
+
+            expect(pq.dequeue()).toBeUndefined();
+            expect(pq.isEmpty()).toBe(true);
+            expect(pq.size()).toBe(0);
+        });
+
+        it("should handle very small priorities", () => {
+            const pq = new PriorityQueue<string>();
+
+            pq.enqueue("tiny", Number.EPSILON);
+            pq.enqueue("zero", 0);
+            pq.enqueue("negative_tiny", -Number.EPSILON);
+
+            expect(pq.dequeue()).toBe("negative_tiny");
+            expect(pq.dequeue()).toBe("zero");
+            expect(pq.dequeue()).toBe("tiny");
+        });
     });
 });

@@ -185,7 +185,7 @@ export function isBipartite(graph: Graph): boolean {
     const visited = new Set<NodeId>();
 
     // Check each connected component
-    for (const node of graph.nodes()) {
+    for (const node of Array.from(graph.nodes())) {
         if (!visited.has(node.id)) {
             const queue: NodeId[] = [node.id];
             color.set(node.id, 0);
@@ -202,7 +202,7 @@ export function isBipartite(graph: Graph): boolean {
                     continue;
                 }
 
-                for (const neighbor of graph.neighbors(current)) {
+                for (const neighbor of Array.from(graph.neighbors(current))) {
                     if (!visited.has(neighbor)) {
                         // Color with opposite color
                         color.set(neighbor, currentColor === 0 ? 1 : 0);

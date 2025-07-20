@@ -246,7 +246,7 @@ describe("Graph", () => {
             });
 
             g.addEdge("A", "B", 1);
-            
+
             expect(() => g.addEdge("A", "B", 2)).toThrow("Parallel edges are not allowed");
         });
 
@@ -266,7 +266,7 @@ describe("Graph", () => {
             });
 
             g.addEdge("A", "A", 1);
-            
+
             expect(g.hasEdge("A", "A")).toBe(true);
             expect(g.degree("A")).toBe(1);
         });
@@ -279,7 +279,7 @@ describe("Graph", () => {
 
             g.addEdge("A", "B", 1);
             g.addEdge("A", "B", 2); // Should update weight
-            
+
             expect(g.hasEdge("A", "B")).toBe(true);
             expect(g.getEdge("A", "B")?.weight).toBe(2);
         });
@@ -311,7 +311,7 @@ describe("Graph", () => {
             const directedGraph = new Graph({directed: true});
             directedGraph.addEdge("A", "B");
             directedGraph.addEdge("C", "B");
-            
+
             const inNeighbors = Array.from(directedGraph.inNeighbors("B"));
             expect(inNeighbors).toContain("A");
             expect(inNeighbors).toContain("C");
@@ -328,9 +328,9 @@ describe("Graph", () => {
             g.addNode("A");
             g.addNode("B");
             g.addEdge("A", "B");
-            
+
             g.clear();
-            
+
             expect(g.nodeCount).toBe(0);
             expect(g.totalEdgeCount).toBe(0);
             expect(g.hasNode("A")).toBe(false);
@@ -341,10 +341,10 @@ describe("Graph", () => {
             directedGraph.addEdge("A", "B");
             directedGraph.addEdge("B", "C");
             directedGraph.addEdge("C", "A");
-            
+
             // Remove node B and check incoming edges are cleaned up
             directedGraph.removeNode("B");
-            
+
             expect(directedGraph.hasEdge("A", "B")).toBe(false);
             expect(directedGraph.hasEdge("B", "C")).toBe(false);
             expect(directedGraph.hasEdge("C", "A")).toBe(true);
@@ -355,7 +355,7 @@ describe("Graph", () => {
             g.addEdge("A", "B");
             g.addEdge("B", "C");
             g.addEdge("A", "C");
-            
+
             expect(g.uniqueEdgeCount).toBe(3);
             expect(g.totalEdgeCount).toBe(3); // Updated to match actual behavior
         });
@@ -365,7 +365,7 @@ describe("Graph", () => {
             directedGraph.addEdge("A", "B");
             directedGraph.addEdge("B", "A");
             directedGraph.addEdge("B", "C");
-            
+
             expect(directedGraph.uniqueEdgeCount).toBe(3);
             expect(directedGraph.totalEdgeCount).toBe(3);
         });
@@ -373,7 +373,7 @@ describe("Graph", () => {
         it("should handle cloning empty graph", () => {
             const empty = new Graph();
             const cloned = empty.clone();
-            
+
             expect(cloned.nodeCount).toBe(0);
             expect(cloned.isDirected).toBe(false);
         });
@@ -384,12 +384,12 @@ describe("Graph", () => {
                 allowSelfLoops: true,
                 allowParallelEdges: true,
             });
-            
+
             directed.addNode("A");
             directed.addEdge("A", "A", 1);
-            
+
             const cloned = directed.clone();
-            
+
             expect(cloned.isDirected).toBe(true);
             expect(cloned.hasEdge("A", "A")).toBe(true);
         });

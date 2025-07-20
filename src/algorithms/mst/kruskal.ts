@@ -15,10 +15,10 @@ export function kruskalMST(graph: Graph): MSTResult {
     const edges: Edge[] = [];
     const visitedEdges = new Set<string>();
 
-    for (const edge of graph.edges()) {
+    for (const edge of Array.from(graph.edges())) {
         const edgeKey = edge.source < edge.target ?
-            `${edge.source}-${edge.target}` :
-            `${edge.target}-${edge.source}`;
+            `${String(edge.source)}-${String(edge.target)}` :
+            `${String(edge.target)}-${String(edge.source)}`;
 
         if (!visitedEdges.has(edgeKey)) {
             visitedEdges.add(edgeKey);

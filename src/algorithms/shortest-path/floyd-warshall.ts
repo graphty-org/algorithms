@@ -34,7 +34,7 @@ export function floydWarshall(graph: Graph): FloydWarshallResult {
         }
     }
 
-    for (const edge of graph.edges()) {
+    for (const edge of Array.from(graph.edges())) {
         const weight = edge.weight ?? 1;
         const sourceDistances = distances.get(edge.source);
         const sourcePredecessors = predecessors.get(edge.source);
@@ -131,7 +131,7 @@ export function floydWarshallPath(
 
     while (current !== null && current !== source) {
         path.unshift(current);
-        
+
         const sourcePredecessors = result.predecessors.get(source);
         if (!sourcePredecessors) {
             return null;
@@ -156,9 +156,9 @@ export function transitiveClosure(graph: Graph): Map<NodeId, Set<NodeId>> {
     const result = floydWarshall(graph);
     const closure = new Map<NodeId, Set<NodeId>>();
 
-    for (const [source, distances] of result.distances) {
+    for (const [source, distances] of Array.from(result.distances)) {
         const reachable = new Set<NodeId>();
-        for (const [target, distance] of distances) {
+        for (const [target, distance] of Array.from(distances)) {
             if (distance < Infinity) {
                 reachable.add(target);
             }

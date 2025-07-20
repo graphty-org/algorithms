@@ -66,7 +66,7 @@ export function nodeClosenessCentrality(
 
     if (options.harmonic) {
         // Harmonic centrality: sum of reciprocals of distances
-        for (const [targetNode, distance] of distances) {
+        for (const [targetNode, distance] of Array.from(distances)) {
             if (targetNode !== node && distance > 0) {
                 centrality += 1 / distance;
             }
@@ -76,7 +76,7 @@ export function nodeClosenessCentrality(
         let totalDistance = 0;
         let reachableNodes = 0;
 
-        for (const [targetNode, distance] of distances) {
+        for (const [targetNode, distance] of Array.from(distances)) {
             if (targetNode !== node) {
                 totalDistance += distance;
                 reachableNodes++;
@@ -134,7 +134,7 @@ function singleSourceShortestPathLengths(
         }
 
         // Explore neighbors
-        for (const neighbor of graph.neighbors(current.node)) {
+        for (const neighbor of Array.from(graph.neighbors(current.node))) {
             if (!visited.has(neighbor)) {
                 const newDistance = current.distance + 1;
 
@@ -192,7 +192,7 @@ export function nodeWeightedClosenessCentrality(
 
     if (options.harmonic) {
         // Harmonic centrality: sum of reciprocals of distances
-        for (const [targetNode, distance] of distances) {
+        for (const [targetNode, distance] of Array.from(distances)) {
             if (targetNode !== node && distance > 0 && distance < Infinity) {
                 centrality += 1 / distance;
             }
@@ -202,7 +202,7 @@ export function nodeWeightedClosenessCentrality(
         let totalDistance = 0;
         let reachableNodes = 0;
 
-        for (const [targetNode, distance] of distances) {
+        for (const [targetNode, distance] of Array.from(distances)) {
             if (targetNode !== node && distance < Infinity) {
                 totalDistance += distance;
                 reachableNodes++;
@@ -244,7 +244,7 @@ function dijkstraDistances(
     const pq: {node: NodeId, distance: number}[] = [];
 
     // Initialize distances
-    for (const node of graph.nodes()) {
+    for (const node of Array.from(graph.nodes())) {
         distances.set(node.id, node.id === source ? 0 : Infinity);
     }
 
@@ -267,7 +267,7 @@ function dijkstraDistances(
         }
 
         // Explore neighbors
-        for (const neighbor of graph.neighbors(current.node)) {
+        for (const neighbor of Array.from(graph.neighbors(current.node))) {
             if (visited.has(neighbor)) {
                 continue;
             }

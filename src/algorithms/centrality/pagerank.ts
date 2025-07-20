@@ -111,7 +111,7 @@ export function pageRank(
         let outDegree = 0;
         let totalOutWeight = 0;
 
-        for (const neighbor of graph.neighbors(nodeId)) {
+        for (const neighbor of Array.from(graph.neighbors(nodeId))) {
             outDegree++;
             if (weight) {
                 const edge = graph.getEdge(nodeId, neighbor);
@@ -178,7 +178,7 @@ export function pageRank(
             const nodeOutWeight = outWeights.get(nodeId) ?? 0;
 
             if (nodeOutWeight > 0) {
-                for (const neighbor of graph.neighbors(nodeId)) {
+                for (const neighbor of Array.from(graph.neighbors(nodeId))) {
                     let edgeWeight = 1;
                     if (weight) {
                         const edge = graph.getEdge(nodeId, neighbor);
@@ -295,7 +295,7 @@ function normalizeRanks(ranks: Map<NodeId, number>): void {
     }
 
     if (sum > 0) {
-        for (const [nodeId, rank] of ranks) {
+        for (const [nodeId, rank] of Array.from(ranks)) {
             ranks.set(nodeId, rank / sum);
         }
     }

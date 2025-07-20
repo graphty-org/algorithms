@@ -425,5 +425,86 @@ describe("Dijkstra Algorithm", () => {
             expect(result!.distance).toBe(30); // start -> cheap1 -> cheap2 -> end
             expect(result!.path).toEqual(["start", "cheap1", "cheap2", "end"]);
         });
+
+        it("should handle edges with undefined weights", () => {
+            const graph = new Graph();
+
+            // Add edges with undefined weights (default to 1)
+            graph.addEdge("a", "b"); // undefined weight
+            graph.addEdge("b", "c"); // undefined weight
+            graph.addEdge("a", "c", 5);
+
+            const result = dijkstra(graph, "a");
+
+            expect(result.get("c")!.distance).toBe(2); // a -> b -> c (1+1)
+        });
+
+        it("should handle edges with null weights", () => {
+            const graph = new Graph();
+
+            // Add edges with null weights
+            graph.addEdge("a", "b", null as number | null);
+            graph.addEdge("b", "c", null as number | null);
+            graph.addEdge("a", "c", 5);
+
+            const result = dijkstra(graph, "a");
+
+            // null weights should be treated as 1 (default)
+            expect(result.get("c")!.distance).toBe(2); // a -> b -> c (1+1)
+        });
+
+        it("should handle case where neighbor already has shorter distance", () => {
+            const graph = new Graph();
+
+            // Create a graph where we might encounter already-processed nodes
+            graph.addEdge("a", "b", 1);
+            graph.addEdge("a", "c", 2);
+            graph.addEdge("b", "c", 10); // This edge won't improve distance to c
+
+            const result = dijkstra(graph, "a");
+
+            expect(result.get("c")!.distance).toBe(2); // Direct path a -> c
+            expect(result.get("c")!.path).toEqual(["a", "c"]);
+        });
+
+        it("should handle dijkstraPath with zero weight edges", () => {
+            const graph = new Graph();
+
+            graph.addEdge("a", "b", 0);
+            graph.addEdge("b", "c", 0);
+            graph.addEdge("a", "c", 1);
+
+            const result = dijkstraPath(graph, "a", "c");
+
+            expect(result).not.toBeNull();
+            expect(result!.distance).toBe(0); // a -> b -> c (0+0)
+        });
+
+        it("should handle very large graph for performance", () => {
+            const graph = new Graph();
+            const nodeCount = 100;
+
+            // Create a star graph
+            for (let i = 1; i < nodeCount; i++) {
+                graph.addEdge(0, i, i);
+            }
+
+            const result = dijkstra(graph, 0);
+
+            expect(result.size).toBe(nodeCount);
+            expect(result.get(0)!.distance).toBe(0);
+            expect(result.get(nodeCount - 1)!.distance).toBe(nodeCount - 1);
+        });
+
+        it("should hit defensive branches in queue processing", () => {
+            // Test to cover currentNode === undefined and currentDistance === undefined branches
+            const graph = new Graph();
+            graph.addNode("isolated");
+
+            const result = dijkstra(graph, "isolated");
+
+            expect(result.get("isolated")!.distance).toBe(0);
+            expect(result.get("isolated")!.path).toEqual(["isolated"]);
+        });
     });
 });

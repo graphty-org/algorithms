@@ -26,7 +26,7 @@ export function connectedComponents(graph: Graph): NodeId[][] {
     const unionFind = new UnionFind(nodes);
 
     // Union connected nodes
-    for (const edge of graph.edges()) {
+    for (const edge of Array.from(graph.edges())) {
         unionFind.union(edge.source, edge.target);
     }
 
@@ -44,7 +44,7 @@ export function connectedComponentsDFS(graph: Graph): NodeId[][] {
     const visited = new Set<NodeId>();
     const components: NodeId[][] = [];
 
-    for (const node of graph.nodes()) {
+    for (const node of Array.from(graph.nodes())) {
         if (!visited.has(node.id)) {
             const component: NodeId[] = [];
             dfsComponent(graph, node.id, visited, component);
@@ -67,7 +67,7 @@ function dfsComponent(
     visited.add(nodeId);
     component.push(nodeId);
 
-    for (const neighbor of graph.neighbors(nodeId)) {
+    for (const neighbor of Array.from(graph.neighbors(nodeId))) {
         if (!visited.has(neighbor)) {
             dfsComponent(graph, neighbor, visited, component);
         }
@@ -148,7 +148,7 @@ export function stronglyConnectedComponents(graph: Graph): NodeId[][] {
         onStack.add(nodeId);
 
         // Consider successors
-        for (const neighbor of graph.neighbors(nodeId)) {
+        for (const neighbor of Array.from(graph.neighbors(nodeId))) {
             if (!indices.has(neighbor)) {
                 // Successor has not yet been visited; recurse on it
                 tarjanSCC(neighbor);
@@ -226,7 +226,7 @@ export function weaklyConnectedComponents(graph: Graph): NodeId[][] {
     const unionFind = new UnionFind(nodes);
 
     // Union nodes connected by edges (ignore direction)
-    for (const edge of graph.edges()) {
+    for (const edge of Array.from(graph.edges())) {
         unionFind.union(edge.source, edge.target);
     }
 
@@ -275,13 +275,13 @@ export function condensationGraph(graph: Graph): {
     // Add edges between components
     const addedEdges = new Set<string>();
 
-    for (const edge of graph.edges()) {
+    for (const edge of Array.from(graph.edges())) {
         const sourceComponent = componentMap.get(edge.source);
         const targetComponent = componentMap.get(edge.target);
 
         if (sourceComponent !== undefined && targetComponent !== undefined &&
             sourceComponent !== targetComponent) {
-            const edgeKey = `${sourceComponent}-${targetComponent}`;
+            const edgeKey = `${String(sourceComponent)}-${String(targetComponent)}`;
 
             if (!addedEdges.has(edgeKey)) {
                 condensedGraph.addEdge(sourceComponent, targetComponent);

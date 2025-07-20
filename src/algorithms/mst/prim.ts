@@ -25,7 +25,7 @@ export function primMST(graph: Graph, startNode?: NodeId): MSTResult {
     }
 
     if (!graph.hasNode(start)) {
-        throw new Error(`Start node ${start} not found in graph`);
+        throw new Error(`Start node ${String(start)} not found in graph`);
     }
 
     const visited = new Set<NodeId>();
@@ -36,7 +36,7 @@ export function primMST(graph: Graph, startNode?: NodeId): MSTResult {
 
     visited.add(start);
 
-    for (const neighbor of graph.neighbors(start)) {
+    for (const neighbor of Array.from(graph.neighbors(start))) {
         const edge = graph.getEdge(start, neighbor);
         if (edge) {
             pq.enqueue(edge, edge.weight ?? 0);
@@ -59,7 +59,7 @@ export function primMST(graph: Graph, startNode?: NodeId): MSTResult {
         mstEdges.push(edge);
         totalWeight += edge.weight ?? 0;
 
-        for (const neighbor of graph.neighbors(unvisitedNode)) {
+        for (const neighbor of Array.from(graph.neighbors(unvisitedNode))) {
             if (!visited.has(neighbor)) {
                 const neighborEdge = graph.getEdge(unvisitedNode, neighbor);
                 if (neighborEdge) {

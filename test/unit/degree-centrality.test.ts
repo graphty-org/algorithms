@@ -1,4 +1,3 @@
-/* eslint-disable dot-notation */
 import {describe, expect, it} from "vitest";
 
 import {degreeCentrality, nodeDegreeCentrality} from "../../src/algorithms/centrality/degree.js";
@@ -16,10 +15,10 @@ describe("Degree Centrality", () => {
 
             const centrality = degreeCentrality(graph);
 
-            expect(centrality["center"]).toBe(3);
-            expect(centrality["a"]).toBe(1);
-            expect(centrality["b"]).toBe(1);
-            expect(centrality["c"]).toBe(1);
+            expect(centrality.center).toBe(3);
+            expect(centrality.a).toBe(1);
+            expect(centrality.b).toBe(1);
+            expect(centrality.c).toBe(1);
         });
 
         it("should calculate normalized degree centrality", () => {
@@ -32,10 +31,10 @@ describe("Degree Centrality", () => {
 
             const centrality = degreeCentrality(graph, {normalized: true});
 
-            expect(centrality["center"]).toBeCloseTo(1.0); // 3/3 = 1.0
-            expect(centrality["a"]).toBeCloseTo(0.333, 2); // 1/3 ≈ 0.333
-            expect(centrality["b"]).toBeCloseTo(0.333, 2);
-            expect(centrality["c"]).toBeCloseTo(0.333, 2);
+            expect(centrality.center).toBeCloseTo(1.0); // 3/3 = 1.0
+            expect(centrality.a).toBeCloseTo(0.333, 2); // 1/3 ≈ 0.333
+            expect(centrality.b).toBeCloseTo(0.333, 2);
+            expect(centrality.c).toBeCloseTo(0.333, 2);
         });
 
         it("should handle directed graph with total degree mode", () => {
@@ -47,10 +46,10 @@ describe("Degree Centrality", () => {
 
             const centrality = degreeCentrality(graph, {mode: "total"});
 
-            expect(centrality["a"]).toBe(1); // out-degree: 1
-            expect(centrality["b"]).toBe(3); // in-degree: 2, out-degree: 1
-            expect(centrality["c"]).toBe(1); // out-degree: 1
-            expect(centrality["d"]).toBe(1); // in-degree: 1
+            expect(centrality.a).toBe(1); // out-degree: 1
+            expect(centrality.b).toBe(3); // in-degree: 2, out-degree: 1
+            expect(centrality.c).toBe(1); // out-degree: 1
+            expect(centrality.d).toBe(1); // in-degree: 1
         });
 
         it("should handle directed graph with in-degree mode", () => {
@@ -62,10 +61,10 @@ describe("Degree Centrality", () => {
 
             const centrality = degreeCentrality(graph, {mode: "in"});
 
-            expect(centrality["a"]).toBe(0);
-            expect(centrality["b"]).toBe(2); // Receives edges from a and c
-            expect(centrality["c"]).toBe(0);
-            expect(centrality["d"]).toBe(1); // Receives edge from b
+            expect(centrality.a).toBe(0);
+            expect(centrality.b).toBe(2); // Receives edges from a and c
+            expect(centrality.c).toBe(0);
+            expect(centrality.d).toBe(1); // Receives edge from b
         });
 
         it("should handle directed graph with out-degree mode", () => {
@@ -77,10 +76,10 @@ describe("Degree Centrality", () => {
 
             const centrality = degreeCentrality(graph, {mode: "out"});
 
-            expect(centrality["a"]).toBe(1); // Sends edge to b
-            expect(centrality["b"]).toBe(1); // Sends edge to d
-            expect(centrality["c"]).toBe(1); // Sends edge to b
-            expect(centrality["d"]).toBe(0);
+            expect(centrality.a).toBe(1); // Sends edge to b
+            expect(centrality.b).toBe(1); // Sends edge to d
+            expect(centrality.c).toBe(1); // Sends edge to b
+            expect(centrality.d).toBe(0);
         });
 
         it("should handle single node graph", () => {
@@ -90,7 +89,7 @@ describe("Degree Centrality", () => {
 
             const centrality = degreeCentrality(graph);
 
-            expect(centrality["only"]).toBe(0);
+            expect(centrality.only).toBe(0);
         });
 
         it("should handle empty graph", () => {
@@ -111,11 +110,11 @@ describe("Degree Centrality", () => {
 
             const centrality = degreeCentrality(graph);
 
-            expect(centrality["a"]).toBe(1);
-            expect(centrality["b"]).toBe(1);
-            expect(centrality["c"]).toBe(1);
-            expect(centrality["d"]).toBe(1);
-            expect(centrality["isolated"]).toBe(0);
+            expect(centrality.a).toBe(1);
+            expect(centrality.b).toBe(1);
+            expect(centrality.c).toBe(1);
+            expect(centrality.d).toBe(1);
+            expect(centrality.isolated).toBe(0);
         });
 
         it("should handle self-loops correctly", () => {
@@ -127,8 +126,8 @@ describe("Degree Centrality", () => {
             const centrality = degreeCentrality(graph);
 
             // Self-loop should count as degree 1 in undirected graph
-            expect(centrality["a"]).toBe(2); // Self-loop + edge to b
-            expect(centrality["b"]).toBe(1);
+            expect(centrality.a).toBe(2); // Self-loop + edge to b
+            expect(centrality.b).toBe(1);
         });
 
         it("should convert node IDs to strings in result", () => {
@@ -151,7 +150,7 @@ describe("Degree Centrality", () => {
 
             const centrality = degreeCentrality(graph, {normalized: true});
 
-            expect(centrality["only"]).toBe(0); // 0/0 should be handled gracefully
+            expect(centrality.only).toBe(0); // 0/0 should be handled gracefully
         });
 
         it("should handle normalized centrality with two nodes", () => {
@@ -161,8 +160,8 @@ describe("Degree Centrality", () => {
 
             const centrality = degreeCentrality(graph, {normalized: true});
 
-            expect(centrality["a"]).toBe(1); // 1/1 = 1.0
-            expect(centrality["b"]).toBe(1); // 1/1 = 1.0
+            expect(centrality.a).toBe(1); // 1/1 = 1.0
+            expect(centrality.b).toBe(1); // 1/1 = 1.0
         });
     });
 
@@ -256,8 +255,8 @@ describe("Degree Centrality", () => {
 
             const centrality = degreeCentrality(graph);
 
-            expect(centrality["a"]).toBe(1);
-            expect(centrality["b"]).toBe(1);
+            expect(centrality.a).toBe(1);
+            expect(centrality.b).toBe(1);
         });
 
         it("should handle complete graph", () => {
@@ -308,9 +307,9 @@ describe("Degree Centrality", () => {
 
             const centrality = degreeCentrality(graph);
 
-            expect(centrality["string"]).toBe(1);
+            expect(centrality.string).toBe(1);
             expect(centrality["123"]).toBe(2);
-            expect(centrality["another"]).toBe(1);
+            expect(centrality.another).toBe(1);
         });
 
         it("should handle normalized centrality edge case with division by zero", () => {
@@ -321,7 +320,7 @@ describe("Degree Centrality", () => {
             const centrality = degreeCentrality(graph, {normalized: true});
 
             // Should handle division by zero gracefully
-            expect(centrality["only"]).toBe(0);
+            expect(centrality.only).toBe(0);
         });
 
         it("should maintain consistency between undirected and directed default behavior", () => {
@@ -336,12 +335,12 @@ describe("Degree Centrality", () => {
             const directedCentrality = degreeCentrality(directedGraph);
 
             // In undirected graph, both nodes have degree 1
-            expect(undirectedCentrality["a"]).toBe(1);
-            expect(undirectedCentrality["b"]).toBe(1);
+            expect(undirectedCentrality.a).toBe(1);
+            expect(undirectedCentrality.b).toBe(1);
 
             // In directed graph, total degree by default
-            expect(directedCentrality["a"]).toBe(1); // out-degree: 1
-            expect(directedCentrality["b"]).toBe(1); // in-degree: 1
+            expect(directedCentrality.a).toBe(1); // out-degree: 1
+            expect(directedCentrality.b).toBe(1); // in-degree: 1
         });
 
         it("should handle very high degree nodes", () => {

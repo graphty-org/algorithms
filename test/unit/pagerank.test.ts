@@ -1,4 +1,3 @@
-/* eslint-disable dot-notation */
 import {describe, expect, it} from "vitest";
 
 import {
@@ -23,8 +22,8 @@ describe("PageRank Algorithm", () => {
             expect(result.iterations).toBeLessThan(100);
 
             // In a cycle, all nodes should have equal PageRank
-            expect(result.ranks["A"]).toBeCloseTo(result.ranks["B"] ?? 0, 5);
-            expect(result.ranks["B"]).toBeCloseTo(result.ranks["C"] ?? 0, 5);
+            expect(result.ranks.A).toBeCloseTo(result.ranks.B ?? 0, 5);
+            expect(result.ranks.B).toBeCloseTo(result.ranks.C ?? 0, 5);
 
             // Sum should be approximately 1
             const sum = Object.values(result.ranks).reduce((a, b) => a + b, 0);
@@ -50,7 +49,7 @@ describe("PageRank Algorithm", () => {
 
             expect(result.converged).toBe(true);
             // C should still have some PageRank due to random surfer model
-            expect(result.ranks["C"]).toBeGreaterThan(0);
+            expect(result.ranks.C).toBeGreaterThan(0);
         });
 
         it("should handle empty graph", () => {
@@ -70,7 +69,7 @@ describe("PageRank Algorithm", () => {
             const result = pageRank(graph);
 
             expect(result.converged).toBe(true);
-            expect(result.ranks["A"]).toBeCloseTo(1);
+            expect(result.ranks.A).toBeCloseTo(1);
         });
 
         it("should handle self-loops", () => {
@@ -95,7 +94,7 @@ describe("PageRank Algorithm", () => {
             const result2 = pageRank(graph, {dampingFactor: 0.5});
 
             // Different damping factors should produce different results
-            expect(result1.ranks["A"]).not.toBeCloseTo(result2.ranks["A"] ?? 0, 2);
+            expect(result1.ranks.A).not.toBeCloseTo(result2.ranks.A ?? 0, 2);
         });
 
         it("should throw error for invalid damping factor", () => {
@@ -155,7 +154,7 @@ describe("PageRank Algorithm", () => {
             const result = pageRank(graph, {initialRanks, maxIterations: 1});
 
             // After one iteration, ranks should have changed from initial
-            expect(result.ranks["A"]).not.toBeCloseTo(0.5);
+            expect(result.ranks.A).not.toBeCloseTo(0.5);
         });
 
         it("should handle weighted PageRank", () => {
@@ -184,8 +183,8 @@ describe("PageRank Algorithm", () => {
             const result = pageRank(graph);
 
             // Center should have highest PageRank
-            expect(result.ranks["center"]).toBeGreaterThan(result.ranks["A"] ?? 0);
-            expect(result.ranks["center"]).toBeGreaterThan(result.ranks["B"] ?? 0);
+            expect(result.ranks.center).toBeGreaterThan(result.ranks.A ?? 0);
+            expect(result.ranks.center).toBeGreaterThan(result.ranks.B ?? 0);
         });
 
         it("should handle complex graph structure", () => {
@@ -219,7 +218,7 @@ describe("PageRank Algorithm", () => {
 
             expect(result.converged).toBe(true);
             // A should have higher rank in personalized PageRank
-            expect(result.ranks["A"]).toBeGreaterThan(result.ranks["D"] ?? 0);
+            expect(result.ranks.A).toBeGreaterThan(result.ranks.D ?? 0);
         });
 
         it("should handle multiple personal nodes", () => {
@@ -233,8 +232,8 @@ describe("PageRank Algorithm", () => {
 
             expect(result.converged).toBe(true);
             // A and C should have relatively higher ranks
-            const avgPersonal = ((result.ranks["A"] ?? 0) + (result.ranks["C"] ?? 0)) / 2;
-            const avgOther = ((result.ranks["B"] ?? 0) + (result.ranks["D"] ?? 0)) / 2;
+            const avgPersonal = ((result.ranks.A ?? 0) + (result.ranks.C ?? 0)) / 2;
+            const avgOther = ((result.ranks.B ?? 0) + (result.ranks.D ?? 0)) / 2;
             expect(avgPersonal).toBeGreaterThan(avgOther);
         });
 
@@ -371,9 +370,9 @@ describe("PageRank Algorithm", () => {
             const result = pageRank(directedGraph);
 
             // All nodes should have equal rank
-            expect(result.ranks["a"]).toBeCloseTo(1/3, 5);
-            expect(result.ranks["b"]).toBeCloseTo(1/3, 5);
-            expect(result.ranks["c"]).toBeCloseTo(1/3, 5);
+            expect(result.ranks.a).toBeCloseTo(1 / 3, 5);
+            expect(result.ranks.b).toBeCloseTo(1 / 3, 5);
+            expect(result.ranks.c).toBeCloseTo(1 / 3, 5);
         });
 
         it("should handle convergence with very low tolerance", () => {
@@ -381,7 +380,7 @@ describe("PageRank Algorithm", () => {
             directedGraph.addNode("a");
             directedGraph.addNode("b");
             directedGraph.addNode("c");
-            
+
             directedGraph.addEdge("a", "b");
             directedGraph.addEdge("b", "c");
             directedGraph.addEdge("c", "a");
@@ -393,7 +392,7 @@ describe("PageRank Algorithm", () => {
 
             // Should converge to equal values for cycle
             const ranks = Object.values(result.ranks);
-            expect(Math.max(...ranks) - Math.min(...ranks)).toBeLessThan(0.001);
+            expect(Math.max(... ranks) - Math.min(... ranks)).toBeLessThan(0.001);
         });
 
         it("should handle personalized PageRank with empty personalization", () => {
@@ -405,8 +404,8 @@ describe("PageRank Algorithm", () => {
             const result = personalizedPageRank(directedGraph, []);
 
             // Should default to regular PageRank
-            expect(result.ranks["a"]).toBeDefined();
-            expect(result.ranks["b"]).toBeDefined();
+            expect(result.ranks.a).toBeDefined();
+            expect(result.ranks.b).toBeDefined();
         });
 
         it("should handle weighted edges with missing edge data", () => {
@@ -414,7 +413,7 @@ describe("PageRank Algorithm", () => {
             directedGraph.addNode("a");
             directedGraph.addNode("b");
             directedGraph.addNode("c");
-            
+
             // Create edge without weight
             directedGraph.addEdge("a", "b");
             directedGraph.addEdge("b", "c", 2);
@@ -423,9 +422,9 @@ describe("PageRank Algorithm", () => {
                 weight: true,
             });
 
-            expect(result.ranks["a"]).toBeDefined();
-            expect(result.ranks["b"]).toBeDefined();
-            expect(result.ranks["c"]).toBeDefined();
+            expect(result.ranks.a).toBeDefined();
+            expect(result.ranks.b).toBeDefined();
+            expect(result.ranks.c).toBeDefined();
         });
 
         it("should handle graph with all edges having zero weight", () => {
@@ -433,7 +432,7 @@ describe("PageRank Algorithm", () => {
             directedGraph.addNode("a");
             directedGraph.addNode("b");
             directedGraph.addNode("c");
-            
+
             directedGraph.addEdge("a", "b", 0);
             directedGraph.addEdge("b", "c", 0);
             directedGraph.addEdge("c", "a", 0);
@@ -451,7 +450,7 @@ describe("PageRank Algorithm", () => {
             directedGraph.addNode("a");
             directedGraph.addNode("b");
             directedGraph.addNode("c");
-            
+
             directedGraph.addEdge("a", "b");
             directedGraph.addEdge("b", "c");
             directedGraph.addEdge("c", "a");
@@ -482,8 +481,8 @@ describe("PageRank Algorithm", () => {
             });
 
             // With damping 0, all nodes get equal rank
-            expect(result.ranks["a"]).toBeCloseTo(0.5, 5);
-            expect(result.ranks["b"]).toBeCloseTo(0.5, 5);
+            expect(result.ranks.a).toBeCloseTo(0.5, 5);
+            expect(result.ranks.b).toBeCloseTo(0.5, 5);
         });
 
         it("should handle damping factor of 1", () => {
@@ -491,7 +490,7 @@ describe("PageRank Algorithm", () => {
             directedGraph.addNode("a");
             directedGraph.addNode("b");
             directedGraph.addNode("c");
-            
+
             directedGraph.addEdge("a", "b");
             directedGraph.addEdge("b", "c");
             // c is a dangling node
@@ -502,7 +501,7 @@ describe("PageRank Algorithm", () => {
             });
 
             // With damping 1, rank accumulates at dangling nodes
-            expect(result.ranks["c"]).toBeGreaterThan(result.ranks["a"]);
+            expect(result.ranks.c).toBeGreaterThan(result.ranks.a);
         });
     });
 });

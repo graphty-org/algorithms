@@ -1,4 +1,3 @@
-/* eslint-disable dot-notation */
 import {describe, expect, it} from "vitest";
 
 import {degreeCentrality} from "../../src/algorithms/centrality/degree.js";
@@ -55,8 +54,8 @@ describe("Browser Environment Tests", () => {
 
         const centrality = degreeCentrality(graph);
 
-        expect(centrality["center"]).toBe(3);
-        expect(centrality["a"]).toBe(1);
+        expect(centrality.center).toBe(3);
+        expect(centrality.a).toBe(1);
     });
 
     it("should run Dijkstra algorithm in browser", () => {

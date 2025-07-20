@@ -27,7 +27,7 @@ export function dijkstra(
     const pq = new PriorityQueue<NodeId>();
 
     // Initialize distances
-    for (const node of graph.nodes()) {
+    for (const node of Array.from(graph.nodes())) {
         const distance = node.id === source ? 0 : Infinity;
         distances.set(node.id, distance);
         previous.set(node.id, null);
@@ -63,7 +63,7 @@ export function dijkstra(
         }
 
         // Check all neighbors
-        for (const neighbor of graph.neighbors(currentNode)) {
+        for (const neighbor of Array.from(graph.neighbors(currentNode))) {
             if (visited.has(neighbor)) {
                 continue;
             }
@@ -158,7 +158,7 @@ export function singleSourceShortestPath(
     const pq = new PriorityQueue<NodeId>();
 
     // Initialize distances
-    for (const node of graph.nodes()) {
+    for (const node of Array.from(graph.nodes())) {
         const distance = node.id === source ? 0 : Infinity;
         distances.set(node.id, distance);
         pq.enqueue(node.id, distance);
@@ -188,7 +188,7 @@ export function singleSourceShortestPath(
         }
 
         // Check all neighbors
-        for (const neighbor of graph.neighbors(currentNode)) {
+        for (const neighbor of Array.from(graph.neighbors(currentNode))) {
             if (visited.has(neighbor)) {
                 continue;
             }
@@ -232,7 +232,7 @@ export function singleSourceShortestPath(
 export function allPairsShortestPath(graph: Graph): Map<NodeId, Map<NodeId, number>> {
     const results = new Map<NodeId, Map<NodeId, number>>();
 
-    for (const node of graph.nodes()) {
+    for (const node of Array.from(graph.nodes())) {
         const distances = singleSourceShortestPath(graph, node.id);
         results.set(node.id, distances);
     }

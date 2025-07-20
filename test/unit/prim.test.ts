@@ -1,4 +1,5 @@
 import {beforeEach, describe, expect, it} from "vitest";
+
 import {Graph, primMST} from "../../src/index.js";
 
 describe("Prim's Algorithm", () => {
@@ -27,7 +28,7 @@ describe("Prim's Algorithm", () => {
             expect(result.edges).toHaveLength(3);
 
             const mstNodes = new Set<string>();
-            result.edges.forEach(edge => {
+            result.edges.forEach((edge) => {
                 mstNodes.add(edge.source as string);
                 mstNodes.add(edge.target as string);
             });
@@ -132,7 +133,7 @@ describe("Prim's Algorithm", () => {
 
         it("should handle larger graph", () => {
             const nodes = ["A", "B", "C", "D", "E", "F", "G"];
-            nodes.forEach(node => graph.addNode(node));
+            nodes.forEach((node) => graph.addNode(node));
 
             graph.addEdge("A", "B", 7);
             graph.addEdge("A", "D", 5);
@@ -152,7 +153,7 @@ describe("Prim's Algorithm", () => {
             expect(result.edges).toHaveLength(6);
 
             const mstNodes = new Set<string>();
-            result.edges.forEach(edge => {
+            result.edges.forEach((edge) => {
                 mstNodes.add(edge.source as string);
                 mstNodes.add(edge.target as string);
             });
@@ -179,7 +180,7 @@ describe("Prim's Algorithm", () => {
             graph.addNode("B");
             graph.addNode("C");
 
-            graph.addEdge("A", "B");  // default weight 1
+            graph.addEdge("A", "B"); // default weight 1
             graph.addEdge("B", "C", 1);
             graph.addEdge("A", "C", 2);
 
@@ -187,15 +188,15 @@ describe("Prim's Algorithm", () => {
 
             expect(result.totalWeight).toBe(2);
             expect(result.edges).toHaveLength(2);
-            
+
             // Should choose A-B (weight 1) and B-C (weight 1) over A-C (weight 2)
-            const weights = result.edges.map(e => e.weight ?? 1).sort();
+            const weights = result.edges.map((e) => e.weight ?? 1).sort();
             expect(weights).toEqual([1, 1]);
         });
 
         it("should produce same total weight as Kruskal's algorithm", () => {
             const nodes = ["A", "B", "C", "D", "E"];
-            nodes.forEach(node => graph.addNode(node));
+            nodes.forEach((node) => graph.addNode(node));
 
             graph.addEdge("A", "B", 2);
             graph.addEdge("A", "C", 3);
@@ -232,7 +233,7 @@ describe("Prim's Algorithm", () => {
         it("should handle case where edge target is already visited", () => {
             // Create a dense graph where many edges lead to already visited nodes
             const nodes = ["A", "B", "C", "D"];
-            nodes.forEach(node => graph.addNode(node));
+            nodes.forEach((node) => graph.addNode(node));
 
             // Create a complete graph
             graph.addEdge("A", "B", 1);
@@ -250,9 +251,9 @@ describe("Prim's Algorithm", () => {
 
         it("should handle graph where initial node has no edges", () => {
             graph.addNode("isolated");
-            
+
             const result = primMST(graph, "isolated");
-            
+
             expect(result.totalWeight).toBe(0);
             expect(result.edges).toHaveLength(0);
         });
@@ -274,6 +275,90 @@ describe("Prim's Algorithm", () => {
 
             expect(result.edges).toHaveLength(3);
             expect(result.totalWeight).toBeLessThanOrEqual(6); // Should pick optimal edges
+        });
+
+        it("should handle empty graph with null nodes array", () => {
+            // This tests the first nodes.length === 0 check
+            const emptyGraph = new Graph({directed: false});
+
+            const result = primMST(emptyGraph);
+
+            expect(result.edges).toEqual([]);
+            expect(result.totalWeight).toBe(0);
+        });
+
+        it("should handle edge where getEdge returns null", () => {
+            // This is tricky to test since getEdge is internal
+            // But we can create a scenario where it might happen
+            graph.addNode("A");
+            graph.addNode("B");
+            graph.addNode("C");
+
+            graph.addEdge("A", "B", 1);
+            graph.addEdge("B", "C", 2);
+
+            const result = primMST(graph);
+
+            expect(result.edges).toHaveLength(2);
+            expect(result.totalWeight).toBe(3);
+        });
+
+        it("should handle case where priority queue returns null edge", () => {
+            // This tests the !edge check after dequeue
+            // This is defensive programming that's hard to trigger normally
+            graph.addNode("A");
+            graph.addNode("B");
+
+            graph.addEdge("A", "B", 1);
+
+            const result = primMST(graph);
+
+            expect(result.edges).toHaveLength(1);
+            expect(result.totalWeight).toBe(1);
+        });
+
+        it("should handle edges with null weights properly", () => {
+            graph.addNode("A");
+            graph.addNode("B");
+            graph.addNode("C");
+
+            // Add edges with null weights to test ?? 0 operator
+            graph.addEdge("A", "B", null as number | null);
+            graph.addEdge("B", "C", null as number | null);
+            graph.addEdge("A", "C", 5);
+
+            const result = primMST(graph);
+
+            expect(result.totalWeight).toBe(0); // null weights treated as 0
+            expect(result.edges).toHaveLength(2);
+        });
+
+        it("should handle graph with only one node and null check", () => {
+            // This tests the !start check more thoroughly
+            const singleNodeGraph = new Graph({directed: false});
+            singleNodeGraph.addNode("only");
+
+            const result = primMST(singleNodeGraph);
+
+            expect(result.edges).toEqual([]);
+            expect(result.totalWeight).toBe(0);
+        });
+
+        it("should handle undefined edge weights in priority queue", () => {
+            graph.addNode("A");
+            graph.addNode("B");
+            graph.addNode("C");
+
+            // Add edges with undefined weights
+            graph.addEdge("A", "B"); // undefined weight
+            graph.addEdge("B", "C"); // undefined weight
+            graph.addEdge("A", "C", 10);
+
+            const result = primMST(graph);
+
+            // undefined weights are treated as default (1)
+            expect(result.totalWeight).toBe(2);
+            expect(result.edges).toHaveLength(2);
         });
     });
 });

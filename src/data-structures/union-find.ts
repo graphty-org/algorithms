@@ -103,7 +103,7 @@ export class UnionFind {
         const root = this.find(element);
         const component: NodeId[] = [];
 
-        for (const [node] of this.parent) {
+        for (const [node] of Array.from(this.parent)) {
             if (this.find(node) === root) {
                 component.push(node);
             }
@@ -118,7 +118,7 @@ export class UnionFind {
     getAllComponents(): NodeId[][] {
         const componentMap = new Map<NodeId, NodeId[]>();
 
-        for (const [node] of this.parent) {
+        for (const [node] of Array.from(this.parent)) {
             const root = this.find(node);
 
             if (!componentMap.has(root)) {

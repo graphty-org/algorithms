@@ -67,7 +67,7 @@ export function bellmanFord(
     for (let i = 0; i < nodes.length - 1; i++) {
         let updated = false;
 
-        for (const edge of graph.edges()) {
+        for (const edge of Array.from(graph.edges())) {
             const u = edge.source;
             const v = edge.target;
             const weight = edge.weight ?? 1;
@@ -187,7 +187,7 @@ export function hasNegativeCycle(graph: Graph): boolean {
             }
 
             // Mark all reachable nodes as checked
-            for (const [nodeId, distance] of result.distances) {
+            for (const [nodeId, distance] of Array.from(result.distances)) {
                 if (distance !== Infinity) {
                     checked.add(nodeId);
                 }

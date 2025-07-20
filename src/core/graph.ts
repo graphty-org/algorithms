@@ -51,7 +51,7 @@ export class Graph {
         // Remove all edges connected to this node
         const outgoingEdges = this.adjacencyList.get(id);
         if (outgoingEdges) {
-            for (const targetId of outgoingEdges.keys()) {
+            for (const targetId of Array.from(outgoingEdges.keys())) {
                 this.removeEdge(id, targetId);
             }
         }
@@ -59,13 +59,13 @@ export class Graph {
         if (this.config.directed) {
             const incomingEdges = this.incomingEdges.get(id);
             if (incomingEdges) {
-                for (const sourceId of incomingEdges.keys()) {
+                for (const sourceId of Array.from(incomingEdges.keys())) {
                     this.removeEdge(sourceId, id);
                 }
             }
         } else {
             // For undirected graphs, also remove edges where this node is the target
-            for (const [nodeId, edges] of this.adjacencyList) {
+            for (const [nodeId, edges] of Array.from(this.adjacencyList)) {
                 if (edges.has(id)) {
                     this.removeEdge(nodeId, id);
                 }
@@ -222,7 +222,7 @@ export class Graph {
      * Get all edges in the graph
      */
     *edges(): IterableIterator<Edge> {
-        for (const [source, edges] of this.adjacencyList) {
+        for (const [source, edges] of Array.from(this.adjacencyList)) {
             for (const edge of edges.values()) {
                 // For undirected graphs, only yield each edge once
                 if (!this.config.directed && source > edge.target) {
@@ -300,12 +300,12 @@ export class Graph {
         const cloned = new Graph(this.config);
 
         // Copy nodes
-        for (const node of this.nodeMap.values()) {
+        for (const node of Array.from(this.nodeMap.values())) {
             cloned.addNode(node.id, node.data ? {... node.data} : undefined);
         }
 
         // Copy edges
-        for (const edge of this.edges()) {
+        for (const edge of Array.from(this.edges())) {
             cloned.addEdge(
                 edge.source,
                 edge.target,
@@ -341,13 +341,14 @@ export class Graph {
     get uniqueEdgeCount(): number {
         if (this.config.directed) {
             return this.edgeCount;
-        } else {
-            // For undirected graphs, we need to count each edge only once
-            let count = 0;
-            for (const edge of this.edges()) {
-                count++;
-            }
-            return count;
         }
+
+        // For undirected graphs, we need to count each edge only once
+        let count = 0;
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        for (const _edge of Array.from(this.edges())) {
+            count++;
+        }
+        return count;
     }
 }

@@ -67,7 +67,7 @@ export function betweennessCentrality(
 
             stack.push(current);
 
-            for (const neighbor of graph.neighbors(current)) {
+            for (const neighbor of Array.from(graph.neighbors(current))) {
                 const currentDistance = distance.get(current);
                 let neighborDistance = distance.get(neighbor);
 
@@ -187,7 +187,7 @@ export function edgeBetweennessCentrality(
     const edgeCentrality = new Map<string, number>();
 
     // Initialize edge centrality scores
-    for (const edge of graph.edges()) {
+    for (const edge of Array.from(graph.edges())) {
         const edgeKey = `${String(edge.source)}-${String(edge.target)}`;
         edgeCentrality.set(edgeKey, 0);
     }
@@ -222,7 +222,7 @@ export function edgeBetweennessCentrality(
 
             stack.push(current);
 
-            for (const neighbor of graph.neighbors(current)) {
+            for (const neighbor of Array.from(graph.neighbors(current))) {
                 const currentDistance = distance.get(current);
                 let neighborDistance = distance.get(neighbor);
 
@@ -281,7 +281,7 @@ export function edgeBetweennessCentrality(
 
     // For undirected graphs, divide by 2 (each shortest path is counted twice)
     if (!graph.isDirected) {
-        for (const [edgeKey, centrality] of edgeCentrality) {
+        for (const [edgeKey, centrality] of Array.from(edgeCentrality)) {
             edgeCentrality.set(edgeKey, centrality / 2);
         }
     }
@@ -292,7 +292,7 @@ export function edgeBetweennessCentrality(
         const normalizationFactor = graph.isDirected ? (n - 1) * (n - 2) : ((n - 1) * (n - 2)) / 2;
 
         if (normalizationFactor > 0) {
-            for (const [edgeKey, centrality] of edgeCentrality) {
+            for (const [edgeKey, centrality] of Array.from(edgeCentrality)) {
                 edgeCentrality.set(edgeKey, centrality / normalizationFactor);
             }
         }
