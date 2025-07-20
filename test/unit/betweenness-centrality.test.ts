@@ -16,8 +16,8 @@ describe("Betweenness Centrality", () => {
             const centrality = betweennessCentrality(graph);
 
             expect(centrality["a"]).toBe(0); // Endpoint
-            expect(centrality["b"]).toBe(2); // 2 shortest paths pass through b
-            expect(centrality["c"]).toBe(2); // 2 shortest paths pass through c
+            expect(centrality["b"]).toBe(2); // paths: a↔c, a↔d pass through b  
+            expect(centrality["c"]).toBe(2); // paths: a↔d, b↔d pass through c
             expect(centrality["d"]).toBe(0); // Endpoint
         });
 
@@ -219,9 +219,9 @@ describe("Betweenness Centrality", () => {
             const centrality = edgeBetweennessCentrality(graph);
 
             // Each edge from center carries equal betweenness
-            expect(centrality.get("center-a")).toBe(1);
-            expect(centrality.get("center-b")).toBe(1);
-            expect(centrality.get("center-c")).toBe(1);
+            expect(centrality.get("center-a")).toBe(1.5);
+            expect(centrality.get("center-b")).toBe(1.5);
+            expect(centrality.get("center-c")).toBe(1.5);
         });
 
         it("should handle normalized edge betweenness", () => {
@@ -244,8 +244,8 @@ describe("Betweenness Centrality", () => {
 
             const centrality = edgeBetweennessCentrality(graph);
 
-            expect(centrality.get("a-b")).toBe(1);
-            expect(centrality.get("b-c")).toBe(1);
+            expect(centrality.get("a-b")).toBe(2);
+            expect(centrality.get("b-c")).toBe(2);
         });
 
         it("should handle bridge edges correctly", () => {

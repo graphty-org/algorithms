@@ -69,7 +69,7 @@ export function betweennessCentrality(
 
             for (const neighbor of graph.neighbors(current)) {
                 const currentDistance = distance.get(current);
-                const neighborDistance = distance.get(neighbor);
+                let neighborDistance = distance.get(neighbor);
 
                 if (currentDistance === undefined || neighborDistance === undefined) {
                     continue;
@@ -79,6 +79,7 @@ export function betweennessCentrality(
                 if (neighborDistance < 0) {
                     queue.push(neighbor);
                     distance.set(neighbor, currentDistance + 1);
+                    neighborDistance = currentDistance + 1; // Update local variable
                 }
 
                 // Shortest path to neighbor via current
@@ -217,7 +218,7 @@ export function edgeBetweennessCentrality(
 
             for (const neighbor of graph.neighbors(current)) {
                 const currentDistance = distance.get(current);
-                const neighborDistance = distance.get(neighbor);
+                let neighborDistance = distance.get(neighbor);
 
                 if (currentDistance === undefined || neighborDistance === undefined) {
                     continue;
@@ -226,6 +227,7 @@ export function edgeBetweennessCentrality(
                 if (neighborDistance < 0) {
                     queue.push(neighbor);
                     distance.set(neighbor, currentDistance + 1);
+                    neighborDistance = currentDistance + 1; // Update local variable
                 }
 
                 if (neighborDistance === currentDistance + 1) {
@@ -271,6 +273,13 @@ export function edgeBetweennessCentrality(
         }
     }
 
+    // For undirected graphs, divide by 2 (each shortest path is counted twice)
+    if (!graph.isDirected) {
+        for (const [edgeKey, centrality] of edgeCentrality) {
+            edgeCentrality.set(edgeKey, centrality / 2);
+        }
+    }
+
     // Normalization for edges
     if (options.normalized) {
         const n = nodes.length;
@@ -280,13 +289,6 @@ export function edgeBetweennessCentrality(
             for (const [edgeKey, centrality] of edgeCentrality) {
                 edgeCentrality.set(edgeKey, centrality / normalizationFactor);
             }
-        }
-    }
-
-    // Handle endpoints for undirected graphs
-    if (!options.endpoints && !graph.isDirected) {
-        for (const [edgeKey, centrality] of edgeCentrality) {
-            edgeCentrality.set(edgeKey, centrality / 2);
         }
     }
 
