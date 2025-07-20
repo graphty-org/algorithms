@@ -446,8 +446,8 @@ describe("Connected Components", () => {
             const result = condensationGraph(graph);
 
             expect(result.components).toHaveLength(2);
-            expect(result.condensedGraph.nodeCount()).toBe(2);
-            expect(result.condensedGraph.edgeCount()).toBe(1);
+            expect(result.condensedGraph.nodeCount).toBe(2);
+            expect(result.condensedGraph.totalEdgeCount).toBe(1);
 
             // Check component mapping
             expect(result.componentMap.get("a")).toBeDefined();
@@ -466,8 +466,8 @@ describe("Connected Components", () => {
             const result = condensationGraph(graph);
 
             expect(result.components).toHaveLength(1);
-            expect(result.condensedGraph.nodeCount()).toBe(1);
-            expect(result.condensedGraph.edgeCount()).toBe(0);
+            expect(result.condensedGraph.nodeCount).toBe(1);
+            expect(result.condensedGraph.totalEdgeCount).toBe(0);
         });
 
         it("should throw error for undirected graph", () => {
