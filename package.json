@@ -24,7 +24,7 @@
   "scripts": {
     "test": "vitest",
     "test:ui": "vitest --ui",
-    "test:run": "vitest run",
+    "test:run": "vitest run --project=default",
     "test:coverage": "vitest run --coverage",
     "test:browser": "vitest --project=browser",
     "test:all": "vitest run --project=default --project=browser",
@@ -61,6 +61,9 @@
     "url": "https://github.com/graphty-org/algorithms/issues"
   },
   "homepage": "https://github.com/graphty-org/algorithms#readme",
+  "engines": {
+    "node": ">=18.19.0"
+  },
   "config": {
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"

@@ -9,44 +9,44 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    
+
     strategy:
       matrix:
-        node-version: [18.x, 20.x, 22.x]
-    
+        node-version: lts/*
+
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
-      
+
       - name: Install dependencies
         run: npm ci
-      
+
       - name: Install Playwright browsers
         run: npx playwright install chromium
-      
+
       - name: Run linting
         run: npm run lint
-      
+
       - name: Run type checking
         run: npm run typecheck
-      
+
       - name: Run build
         run: npm run build
-      
+
       - name: Run unit tests
         run: npm run test:run
-      
+
       - name: Run browser tests
         run: npm run test:browser
-      
+
       - name: Generate coverage
         run: npm run test:coverage
-      
+
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4
         if: matrix.node-version == '20.x'
@@ -55,7 +55,7 @@ jobs:
           flags: unittests
           name: codecov-umbrella
           fail_ci_if_error: false
-      
+
       - name: Upload coverage artifacts
         uses: actions/upload-artifact@v4
         if: matrix.node-version == '20.x'
