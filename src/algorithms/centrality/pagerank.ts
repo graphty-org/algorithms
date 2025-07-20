@@ -243,11 +243,12 @@ export function personalizedPageRank(
         if (!graph.hasNode(personalNode)) {
             throw new Error(`Personal node ${String(personalNode)} not found in graph`);
         }
+
         personalization.set(personalNode, personalValue);
     }
 
     return pageRank(graph, {
-        ...options,
+        ... options,
         personalization,
     });
 }
@@ -270,10 +271,10 @@ export function topPageRankNodes(
     graph: Graph,
     k: number,
     options: PageRankOptions = {},
-): Array<{node: NodeId, rank: number}> {
+): {node: NodeId, rank: number}[] {
     const result = pageRank(graph, options);
-    
-    const nodeRanks: Array<{node: NodeId, rank: number}> = [];
+
+    const nodeRanks: {node: NodeId, rank: number}[] = [];
     for (const [nodeStr, rank] of Object.entries(result.ranks)) {
         nodeRanks.push({node: nodeStr as NodeId, rank});
     }

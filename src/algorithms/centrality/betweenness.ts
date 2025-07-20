@@ -128,7 +128,10 @@ export function betweennessCentrality(
     if (!graph.isDirected) {
         for (const nodeId of nodes) {
             const key = String(nodeId);
-            centrality[key] = centrality[key] / 2;
+            const currentValue = centrality[key];
+            if (currentValue !== undefined) {
+                centrality[key] = currentValue / 2;
+            }
         }
     }
 
@@ -146,7 +149,10 @@ export function betweennessCentrality(
         if (normalizationFactor > 0) {
             for (const nodeId of nodes) {
                 const key = String(nodeId);
-                centrality[key] = centrality[key] / normalizationFactor;
+                const currentValue = centrality[key];
+                if (currentValue !== undefined) {
+                    centrality[key] = currentValue / normalizationFactor;
+                }
             }
         }
     }
@@ -259,7 +265,7 @@ export function edgeBetweennessCentrality(
 
                 if (vSigma > 0 && wSigma > 0) {
                     const edgeContribution = vSigma / wSigma * (1 + wDelta);
-                    
+
                     // Update edge centrality
                     const edgeKey = `${String(v)}-${String(w)}`;
                     const currentEdgeCentrality = edgeCentrality.get(edgeKey) ?? 0;
@@ -294,3 +300,4 @@ export function edgeBetweennessCentrality(
 
     return edgeCentrality;
 }
+

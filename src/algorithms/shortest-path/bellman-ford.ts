@@ -177,15 +177,15 @@ export function hasNegativeCycle(graph: Graph): boolean {
 
     // Need to check from multiple sources in case of disconnected components
     const checked = new Set<NodeId>();
-    
+
     for (const node of nodes) {
         if (!checked.has(node.id)) {
             const result = bellmanFord(graph, node.id);
-            
+
             if (result.hasNegativeCycle) {
                 return true;
             }
-            
+
             // Mark all reachable nodes as checked
             for (const [nodeId, distance] of result.distances) {
                 if (distance !== Infinity) {

@@ -88,7 +88,7 @@ function dfsIterative(
             const neighbors = Array.from(graph.neighbors(current.node));
             for (let i = neighbors.length - 1; i >= 0; i--) {
                 const neighbor = neighbors[i];
-                if (!visited.has(neighbor)) {
+                if (neighbor !== undefined && !visited.has(neighbor)) {
                     stack.push({node: neighbor, parent: current.node, depth: current.depth + 1});
                 }
             }
@@ -298,7 +298,7 @@ export function findStronglyConnectedComponents(graph: Graph): NodeId[][] {
 
     for (let i = finishOrder.length - 1; i >= 0; i--) {
         const node = finishOrder[i];
-        if (!visited2.has(node)) {
+        if (node !== undefined && !visited2.has(node)) {
             const component: NodeId[] = [];
             dfsCollectComponent(transposeGraph, node, visited2, component);
             components.push(component);

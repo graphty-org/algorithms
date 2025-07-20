@@ -28,7 +28,7 @@ describe("Connected Components", () => {
 
             expect(components).toHaveLength(1);
             expect(components[0]).toHaveLength(4);
-            expect(components[0].sort()).toEqual(["a", "b", "c", "d"]);
+            expect(components[0]?.sort()).toEqual(["a", "b", "c", "d"]);
         });
 
         it("should find multiple components in disconnected graph", () => {
@@ -42,7 +42,7 @@ describe("Connected Components", () => {
             const components = connectedComponents(graph);
 
             expect(components).toHaveLength(3);
-            
+
             const sizes = components.map((comp) => comp.length).sort();
             expect(sizes).toEqual([1, 2, 2]);
         });
@@ -93,7 +93,7 @@ describe("Connected Components", () => {
             const components = connectedComponents(graph);
 
             expect(components).toHaveLength(4);
-            
+
             const sizes = components.map((comp) => comp.length).sort();
             expect(sizes).toEqual([1, 1, 3, 3]);
         });
@@ -124,11 +124,11 @@ describe("Connected Components", () => {
             const componentsDFS = connectedComponentsDFS(graph);
 
             expect(componentsDFS).toHaveLength(componentsUF.length);
-            
+
             // Sort for comparison
             const sortedUF = componentsUF.map((comp) => comp.sort()).sort();
             const sortedDFS = componentsDFS.map((comp) => comp.sort()).sort();
-            
+
             expect(sortedDFS).toEqual(sortedUF);
         });
 
@@ -267,7 +267,7 @@ describe("Connected Components", () => {
             const components = stronglyConnectedComponents(graph);
 
             expect(components).toHaveLength(2);
-            
+
             const sizes = components.map((comp) => comp.length).sort();
             expect(sizes).toEqual([2, 3]);
         });
@@ -331,7 +331,7 @@ describe("Connected Components", () => {
             const components = stronglyConnectedComponents(graph);
 
             expect(components).toHaveLength(3);
-            
+
             const sizes = components.map((comp) => comp.length).sort();
             expect(sizes).toEqual([1, 2, 3]);
         });
@@ -489,7 +489,7 @@ describe("Connected Components", () => {
             const components = connectedComponents(graph);
 
             expect(components).toHaveLength(1);
-            expect(components[0].sort()).toEqual(["a", "b"]);
+            expect(components[0]?.sort()).toEqual(["a", "b"]);
         });
 
         it("should handle large graphs efficiently", () => {
@@ -520,3 +520,4 @@ describe("Connected Components", () => {
         });
     });
 });
+

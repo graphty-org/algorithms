@@ -57,7 +57,7 @@ export function nodeClosenessCentrality(
     }
 
     const distances = singleSourceShortestPathLengths(graph, node, options.cutoff);
-    
+
     if (distances.size <= 1) {
         return 0; // No other nodes reachable
     }
@@ -183,7 +183,7 @@ export function nodeWeightedClosenessCentrality(
     }
 
     const distances = dijkstraDistances(graph, node, options.cutoff);
-    
+
     if (distances.size <= 1) {
         return 0; // No other nodes reachable
     }
@@ -283,7 +283,7 @@ function dijkstraDistances(
 
             if (tentativeDistance < currentDistance) {
                 distances.set(neighbor, tentativeDistance);
-                
+
                 // Skip if beyond cutoff
                 if (cutoff === undefined || tentativeDistance <= cutoff) {
                     pq.push({node: neighbor, distance: tentativeDistance});

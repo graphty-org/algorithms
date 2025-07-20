@@ -1,6 +1,6 @@
 import type {Graph} from "../../core/graph.js";
-import type {NodeId} from "../../types/index.js";
 import {UnionFind} from "../../data-structures/union-find.js";
+import type {NodeId} from "../../types/index.js";
 
 /**
  * Connected components algorithms
@@ -18,7 +18,7 @@ export function connectedComponents(graph: Graph): NodeId[][] {
     }
 
     const nodes = Array.from(graph.nodes()).map((node) => node.id);
-    
+
     if (nodes.length === 0) {
         return [];
     }
@@ -93,13 +93,13 @@ export function isConnected(graph: Graph): boolean {
  */
 export function largestConnectedComponent(graph: Graph): NodeId[] {
     const components = connectedComponents(graph);
-    
+
     if (components.length === 0) {
         return [];
     }
 
-    return components.reduce((largest, current) => 
-        current.length > largest.length ? current : largest
+    return components.reduce((largest, current) =>
+        current.length > largest.length ? current : largest,
     );
 }
 
@@ -117,9 +117,9 @@ export function getConnectedComponent(graph: Graph, nodeId: NodeId): NodeId[] {
 
     const visited = new Set<NodeId>();
     const component: NodeId[] = [];
-    
+
     dfsComponent(graph, nodeId, visited, component);
-    
+
     return component;
 }
 
@@ -166,20 +166,23 @@ export function stronglyConnectedComponents(graph: Graph): NodeId[][] {
         // If nodeId is a root node, pop the stack and create an SCC
         const nodeIndex = indices.get(nodeId) ?? 0;
         const nodeLowLink = lowLinks.get(nodeId) ?? 0;
-        
+
         if (nodeLowLink === nodeIndex) {
             const component: NodeId[] = [];
             let w: NodeId;
-            
+
             do {
-                w = stack.pop();
-                if (w === undefined) {
+                const popped = stack.pop();
+                if (popped === undefined) {
                     break;
                 }
+
+                w = popped;
+
                 onStack.delete(w);
                 component.push(w);
             } while (w !== nodeId);
-            
+
             components.push(component);
         }
     }
@@ -215,7 +218,7 @@ export function weaklyConnectedComponents(graph: Graph): NodeId[][] {
     }
 
     const nodes = Array.from(graph.nodes()).map((node) => node.id);
-    
+
     if (nodes.length === 0) {
         return [];
     }
@@ -255,28 +258,31 @@ export function condensationGraph(graph: Graph): {
 
     const components = stronglyConnectedComponents(graph);
     const componentMap = new Map<NodeId, number>();
-    const condensedGraph = new (graph.constructor as new (...args: any[]) => Graph)({directed: true});
+    const condensedGraph = new (graph.constructor as new (config: {directed: boolean}) => Graph)({directed: true});
 
     // Map each node to its component index
     for (let i = 0; i < components.length; i++) {
-        for (const nodeId of components[i]) {
-            componentMap.set(nodeId, i);
+        const component = components[i];
+        if (component) {
+            for (const nodeId of component) {
+                componentMap.set(nodeId, i);
+            }
+            // Add component as a node in condensed graph
+            condensedGraph.addNode(i);
         }
-        // Add component as a node in condensed graph
-        condensedGraph.addNode(i);
     }
 
     // Add edges between components
     const addedEdges = new Set<string>();
-    
+
     for (const edge of graph.edges()) {
         const sourceComponent = componentMap.get(edge.source);
         const targetComponent = componentMap.get(edge.target);
 
-        if (sourceComponent !== undefined && targetComponent !== undefined && 
+        if (sourceComponent !== undefined && targetComponent !== undefined &&
             sourceComponent !== targetComponent) {
             const edgeKey = `${sourceComponent}-${targetComponent}`;
-            
+
             if (!addedEdges.has(edgeKey)) {
                 condensedGraph.addEdge(sourceComponent, targetComponent);
                 addedEdges.add(edgeKey);

@@ -16,7 +16,7 @@ describe("Betweenness Centrality", () => {
             const centrality = betweennessCentrality(graph);
 
             expect(centrality["a"]).toBe(0); // Endpoint
-            expect(centrality["b"]).toBe(2); // paths: a↔c, a↔d pass through b  
+            expect(centrality["b"]).toBe(2); // paths: a↔c, a↔d pass through b
             expect(centrality["c"]).toBe(2); // paths: a↔d, b↔d pass through c
             expect(centrality["d"]).toBe(0); // Endpoint
         });
@@ -130,8 +130,8 @@ describe("Betweenness Centrality", () => {
             const centrality = betweennessCentrality(graph);
 
             // c and d should have high betweenness as they bridge the two components
-            expect(centrality["c"]).toBeGreaterThan(centrality["a"]);
-            expect(centrality["d"]).toBeGreaterThan(centrality["e"]);
+            expect(centrality["c"]).toBeGreaterThan(centrality["a"] ?? 0);
+            expect(centrality["d"]).toBeGreaterThan(centrality["e"] ?? 0);
         });
 
         it("should convert node IDs to strings in result", () => {
@@ -296,8 +296,8 @@ describe("Betweenness Centrality", () => {
             const centrality = betweennessCentrality(graph);
 
             // Node e should have high betweenness as it connects to multiple end branches
-            expect(centrality["e"]).toBeGreaterThan(centrality["a"]);
-            expect(centrality["e"]).toBeGreaterThan(centrality["f"]);
+            expect(centrality["e"]).toBeGreaterThan(centrality["a"] ?? 0);
+            expect(centrality["e"]).toBeGreaterThan(centrality["f"] ?? 0);
         });
 
         it("should handle large star graph efficiently", () => {
@@ -325,7 +325,7 @@ describe("Betweenness Centrality", () => {
             const centralityWithoutEndpoints = betweennessCentrality(graph, {endpoints: false});
 
             // Without endpoints, values should be different (typically smaller)
-            expect(centralityWithEndpoints["b"]).toBeGreaterThanOrEqual(centralityWithoutEndpoints["b"]);
+            expect(centralityWithEndpoints["b"]).toBeGreaterThanOrEqual(centralityWithoutEndpoints["b"] ?? 0);
         });
     });
 });
