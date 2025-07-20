@@ -50,6 +50,8 @@ pids/
 .vitest/
 test-results/
 playwright-report/
+**/test/**/__screenshots__/
+**/__screenshots__/
 
 # Temporary files
 .tmp/
