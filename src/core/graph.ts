@@ -323,4 +323,31 @@ export class Graph {
     getConfig(): GraphConfig {
         return {... this.config};
     }
+
+    /**
+     * Clear all nodes and edges from the graph
+     */
+    clear(): void {
+        this.nodeMap.clear();
+        this.adjacencyList.clear();
+        this.incomingEdges.clear();
+        this.edgeCount = 0;
+    }
+
+    /**
+     * Get the number of unique edges in the graph
+     * For undirected graphs, each edge is counted once
+     */
+    get uniqueEdgeCount(): number {
+        if (this.config.directed) {
+            return this.edgeCount;
+        } else {
+            // For undirected graphs, we need to count each edge only once
+            let count = 0;
+            for (const edge of this.edges()) {
+                count++;
+            }
+            return count;
+        }
+    }
 }

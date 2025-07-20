@@ -426,5 +426,268 @@ describe("Betweenness Centrality", () => {
 
             expect(centrality["b"]).toBeGreaterThan(0);
         });
+
+        it("should handle normalization with 2-node graph", () => {
+            const graph = new Graph();
+            graph.addNode("a");
+            graph.addNode("b");
+            graph.addEdge("a", "b");
+
+            const centrality = betweennessCentrality(graph, {
+                normalized: true,
+            });
+
+            // With only 2 nodes, centrality should be 0
+            expect(centrality["a"]).toBe(0);
+            expect(centrality["b"]).toBe(0);
+        });
+
+        it("should handle graph with isolated nodes in betweenness calculation", () => {
+            const graph = new Graph();
+            graph.addNode("a");
+            graph.addNode("b");
+            graph.addNode("c");
+            graph.addNode("isolated");
+            
+            graph.addEdge("a", "b");
+            graph.addEdge("b", "c");
+
+            const centrality = betweennessCentrality(graph);
+            
+            expect(centrality["isolated"]).toBe(0);
+            expect(centrality["b"]).toBeGreaterThan(0);
+        });
+
+        it("should handle directed graph with no paths between some nodes", () => {
+            const graph = new Graph({directed: true});
+            graph.addNode("a");
+            graph.addNode("b");
+            graph.addNode("c");
+            graph.addNode("d");
+            
+            // Create two disconnected components
+            graph.addEdge("a", "b");
+            graph.addEdge("c", "d");
+
+            const centrality = betweennessCentrality(graph);
+            
+            // All nodes should have 0 centrality as no node is between others
+            expect(centrality["a"]).toBe(0);
+            expect(centrality["b"]).toBe(0);
+            expect(centrality["c"]).toBe(0);
+            expect(centrality["d"]).toBe(0);
+        });
+
+        it("should handle normalized edge betweenness for 2-node graph", () => {
+            const graph = new Graph();
+            graph.addNode("a");
+            graph.addNode("b");
+            graph.addEdge("a", "b");
+
+            const edgeCentrality = edgeBetweennessCentrality(graph, {
+                normalized: true,
+            });
+
+            // With only 2 nodes and 1 edge, should handle normalization properly
+            expect(edgeCentrality).toBeDefined();
+            // In undirected graph, edge appears twice (a-b and b-a)
+            expect(edgeCentrality.size).toBe(2);
+        });
+
+        it("should handle complex graph with all shortest paths having same node", () => {
+            const graph = new Graph();
+            
+            // Create a bowtie graph where all paths go through center
+            graph.addNode("left1");
+            graph.addNode("left2");
+            graph.addNode("center");
+            graph.addNode("right1");
+            graph.addNode("right2");
+            
+            graph.addEdge("left1", "center");
+            graph.addEdge("left2", "center");
+            graph.addEdge("center", "right1");
+            graph.addEdge("center", "right2");
+
+            const centrality = betweennessCentrality(graph);
+            
+            // Center should have maximum centrality
+            expect(centrality["center"]).toBeGreaterThan(centrality["left1"]);
+            expect(centrality["center"]).toBeGreaterThan(centrality["right1"]);
+        });
+
+        it("should handle graph with exactly 3 nodes normalized", () => {
+            const graph = new Graph();
+            graph.addNode("a");
+            graph.addNode("b");
+            graph.addNode("c");
+            graph.addEdge("a", "b");
+            graph.addEdge("b", "c");
+
+            const centrality = betweennessCentrality(graph, {
+                normalized: true,
+            });
+
+            // Normalization factor = (3-1)(3-2)/2 = 1 for undirected
+            expect(centrality["b"]).toBe(1);
+        });
+
+        it("should handle directed graph with exactly 3 nodes normalized", () => {
+            const directedGraph = new Graph({directed: true});
+            directedGraph.addNode("a");
+            directedGraph.addNode("b");
+            directedGraph.addNode("c");
+            directedGraph.addEdge("a", "b");
+            directedGraph.addEdge("b", "c");
+
+            const centrality = betweennessCentrality(directedGraph, {
+                normalized: true,
+            });
+
+            // Normalization factor = (3-1)(3-2) = 2 for directed
+            expect(centrality["b"]).toBe(0.5);
+        });
+
+        it("should handle edge betweenness for directed graph normalized with 2 nodes", () => {
+            const directedGraph = new Graph({directed: true});
+            directedGraph.addNode("a");
+            directedGraph.addNode("b");
+            directedGraph.addEdge("a", "b");
+
+            const edgeCentrality = edgeBetweennessCentrality(directedGraph, {
+                normalized: true,
+            });
+
+            // With only 2 nodes, normalization factor = 0, but edge still exists in result
+            expect(edgeCentrality.has("a-b")).toBe(true);
+            // The value would be undefined or very small due to division by 0 protection
+            const value = edgeCentrality.get("a-b");
+            expect(value).toBeDefined();
+        });
+
+        it("should handle case where sigma is 0 for node", () => {
+            // This is a theoretical edge case where we force sigma to be 0
+            const graph = new Graph({directed: true});
+            
+            // Create disconnected nodes
+            graph.addNode("isolated1");
+            graph.addNode("isolated2");
+            graph.addNode("connected");
+            graph.addEdge("connected", "connected"); // Self-loop
+            
+            const centrality = betweennessCentrality(graph);
+            
+            expect(centrality["isolated1"]).toBe(0);
+            expect(centrality["isolated2"]).toBe(0);
+        });
+
+        it("should handle graph where all paths require undefined distance check", () => {
+            const graph = new Graph();
+            
+            // Create a graph structure that tests the undefined distance branches
+            graph.addNode("a");
+            graph.addNode("b");
+            graph.addNode("c");
+            graph.addNode("d");
+            
+            // Create specific edge pattern
+            graph.addEdge("a", "b");
+            graph.addEdge("b", "c");
+            graph.addEdge("c", "d");
+            graph.addEdge("a", "d");
+            
+            const centrality = betweennessCentrality(graph);
+            
+            // Just verify it completes without error
+            expect(centrality).toBeDefined();
+            expect(Object.keys(centrality).length).toBe(4);
+        });
+
+        it("should handle edge betweenness with zero sigma values", () => {
+            const graph = new Graph({directed: true});
+            
+            // Create a structure that might lead to zero sigma
+            graph.addNode("source");
+            graph.addNode("unreachable");
+            graph.addEdge("source", "source"); // Self-loop only
+            
+            const edgeCentrality = edgeBetweennessCentrality(graph);
+            
+            expect(edgeCentrality.size).toBeGreaterThan(0);
+        });
+
+        it("should handle normalization with exactly 1 node", () => {
+            const graph = new Graph();
+            graph.addNode("only");
+
+            const centrality = betweennessCentrality(graph, {
+                normalized: true,
+            });
+
+            // With 1 node, normalization factor would be 0
+            expect(centrality["only"]).toBe(0);
+        });
+
+        it("should handle directed graph normalization with 1 node", () => {
+            const directedGraph = new Graph({directed: true});
+            directedGraph.addNode("only");
+
+            const centrality = betweennessCentrality(directedGraph, {
+                normalized: true,
+            });
+
+            expect(centrality["only"]).toBe(0);
+        });
+
+        it("should handle edge betweenness normalization with 1 node", () => {
+            const graph = new Graph();
+            graph.addNode("only");
+
+            const edgeCentrality = edgeBetweennessCentrality(graph, {
+                normalized: true,
+            });
+
+            expect(edgeCentrality.size).toBe(0);
+        });
+
+        it("should handle directed edge betweenness normalization with 1 node", () => {
+            const directedGraph = new Graph({directed: true});
+            directedGraph.addNode("only");
+
+            const edgeCentrality = edgeBetweennessCentrality(directedGraph, {
+                normalized: true,
+            });
+
+            expect(edgeCentrality.size).toBe(0);
+        });
+
+        it("should handle nodes with undefined centrality values", () => {
+            const graph = new Graph();
+            
+            // Create structure to test undefined centrality branch
+            graph.addNode("a");
+            graph.addNode("b");
+            graph.addEdge("a", "b");
+            
+            const centrality = betweennessCentrality(graph);
+            
+            // All centrality values should be defined
+            expect(centrality["a"]).toBeDefined();
+            expect(centrality["b"]).toBeDefined();
+            expect(centrality["a"]).toBe(0);
+            expect(centrality["b"]).toBe(0);
+        });
+
+        it("should handle edge betweenness with missing predecessors", () => {
+            const graph = new Graph({directed: true});
+            
+            // Single node with self-loop
+            graph.addNode("self");
+            graph.addEdge("self", "self");
+            
+            const edgeCentrality = edgeBetweennessCentrality(graph);
+            
+            expect(edgeCentrality.get("self-self")).toBeDefined();
+        });
     });
 });

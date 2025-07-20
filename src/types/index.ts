@@ -53,6 +53,17 @@ export interface ComponentResult {
     componentMap: Map<NodeId, number>;
 }
 
+export interface MSTResult {
+    edges: Edge[];
+    totalWeight: number;
+}
+
+export interface FloydWarshallResult {
+    distances: Map<NodeId, Map<NodeId, number>>;
+    predecessors: Map<NodeId, Map<NodeId, NodeId | null>>;
+    hasNegativeCycle: boolean;
+}
+
 // Algorithm options interfaces
 export interface TraversalOptions {
     targetNode?: NodeId;

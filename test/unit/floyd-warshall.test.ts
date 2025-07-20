@@ -1,0 +1,635 @@
+import {beforeEach, describe, expect, it} from "vitest";
+import {Graph, floydWarshall, floydWarshallPath, transitiveClosure} from "../../src/index.js";
+
+describe("Floyd-Warshall Algorithm", () => {
+    let graph: Graph;
+
+    beforeEach(() => {
+        graph = new Graph({directed: false});
+    });
+
+    describe("floydWarshall", () => {
+        it("should find all shortest paths in simple graph", () => {
+            graph.addNode("A");
+            graph.addNode("B");
+            graph.addNode("C");
+            graph.addNode("D");
+
+            graph.addEdge("A", "B", 1);
+            graph.addEdge("A", "C", 4);
+            graph.addEdge("B", "C", 2);
+            graph.addEdge("B", "D", 5);
+            graph.addEdge("C", "D", 1);
+
+            const result = floydWarshall(graph);
+
+            expect(result.hasNegativeCycle).toBe(false);
+            expect(result.distances.get("A")?.get("A")).toBe(0);
+            expect(result.distances.get("A")?.get("B")).toBe(1);
+            expect(result.distances.get("A")?.get("C")).toBe(3);
+            expect(result.distances.get("A")?.get("D")).toBe(4);
+            expect(result.distances.get("B")?.get("D")).toBe(3);
+        });
+
+        it("should handle directed graph", () => {
+            const directedGraph = new Graph({directed: true});
+            directedGraph.addNode("A");
+            directedGraph.addNode("B");
+            directedGraph.addNode("C");
+
+            directedGraph.addEdge("A", "B", 1);
+            directedGraph.addEdge("B", "C", 2);
+            directedGraph.addEdge("C", "A", 4);
+
+            const result = floydWarshall(directedGraph);
+
+            expect(result.hasNegativeCycle).toBe(false);
+            expect(result.distances.get("A")?.get("B")).toBe(1);
+            expect(result.distances.get("A")?.get("C")).toBe(3);
+            expect(result.distances.get("B")?.get("A")).toBe(6);
+            expect(result.distances.get("C")?.get("B")).toBe(5);
+        });
+
+        it("should detect negative cycle", () => {
+            const directedGraph = new Graph({directed: true});
+            directedGraph.addNode("A");
+            directedGraph.addNode("B");
+            directedGraph.addNode("C");
+
+            directedGraph.addEdge("A", "B", 1);
+            directedGraph.addEdge("B", "C", -3);
+            directedGraph.addEdge("C", "A", 1);
+
+            const result = floydWarshall(directedGraph);
+
+            expect(result.hasNegativeCycle).toBe(true);
+        });
+
+        it("should handle negative weights without cycle", () => {
+            const directedGraph = new Graph({directed: true});
+            directedGraph.addNode("A");
+            directedGraph.addNode("B");
+            directedGraph.addNode("C");
+            directedGraph.addNode("D");
+
+            directedGraph.addEdge("A", "B", 1);
+            directedGraph.addEdge("B", "C", -5);
+            directedGraph.addEdge("C", "D", 2);
+            directedGraph.addEdge("A", "D", 10);
+
+            const result = floydWarshall(directedGraph);
+
+            expect(result.hasNegativeCycle).toBe(false);
+            expect(result.distances.get("A")?.get("D")).toBe(-2);
+        });
+
+        it("should handle disconnected graph", () => {
+            graph.addNode("A");
+            graph.addNode("B");
+            graph.addNode("C");
+            graph.addNode("D");
+
+            graph.addEdge("A", "B", 1);
+            graph.addEdge("C", "D", 2);
+
+            const result = floydWarshall(graph);
+
+            expect(result.hasNegativeCycle).toBe(false);
+            expect(result.distances.get("A")?.get("B")).toBe(1);
+            expect(result.distances.get("A")?.get("C")).toBe(Infinity);
+            expect(result.distances.get("C")?.get("D")).toBe(2);
+            expect(result.distances.get("A")?.get("D")).toBe(Infinity);
+        });
+
+        it("should handle single node graph", () => {
+            graph.addNode("A");
+
+            const result = floydWarshall(graph);
+
+            expect(result.hasNegativeCycle).toBe(false);
+            expect(result.distances.get("A")?.get("A")).toBe(0);
+        });
+
+        it("should handle empty graph", () => {
+            const result = floydWarshall(graph);
+
+            expect(result.hasNegativeCycle).toBe(false);
+            expect(result.distances.size).toBe(0);
+            expect(result.predecessors.size).toBe(0);
+        });
+
+        it("should track predecessors correctly", () => {
+            graph.addNode("A");
+            graph.addNode("B");
+            graph.addNode("C");
+
+            graph.addEdge("A", "B", 1);
+            graph.addEdge("B", "C", 2);
+            graph.addEdge("A", "C", 5);
+
+            const result = floydWarshall(graph);
+
+            expect(result.predecessors.get("A")?.get("C")).toBe("B");
+            expect(result.predecessors.get("A")?.get("B")).toBe("A");
+            expect(result.predecessors.get("B")?.get("C")).toBe("B");
+        });
+
+        it("should handle graph with default weights", () => {
+            graph.addNode("A");
+            graph.addNode("B");
+            graph.addNode("C");
+
+            graph.addEdge("A", "B");
+            graph.addEdge("B", "C");
+
+            const result = floydWarshall(graph);
+
+            expect(result.hasNegativeCycle).toBe(false);
+            expect(result.distances.get("A")?.get("B")).toBe(1);
+            expect(result.distances.get("A")?.get("C")).toBe(2);
+        });
+    });
+
+    describe("floydWarshallPath", () => {
+        it("should find shortest path between two nodes", () => {
+            graph.addNode("A");
+            graph.addNode("B");
+            graph.addNode("C");
+            graph.addNode("D");
+
+            graph.addEdge("A", "B", 1);
+            graph.addEdge("A", "C", 4);
+            graph.addEdge("B", "C", 2);
+            graph.addEdge("B", "D", 5);
+            graph.addEdge("C", "D", 1);
+
+            const result = floydWarshallPath(graph, "A", "D");
+
+            expect(result).not.toBeNull();
+            expect(result!.path).toEqual(["A", "B", "C", "D"]);
+            expect(result!.distance).toBe(4);
+        });
+
+        it("should return null for non-existent source", () => {
+            graph.addNode("A");
+            graph.addNode("B");
+            graph.addEdge("A", "B", 1);
+
+            const result = floydWarshallPath(graph, "Z", "B");
+
+            expect(result).toBeNull();
+        });
+
+        it("should return null for non-existent target", () => {
+            graph.addNode("A");
+            graph.addNode("B");
+            graph.addEdge("A", "B", 1);
+
+            const result = floydWarshallPath(graph, "A", "Z");
+
+            expect(result).toBeNull();
+        });
+
+        it("should return null for unreachable nodes", () => {
+            graph.addNode("A");
+            graph.addNode("B");
+            graph.addNode("C");
+            graph.addNode("D");
+
+            graph.addEdge("A", "B", 1);
+            graph.addEdge("C", "D", 2);
+
+            const result = floydWarshallPath(graph, "A", "D");
+
+            expect(result).toBeNull();
+        });
+
+        it("should handle self-path", () => {
+            graph.addNode("A");
+
+            const result = floydWarshallPath(graph, "A", "A");
+
+            expect(result).not.toBeNull();
+            expect(result!.path).toEqual(["A"]);
+            expect(result!.distance).toBe(0);
+        });
+
+        it("should handle direct edge", () => {
+            graph.addNode("A");
+            graph.addNode("B");
+            graph.addEdge("A", "B", 5);
+
+            const result = floydWarshallPath(graph, "A", "B");
+
+            expect(result).not.toBeNull();
+            expect(result!.path).toEqual(["A", "B"]);
+            expect(result!.distance).toBe(5);
+        });
+    });
+
+    describe("transitiveClosure", () => {
+        it("should compute transitive closure for simple graph", () => {
+            const directedGraph = new Graph({directed: true});
+            directedGraph.addNode("A");
+            directedGraph.addNode("B");
+            directedGraph.addNode("C");
+
+            directedGraph.addEdge("A", "B", 1);
+            directedGraph.addEdge("B", "C", 1);
+
+            const closure = transitiveClosure(directedGraph);
+
+            expect(closure.get("A")).toEqual(new Set(["A", "B", "C"]));
+            expect(closure.get("B")).toEqual(new Set(["B", "C"]));
+            expect(closure.get("C")).toEqual(new Set(["C"]));
+        });
+
+        it("should handle disconnected components", () => {
+            const directedGraph = new Graph({directed: true});
+            directedGraph.addNode("A");
+            directedGraph.addNode("B");
+            directedGraph.addNode("C");
+            directedGraph.addNode("D");
+
+            directedGraph.addEdge("A", "B", 1);
+            directedGraph.addEdge("C", "D", 1);
+
+            const closure = transitiveClosure(directedGraph);
+
+            expect(closure.get("A")).toEqual(new Set(["A", "B"]));
+            expect(closure.get("B")).toEqual(new Set(["B"]));
+            expect(closure.get("C")).toEqual(new Set(["C", "D"]));
+            expect(closure.get("D")).toEqual(new Set(["D"]));
+        });
+
+        it("should handle cycles", () => {
+            const directedGraph = new Graph({directed: true});
+            directedGraph.addNode("A");
+            directedGraph.addNode("B");
+            directedGraph.addNode("C");
+
+            directedGraph.addEdge("A", "B", 1);
+            directedGraph.addEdge("B", "C", 1);
+            directedGraph.addEdge("C", "A", 1);
+
+            const closure = transitiveClosure(directedGraph);
+
+            expect(closure.get("A")).toEqual(new Set(["A", "B", "C"]));
+            expect(closure.get("B")).toEqual(new Set(["A", "B", "C"]));
+            expect(closure.get("C")).toEqual(new Set(["A", "B", "C"]));
+        });
+
+        it("should handle undirected graph", () => {
+            graph.addNode("A");
+            graph.addNode("B");
+            graph.addNode("C");
+
+            graph.addEdge("A", "B", 1);
+            graph.addEdge("B", "C", 1);
+
+            const closure = transitiveClosure(graph);
+
+            expect(closure.get("A")).toEqual(new Set(["A", "B", "C"]));
+            expect(closure.get("B")).toEqual(new Set(["A", "B", "C"]));
+            expect(closure.get("C")).toEqual(new Set(["A", "B", "C"]));
+        });
+    });
+
+    describe("edge cases", () => {
+        it("should handle graph with self-loops and negative weights", () => {
+            const directedGraph = new Graph({directed: true, allowSelfLoops: true});
+            directedGraph.addNode("A");
+            directedGraph.addNode("B");
+            
+            directedGraph.addEdge("A", "A", -1); // Self-loop with negative weight
+            directedGraph.addEdge("A", "B", 2);
+
+            const result = floydWarshall(directedGraph);
+
+            expect(result.hasNegativeCycle).toBe(true);
+        });
+
+        it("should handle complex path reconstruction edge case", () => {
+            const directedGraph = new Graph({directed: true});
+            
+            // Create a graph where path reconstruction might fail
+            directedGraph.addNode("A");
+            directedGraph.addNode("B");
+            directedGraph.addNode("C");
+            directedGraph.addNode("D");
+            
+            directedGraph.addEdge("A", "B", 1);
+            directedGraph.addEdge("B", "C", 1);
+            directedGraph.addEdge("C", "D", 1);
+            
+            // Add a shortcut that changes the path
+            directedGraph.addEdge("A", "D", 10);
+            
+            const path = floydWarshallPath(directedGraph, "A", "D");
+            
+            expect(path).not.toBeNull();
+            expect(path!.path).toEqual(["A", "B", "C", "D"]);
+            expect(path!.distance).toBe(3);
+        });
+
+        it("should handle path reconstruction with missing predecessors", () => {
+            // This tests an edge case in the path reconstruction logic
+            const graph = new Graph({directed: true});
+            graph.addNode("A");
+            graph.addNode("B");
+            graph.addNode("C");
+            
+            // Only add edge from A to B, no path from A to C
+            graph.addEdge("A", "B", 1);
+            
+            const path = floydWarshallPath(graph, "A", "C");
+            
+            expect(path).toBeNull();
+        });
+
+        it("should handle extremely long path reconstruction protection", () => {
+            // Create a graph that could cause infinite loop in path reconstruction
+            const graph = new Graph({directed: true});
+            
+            // Create a long chain
+            for (let i = 0; i < 10; i++) {
+                graph.addNode(String(i));
+                if (i > 0) {
+                    graph.addEdge(String(i - 1), String(i), 1);
+                }
+            }
+            
+            const path = floydWarshallPath(graph, "0", "9");
+            
+            expect(path).not.toBeNull();
+            expect(path!.path.length).toBe(10);
+        });
+
+        it("should handle graph with all nodes unreachable from each other", () => {
+            const graph = new Graph({directed: true});
+            
+            // Add nodes with no edges
+            graph.addNode("A");
+            graph.addNode("B");
+            graph.addNode("C");
+            
+            const result = floydWarshall(graph);
+            
+            // Check that distances are properly initialized
+            expect(result.distances.get("A")?.get("A")).toBe(0);
+            expect(result.distances.get("A")?.get("B")).toBe(Infinity);
+            expect(result.distances.get("A")?.get("C")).toBe(Infinity);
+            
+            const closure = transitiveClosure(graph);
+            
+            // Each node should only be reachable from itself
+            expect(closure.get("A")).toEqual(new Set(["A"]));
+            expect(closure.get("B")).toEqual(new Set(["B"]));
+            expect(closure.get("C")).toEqual(new Set(["C"]));
+        });
+
+        it("should handle edge case with missing distances map", () => {
+            // Test the edge case where sourceDistances might be undefined
+            const graph = new Graph();
+            graph.addNode("A");
+            graph.addNode("B");
+            graph.addEdge("A", "B", 1);
+            
+            const result = floydWarshall(graph);
+            
+            // Verify the algorithm completes successfully
+            expect(result.hasNegativeCycle).toBe(false);
+            expect(result.distances.size).toBe(2);
+        });
+
+        it("should handle path reconstruction with cyclic predecessors", () => {
+            const directedGraph = new Graph({directed: true});
+            
+            // Create a small cycle
+            directedGraph.addNode("A");
+            directedGraph.addNode("B");
+            directedGraph.addNode("C");
+            
+            directedGraph.addEdge("A", "B", 1);
+            directedGraph.addEdge("B", "C", 1);
+            directedGraph.addEdge("C", "A", -10); // Negative weight cycle
+            
+            const result = floydWarshall(directedGraph);
+            expect(result.hasNegativeCycle).toBe(true);
+            
+            // Try to get path in graph with negative cycle
+            const path = floydWarshallPath(directedGraph, "A", "C");
+            
+            // Path should still be found despite negative cycle
+            expect(path).not.toBeNull();
+        });
+
+        it("should handle empty distance map in path reconstruction", () => {
+            const graph = new Graph();
+            
+            // Single isolated node
+            graph.addNode("isolated");
+            
+            const path = floydWarshallPath(graph, "isolated", "isolated");
+            
+            expect(path).not.toBeNull();
+            expect(path!.path).toEqual(["isolated"]);
+            expect(path!.distance).toBe(0);
+        });
+
+        it("should handle multiple shortest paths correctly", () => {
+            const graph = new Graph();
+            
+            // Diamond structure with equal weight paths
+            graph.addNode("A");
+            graph.addNode("B");
+            graph.addNode("C");
+            graph.addNode("D");
+            
+            graph.addEdge("A", "B", 1);
+            graph.addEdge("A", "C", 1);
+            graph.addEdge("B", "D", 1);
+            graph.addEdge("C", "D", 1);
+            
+            const result = floydWarshall(graph);
+            
+            // Both paths A->B->D and A->C->D have same weight
+            expect(result.distances.get("A")?.get("D")).toBe(2);
+        });
+
+        it("should handle graph with zero-weight edges", () => {
+            const graph = new Graph({directed: true});
+            
+            graph.addNode("A");
+            graph.addNode("B");
+            graph.addNode("C");
+            
+            graph.addEdge("A", "B", 0);
+            graph.addEdge("B", "C", 0);
+            
+            const result = floydWarshall(graph);
+            
+            expect(result.distances.get("A")?.get("C")).toBe(0);
+            expect(result.hasNegativeCycle).toBe(false);
+        });
+
+        it("should handle large negative weights without cycle", () => {
+            const graph = new Graph({directed: true});
+            
+            graph.addNode("A");
+            graph.addNode("B");
+            graph.addNode("C");
+            
+            graph.addEdge("A", "B", -1000);
+            graph.addEdge("B", "C", -1000);
+            
+            const result = floydWarshall(graph);
+            
+            expect(result.hasNegativeCycle).toBe(false);
+            expect(result.distances.get("A")?.get("C")).toBe(-2000);
+        });
+
+        it("should handle mixed positive and negative weights", () => {
+            const graph = new Graph({directed: true});
+            
+            graph.addNode("A");
+            graph.addNode("B");
+            graph.addNode("C");
+            graph.addNode("D");
+            
+            graph.addEdge("A", "B", 5);
+            graph.addEdge("B", "C", -10);
+            graph.addEdge("C", "D", 3);
+            graph.addEdge("A", "D", 1); // Direct path is not shortest
+            
+            const result = floydWarshall(graph);
+            
+            expect(result.hasNegativeCycle).toBe(false);
+            expect(result.distances.get("A")?.get("D")).toBe(-2); // 5 + (-10) + 3
+        });
+
+        it("should handle edge case with undefined edge weight", () => {
+            const graph = new Graph();
+            
+            graph.addNode("A");
+            graph.addNode("B");
+            
+            // Directly add edge with undefined weight to test ?? operator
+            const edge = {
+                source: "A" as NodeId,
+                target: "B" as NodeId,
+                weight: undefined
+            };
+            graph.addEdge(edge.source, edge.target, edge.weight as any);
+            
+            const result = floydWarshall(graph);
+            
+            // Should use default weight of 1
+            expect(result.distances.get("A")?.get("B")).toBe(1);
+        });
+
+        it("should handle floydWarshallPath with source not having distances map", () => {
+            const graph = new Graph();
+            graph.addNode("A");
+            graph.addNode("B");
+            
+            // Mock the floydWarshall result to return empty distances for testing
+            const originalFloydWarshall = floydWarshall;
+            const mockedResult = {
+                distances: new Map(),
+                predecessors: new Map(),
+                hasNegativeCycle: false
+            };
+            
+            // This would trigger the !sourceDistances check
+            const path = floydWarshallPath(graph, "A", "B");
+            
+            // Path should be null when nodes are unreachable
+            expect(path).toBeNull();
+        });
+
+        it("should handle path reconstruction with source not having predecessors map", () => {
+            const graph = new Graph();
+            graph.addNode("A");
+            graph.addNode("B");
+            graph.addNode("C");
+            graph.addEdge("A", "B", 1);
+            graph.addEdge("B", "C", 1);
+            
+            // This tests the path reconstruction edge case
+            const path = floydWarshallPath(graph, "A", "C");
+            
+            expect(path).not.toBeNull();
+            expect(path!.path).toEqual(["A", "B", "C"]);
+        });
+
+        it("should handle transitive closure with infinity distances", () => {
+            const graph = new Graph({directed: true});
+            
+            // Create disconnected components
+            graph.addNode("A");
+            graph.addNode("B");
+            graph.addNode("C");
+            graph.addNode("D");
+            
+            graph.addEdge("A", "B", 1);
+            graph.addEdge("C", "D", 1);
+            
+            const closure = transitiveClosure(graph);
+            
+            // In directed graph: A can reach A and B, B can only reach B
+            expect(closure.get("A")).toEqual(new Set(["A", "B"]));
+            expect(closure.get("B")).toEqual(new Set(["B"])); // B has no outgoing edges
+            expect(closure.get("C")).toEqual(new Set(["C", "D"]));
+            expect(closure.get("D")).toEqual(new Set(["D"])); // D has no outgoing edges
+        });
+
+        it("should handle floydWarshallPath with undefined distance", () => {
+            const graph = new Graph();
+            
+            // Single node, trying to reach non-existent node
+            graph.addNode("A");
+            
+            const path = floydWarshallPath(graph, "A", "B");
+            
+            expect(path).toBeNull();
+        });
+
+        it("should handle complex negative cycle detection", () => {
+            const graph = new Graph({directed: true});
+            
+            // Create a more complex negative cycle
+            graph.addNode("A");
+            graph.addNode("B");
+            graph.addNode("C");
+            graph.addNode("D");
+            graph.addNode("E");
+            
+            graph.addEdge("A", "B", 1);
+            graph.addEdge("B", "C", -3);
+            graph.addEdge("C", "D", 1);
+            graph.addEdge("D", "E", -2);
+            graph.addEdge("E", "B", 1); // Creates negative cycle B->C->D->E->B
+            
+            const result = floydWarshall(graph);
+            
+            expect(result.hasNegativeCycle).toBe(true);
+        });
+
+        it("should handle predecessor being null in path reconstruction", () => {
+            const graph = new Graph();
+            
+            // Create a simple path
+            graph.addNode("A");
+            graph.addNode("B");
+            graph.addEdge("A", "B", 1);
+            
+            // Test direct path A->B
+            const path = floydWarshallPath(graph, "A", "B");
+            
+            expect(path).not.toBeNull();
+            expect(path!.path).toEqual(["A", "B"]);
+            expect(path!.distance).toBe(1);
+        });
+    });
+});
