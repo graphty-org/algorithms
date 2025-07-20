@@ -58,7 +58,8 @@
   ],
   "license": "MIT",
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "provenance": true
   },
   "bugs": {
     "url": "https://github.com/graphty-org/algorithms/issues"
@@ -95,6 +96,5 @@
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.34.1",
     "vitest": "^3.2.4"
-  },
-  "dependencies": {}
+  }
 }
