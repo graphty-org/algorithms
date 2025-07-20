@@ -40,7 +40,7 @@ export default tseslint.config(
             /* *********************
              * MIGRATION
              **********************/
-            // TODO: fix these!
+            // These rules are temporarily disabled during migration
             "@typescript-eslint/no-unsafe-argument": "off",
             "@typescript-eslint/no-unsafe-assignment": "off",
             "@typescript-eslint/no-unsafe-member-access": "off",
