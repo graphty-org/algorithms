@@ -328,5 +328,105 @@ describe("Betweenness Centrality", () => {
             // Without endpoints, values should be different (typically smaller)
             expect(centralityWithEndpoints["b"]).toBeGreaterThanOrEqual(centralityWithoutEndpoints["b"] ?? 0);
         });
+
+        it("should handle weighted graphs", () => {
+            const graph = new Graph();
+
+            graph.addEdge("a", "b", {weight: 1});
+            graph.addEdge("b", "c", {weight: 1});
+            graph.addEdge("c", "d", {weight: 1});
+            graph.addEdge("a", "d", {weight: 10});
+
+            const centrality = betweennessCentrality(graph, {weight: "weight"});
+
+            // Path a->b->c->d has weight 3, which is much shorter than a->d with weight 10
+            // So b and c should have non-zero betweenness
+            expect(centrality["b"]).toBeGreaterThan(0);
+            expect(centrality["c"]).toBeGreaterThan(0);
+        });
+
+        it("should handle null weights gracefully", () => {
+            const graph = new Graph();
+
+            graph.addEdge("a", "b", {weight: null});
+            graph.addEdge("b", "c", {weight: 2});
+
+            const centrality = betweennessCentrality(graph, {weight: "weight"});
+
+            // Should treat null weight as 1
+            expect(centrality["b"]).toBeGreaterThan(0);
+        });
+
+        it("should handle zero shortest paths", () => {
+            const graph = new Graph({directed: true});
+
+            // Create a directed graph where some nodes are unreachable
+            graph.addEdge("a", "b");
+            graph.addEdge("c", "d");
+            // No path from a,b to c,d
+
+            const centrality = betweennessCentrality(graph);
+
+            expect(centrality["a"]).toBe(0);
+            expect(centrality["b"]).toBe(0);
+            expect(centrality["c"]).toBe(0);
+            expect(centrality["d"]).toBe(0);
+        });
+
+        it("should handle weighted edge betweenness", () => {
+            const graph = new Graph();
+
+            graph.addEdge("a", "b", {weight: 1});
+            graph.addEdge("b", "c", {weight: 1});
+            graph.addEdge("a", "c", {weight: 3});
+
+            const edgeCentrality = edgeBetweennessCentrality(graph, {weight: "weight"});
+
+            // Edge a-b and b-c form the shortest path
+            expect(edgeCentrality.get("a-b")).toBeGreaterThan(0);
+            expect(edgeCentrality.get("b-c")).toBeGreaterThan(0);
+        });
+
+        it("should handle parallel edges correctly", () => {
+            const graph = new Graph({allowParallelEdges: true});
+
+            graph.addEdge("a", "b");
+            graph.addEdge("a", "b"); // Parallel edge
+            graph.addEdge("b", "c");
+
+            const centrality = betweennessCentrality(graph);
+
+            // Should still calculate correctly despite parallel edges
+            expect(centrality["b"]).toBeGreaterThan(0);
+        });
+
+        it("should handle directed graph with cycles", () => {
+            const graph = new Graph({directed: true});
+
+            graph.addEdge("a", "b");
+            graph.addEdge("b", "c");
+            graph.addEdge("c", "a"); // Creates cycle
+            graph.addEdge("c", "d");
+
+            const centrality = betweennessCentrality(graph);
+
+            // c should have high betweenness as it's on paths to d
+            expect(centrality["c"]).toBeGreaterThan(0);
+        });
+
+        it("should handle weighted centrality with endpoints", () => {
+            const graph = new Graph();
+
+            graph.addEdge("a", "b", {weight: 1});
+            graph.addEdge("b", "c", {weight: 2});
+
+            const centrality = betweennessCentrality(graph, {
+                weight: "weight",
+                endpoints: true,
+                normalized: true
+            });
+
+            expect(centrality["b"]).toBeGreaterThan(0);
+        });
     });
 });
