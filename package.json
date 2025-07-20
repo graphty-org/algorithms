@@ -57,6 +57,9 @@
     "graph-traversal"
   ],
   "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
   "bugs": {
     "url": "https://github.com/graphty-org/algorithms/issues"
   },
