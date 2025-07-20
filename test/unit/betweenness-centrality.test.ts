@@ -1,3 +1,4 @@
+/* eslint-disable dot-notation */
 import {describe, expect, it} from "vitest";
 
 import {betweennessCentrality, edgeBetweennessCentrality, nodeBetweennessCentrality} from "../../src/algorithms/centrality/betweenness.js";
