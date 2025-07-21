@@ -278,8 +278,10 @@ function buildCommunityGraph(
 
     // Add weighted edges between communities
     for (const [edgeKey, weight] of communityWeights) {
-        const [source, target] = edgeKey.split('-').map(Number);
-        if (!communityGraph.hasEdge(source, target)) {
+        const [sourceStr, targetStr] = edgeKey.split('-');
+        const source = Number(sourceStr);
+        const target = Number(targetStr);
+        if (sourceStr && targetStr && !isNaN(source) && !isNaN(target) && !communityGraph.hasEdge(source, target)) {
             communityGraph.addEdge(source, target, weight);
         }
     }

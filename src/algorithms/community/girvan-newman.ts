@@ -38,7 +38,7 @@ export function girvanNewman(
         modularity: calculateModularity(graph, components.componentMap)
     });
 
-    while (workingGraph.edgeCount > 0) {
+    while (Array.from(workingGraph.edges()).length > 0) {
         // Calculate edge betweenness centrality
         const edgeBetweenness = calculateEdgeBetweenness(workingGraph);
         
@@ -53,7 +53,9 @@ export function girvanNewman(
         for (const [edgeKey, centrality] of edgeBetweenness) {
             if (Math.abs(centrality - maxBetweenness) < 1e-10) {
                 const [source, target] = edgeKey.split('|');
-                edgesToRemove.push({source, target});
+                if (source && target) {
+                    edgesToRemove.push({source, target});
+                }
             }
         }
 
