@@ -28,3 +28,9 @@ export * from "../flow/index.js";
 
 // Clustering algorithms
 export * from "../clustering/index.js";
+
+// Matching algorithms
+export * from "./matching/index.js";
+
+// Link prediction algorithms
+export * from "../link-prediction/index.js";
