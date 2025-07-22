@@ -1,6 +1,6 @@
 {
   "name": "@graphty/algorithms",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "Graph algorithms library for browser environments implemented in TypeScript",
   "author": "Adam Powers <apowers@ato.ms>",
   "main": "dist/algorithms.js",
