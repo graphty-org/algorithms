@@ -7,16 +7,16 @@ describe("Louvain Community Detection Algorithm", () => {
     describe("louvain", () => {
         it("should detect communities in a simple bipartite graph", () => {
             const graph = new Graph({directed: false});
-            
+
             // Create a bipartite-like structure
             graph.addEdge("A1", "A2");
             graph.addEdge("A2", "A3");
             graph.addEdge("A3", "A1");
-            
+
             graph.addEdge("B1", "B2");
             graph.addEdge("B2", "B3");
             graph.addEdge("B3", "B1");
-            
+
             // Single connection between communities
             graph.addEdge("A1", "B1");
 
@@ -25,14 +25,14 @@ describe("Louvain Community Detection Algorithm", () => {
             expect(result.communities).toBeDefined();
             expect(result.modularity).toBeDefined();
             expect(result.iterations).toBeDefined();
-            
+
             // Should find at least 2 communities
             expect(result.communities.length).toBeGreaterThanOrEqual(2);
-            
+
             // Total nodes should be preserved
             const totalNodes = result.communities.reduce((sum, community) => sum + community.length, 0);
             expect(totalNodes).toBe(6);
-            
+
             // Modularity should be positive for good community structure
             expect(result.modularity).toBeGreaterThan(0);
         });
@@ -64,7 +64,7 @@ describe("Louvain Community Detection Algorithm", () => {
 
         it("should detect a single community in a complete graph", () => {
             const graph = new Graph({directed: false});
-            
+
             // Create complete graph K4
             const nodes = ["A", "B", "C", "D"];
             for (let i = 0; i < nodes.length; i++) {
@@ -82,11 +82,11 @@ describe("Louvain Community Detection Algorithm", () => {
 
         it("should handle disconnected components", () => {
             const graph = new Graph({directed: false});
-            
+
             // First component
             graph.addEdge("A1", "A2");
             graph.addEdge("A2", "A3");
-            
+
             // Second component (disconnected)
             graph.addEdge("B1", "B2");
             graph.addEdge("B2", "B3");
@@ -94,11 +94,11 @@ describe("Louvain Community Detection Algorithm", () => {
             const result = louvain(graph);
 
             expect(result.communities.length).toBeGreaterThanOrEqual(2);
-            
+
             // Each community should contain nodes from the same component
             for (const community of result.communities) {
-                const hasA = community.some(node => String(node).startsWith("A"));
-                const hasB = community.some(node => String(node).startsWith("B"));
+                const hasA = community.some((node) => String(node).startsWith("A"));
+                const hasB = community.some((node) => String(node).startsWith("B"));
                 // Community should not mix components
                 expect(hasA && hasB).toBe(false);
             }
@@ -106,16 +106,16 @@ describe("Louvain Community Detection Algorithm", () => {
 
         it("should respect resolution parameter", () => {
             const graph = new Graph({directed: false});
-            
+
             // Create a graph with clear community structure
             graph.addEdge("A1", "A2");
             graph.addEdge("A2", "A3");
             graph.addEdge("A3", "A1");
-            
+
             graph.addEdge("B1", "B2");
             graph.addEdge("B2", "B3");
             graph.addEdge("B3", "B1");
-            
+
             graph.addEdge("A1", "B1");
 
             // Test with different resolution values
@@ -124,7 +124,7 @@ describe("Louvain Community Detection Algorithm", () => {
 
             expect(resultHighRes.communities).toBeDefined();
             expect(resultLowRes.communities).toBeDefined();
-            
+
             // Different resolutions may lead to different community structures
             // High resolution tends to create more communities
             // Low resolution tends to merge communities
@@ -132,16 +132,16 @@ describe("Louvain Community Detection Algorithm", () => {
 
         it("should handle weighted edges", () => {
             const graph = new Graph({directed: false});
-            
+
             // Create communities with different edge weights
             graph.addEdge("A1", "A2", 10); // Strong internal connection
             graph.addEdge("A2", "A3", 10);
             graph.addEdge("A3", "A1", 10);
-            
+
             graph.addEdge("B1", "B2", 10);
             graph.addEdge("B2", "B3", 10);
             graph.addEdge("B3", "B1", 10);
-            
+
             graph.addEdge("A1", "B1", 1); // Weak inter-community connection
 
             const result = louvain(graph);
@@ -152,7 +152,7 @@ describe("Louvain Community Detection Algorithm", () => {
 
         it("should converge within maximum iterations", () => {
             const graph = new Graph({directed: false});
-            
+
             // Create a complex graph
             for (let i = 0; i < 10; i++) {
                 for (let j = i + 1; j < 10; j++) {
@@ -170,7 +170,7 @@ describe("Louvain Community Detection Algorithm", () => {
 
         it("should handle tolerance parameter for convergence", () => {
             const graph = new Graph({directed: false});
-            
+
             // Simple case for quick convergence
             graph.addEdge("A", "B");
             graph.addEdge("B", "C");
@@ -183,7 +183,7 @@ describe("Louvain Community Detection Algorithm", () => {
 
         it("should detect communities in a path graph", () => {
             const graph = new Graph({directed: false});
-            
+
             // Create a path: A - B - C - D - E
             graph.addEdge("A", "B");
             graph.addEdge("B", "C");
@@ -194,7 +194,7 @@ describe("Louvain Community Detection Algorithm", () => {
 
             expect(result.communities).toBeDefined();
             expect(result.communities.length).toBeGreaterThanOrEqual(1);
-            
+
             // Total nodes should be preserved
             const totalNodes = result.communities.reduce((sum, community) => sum + community.length, 0);
             expect(totalNodes).toBe(5);
@@ -202,11 +202,11 @@ describe("Louvain Community Detection Algorithm", () => {
 
         it("should detect communities in a star graph", () => {
             const graph = new Graph({directed: false});
-            
+
             // Create star graph with center node
             const center = "center";
             const leaves = ["A", "B", "C", "D", "E"];
-            
+
             for (const leaf of leaves) {
                 graph.addEdge(center, leaf);
             }
@@ -215,7 +215,7 @@ describe("Louvain Community Detection Algorithm", () => {
 
             expect(result.communities).toBeDefined();
             expect(result.communities.length).toBeGreaterThanOrEqual(1);
-            
+
             // Total nodes should be preserved
             const totalNodes = result.communities.reduce((sum, community) => sum + community.length, 0);
             expect(totalNodes).toBe(6);
@@ -223,7 +223,7 @@ describe("Louvain Community Detection Algorithm", () => {
 
         it("should handle graphs with self-loops", () => {
             const graph = new Graph({directed: false, allowSelfLoops: true});
-            
+
             graph.addEdge("A", "A"); // Self-loop
             graph.addEdge("A", "B");
             graph.addEdge("B", "C");
@@ -232,7 +232,7 @@ describe("Louvain Community Detection Algorithm", () => {
 
             expect(result.communities).toBeDefined();
             expect(result.modularity).toBeDefined();
-            
+
             // Should not crash and should preserve all nodes
             const totalNodes = result.communities.reduce((sum, community) => sum + community.length, 0);
             expect(totalNodes).toBe(3);
@@ -240,7 +240,7 @@ describe("Louvain Community Detection Algorithm", () => {
 
         it("should maintain consistent community assignment", () => {
             const graph = new Graph({directed: false});
-            
+
             // Create deterministic structure
             graph.addEdge("A1", "A2");
             graph.addEdge("A2", "A3");
@@ -253,14 +253,14 @@ describe("Louvain Community Detection Algorithm", () => {
 
             // Results should be consistent for the same graph
             expect(result1.communities.length).toBe(result2.communities.length);
-            
+
             // Modularity should be the same
             expect(Math.abs(result1.modularity - result2.modularity)).toBeLessThan(1e-10);
         });
 
         it("should handle large community count", () => {
             const graph = new Graph({directed: false});
-            
+
             // Create many small disconnected triangles
             for (let i = 0; i < 5; i++) {
                 const base = i * 3;
@@ -272,7 +272,7 @@ describe("Louvain Community Detection Algorithm", () => {
             const result = louvain(graph);
 
             expect(result.communities.length).toBeGreaterThanOrEqual(5);
-            
+
             // Each community should ideally be a triangle (3 nodes)
             for (const community of result.communities) {
                 expect(community.length).toBeGreaterThanOrEqual(1);
@@ -282,10 +282,10 @@ describe("Louvain Community Detection Algorithm", () => {
 
         it("should calculate positive modularity for good community structure", () => {
             const graph = new Graph({directed: false});
-            
+
             // Create clear community structure with high modularity
             // Dense triangles with sparse inter-connections
-            
+
             // Community 1
             graph.addEdge("A1", "A2");
             graph.addEdge("A2", "A3");
@@ -293,7 +293,7 @@ describe("Louvain Community Detection Algorithm", () => {
             graph.addEdge("A4", "A1");
             graph.addEdge("A1", "A3");
             graph.addEdge("A2", "A4");
-            
+
             // Community 2
             graph.addEdge("B1", "B2");
             graph.addEdge("B2", "B3");
@@ -301,7 +301,7 @@ describe("Louvain Community Detection Algorithm", () => {
             graph.addEdge("B4", "B1");
             graph.addEdge("B1", "B3");
             graph.addEdge("B2", "B4");
-            
+
             // Minimal inter-community connections
             graph.addEdge("A1", "B1");
 

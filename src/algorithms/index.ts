@@ -19,3 +19,12 @@ export * from "./mst/index.js";
 
 // Community detection algorithms
 export * from "./community/index.js";
+
+// Pathfinding algorithms
+export * from "../pathfinding/index.js";
+
+// Flow algorithms
+export * from "../flow/index.js";
+
+// Clustering algorithms
+export * from "../clustering/index.js";

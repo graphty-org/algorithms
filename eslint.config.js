@@ -141,7 +141,7 @@ export default tseslint.config(
     },
     // Configuration for test files (without strict type checking)
     {
-        files: ["**/*.test.ts", "test/**/*.ts"],
+        files: ["**/*.test.ts", "test/**/*.ts", "src/__tests__/**/*.ts"],
         extends: [
             eslint.configs.recommended,
             tseslint.configs.recommended,

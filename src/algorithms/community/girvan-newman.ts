@@ -1,5 +1,5 @@
 import {Graph} from "../../core/graph.js";
-import type {CommunityResult, GirvanNewmanOptions, NodeId, ComponentResult} from "../../types/index.js";
+import type {CommunityResult, ComponentResult, GirvanNewmanOptions, NodeId} from "../../types/index.js";
 import {connectedComponents} from "../components/connected.js";
 
 /**
@@ -23,36 +23,36 @@ import {connectedComponents} from "../components/connected.js";
  */
 export function girvanNewman(
     graph: Graph,
-    options: GirvanNewmanOptions = {}
+    options: GirvanNewmanOptions = {},
 ): CommunityResult[] {
-    const maxCommunities = options.maxCommunities;
+    const {maxCommunities} = options;
     const minCommunitySize = options.minCommunitySize ?? 1;
-    
+
     const dendrogram: CommunityResult[] = [];
     const workingGraph = cloneGraph(graph);
-    
+
     // Initial state: one large component
     let components = getConnectedComponentsResult(workingGraph);
     dendrogram.push({
-        communities: components.components.filter(community => community.length >= minCommunitySize),
-        modularity: calculateModularity(graph, components.componentMap)
+        communities: components.components.filter((community) => community.length >= minCommunitySize),
+        modularity: calculateModularity(graph, components.componentMap),
     });
 
     while (Array.from(workingGraph.edges()).length > 0) {
         // Calculate edge betweenness centrality
         const edgeBetweenness = calculateEdgeBetweenness(workingGraph);
-        
+
         if (edgeBetweenness.size === 0) {
             break;
         }
 
         // Find edges with maximum betweenness
-        const maxBetweenness = Math.max(...edgeBetweenness.values());
-        const edgesToRemove: Array<{source: NodeId; target: NodeId}> = [];
-        
+        const maxBetweenness = Math.max(... edgeBetweenness.values());
+        const edgesToRemove: {source: NodeId, target: NodeId}[] = [];
+
         for (const [edgeKey, centrality] of edgeBetweenness) {
             if (Math.abs(centrality - maxBetweenness) < 1e-10) {
-                const [source, target] = edgeKey.split('|');
+                const [source, target] = edgeKey.split("|");
                 if (source && target) {
                     edgesToRemove.push({source, target});
                 }
@@ -66,18 +66,18 @@ export function girvanNewman(
 
         // Find new connected components (communities)
         components = getConnectedComponentsResult(workingGraph);
-        
+
         // Filter communities by minimum size
         const validCommunities = components.components.filter(
-            community => community.length >= minCommunitySize
+            (community) => community.length >= minCommunitySize,
         );
 
         // Calculate modularity for the new community structure
         const modularity = calculateModularity(graph, components.componentMap);
-        
+
         dendrogram.push({
             communities: validCommunities,
-            modularity
+            modularity,
         });
 
         // Stop if desired number of communities reached
@@ -96,13 +96,13 @@ export function girvanNewman(
 
 /**
  * Calculate edge betweenness centrality for all edges in the graph
- * 
+ *
  * Edge betweenness is the fraction of shortest paths that pass through the edge.
  * We adapt node betweenness centrality calculation to work with edges.
  */
 function calculateEdgeBetweenness(graph: Graph): Map<string, number> {
     const edgeBetweenness = new Map<string, number>();
-    
+
     // Initialize all edges with 0 betweenness
     for (const edge of graph.edges()) {
         const edgeKey = getEdgeKey(edge.source, edge.target);
@@ -112,13 +112,13 @@ function calculateEdgeBetweenness(graph: Graph): Map<string, number> {
     // For each node as source, calculate shortest paths and accumulate edge betweenness
     for (const sourceNode of graph.nodes()) {
         const source = sourceNode.id;
-        
+
         // Run BFS to find all shortest paths from source
         const {distances, predecessors, pathCounts} = findAllShortestPaths(graph, source);
-        
+
         // Calculate dependency for each node and accumulate edge betweenness
         const dependency = new Map<NodeId, number>();
-        
+
         // Initialize dependency
         for (const node of graph.nodes()) {
             dependency.set(node.id, 0);
@@ -126,27 +126,51 @@ function calculateEdgeBetweenness(graph: Graph): Map<string, number> {
 
         // Process nodes in order of decreasing distance
         const sortedNodes = Array.from(distances.keys())
-            .filter(node => distances.get(node)! < Infinity)
-            .sort((a, b) => distances.get(b)! - distances.get(a)!);
+            .filter((node) => {
+                const distance = distances.get(node);
+                return distance !== undefined && distance < Infinity;
+            })
+            .sort((a, b) => {
+                const distanceA = distances.get(a);
+                const distanceB = distances.get(b);
+                if (distanceA === undefined || distanceB === undefined) {
+                    return 0;
+                }
+
+                return distanceB - distanceA;
+            });
 
         for (const node of sortedNodes) {
-            if (node === source) continue;
-            
-            const nodeDependency = dependency.get(node)!;
-            const nodePathCount = pathCounts.get(node)!;
-            
+            if (node === source) {
+                continue;
+            }
+
+            const nodeDependency = dependency.get(node);
+            const nodePathCount = pathCounts.get(node);
+
+            if (nodeDependency === undefined || nodePathCount === undefined) {
+                continue;
+            }
+
             // Distribute dependency to predecessors
-            const nodePredecessors = predecessors.get(node) || [];
+            const nodePredecessors = predecessors.get(node) ?? [];
             for (const predecessor of nodePredecessors) {
-                const predPathCount = pathCounts.get(predecessor)!;
+                const predPathCount = pathCounts.get(predecessor);
+                if (predPathCount === undefined) {
+                    continue;
+                }
+
                 const edgeDependency = (predPathCount / nodePathCount) * (1 + nodeDependency);
-                
+
                 // Update predecessor dependency
-                dependency.set(predecessor, dependency.get(predecessor)! + edgeDependency);
-                
+                const currentDependency = dependency.get(predecessor);
+                if (currentDependency !== undefined) {
+                    dependency.set(predecessor, currentDependency + edgeDependency);
+                }
+
                 // Update edge betweenness
                 const edgeKey = getEdgeKey(predecessor, node);
-                const currentBetweenness = edgeBetweenness.get(edgeKey) || 0;
+                const currentBetweenness = edgeBetweenness.get(edgeKey) ?? 0;
                 edgeBetweenness.set(edgeKey, currentBetweenness + edgeDependency);
             }
         }
@@ -165,7 +189,11 @@ function calculateEdgeBetweenness(graph: Graph): Map<string, number> {
 /**
  * Find all shortest paths from a source node using BFS
  */
-function findAllShortestPaths(graph: Graph, source: NodeId) {
+function findAllShortestPaths(graph: Graph, source: NodeId): {
+    distances: Map<NodeId, number>;
+    predecessors: Map<NodeId, NodeId[]>;
+    pathCounts: Map<NodeId, number>;
+} {
     const distances = new Map<NodeId, number>();
     const predecessors = new Map<NodeId, NodeId[]>();
     const pathCounts = new Map<NodeId, number>();
@@ -184,25 +212,45 @@ function findAllShortestPaths(graph: Graph, source: NodeId) {
 
     // BFS
     while (queue.length > 0) {
-        const current = queue.shift()!;
-        const currentDistance = distances.get(current)!;
+        const current = queue.shift();
+        if (current === undefined) {
+            break;
+        }
+
+        const currentDistance = distances.get(current);
+        if (currentDistance === undefined) {
+            continue;
+        }
 
         for (const neighbor of graph.neighbors(current)) {
             const edge = graph.getEdge(current, neighbor);
             const edgeWeight = edge?.weight ?? 1;
             const newDistance = currentDistance + edgeWeight;
-            const neighborDistance = distances.get(neighbor)!;
+            const neighborDistance = distances.get(neighbor);
+            if (neighborDistance === undefined) {
+                continue;
+            }
 
             if (newDistance < neighborDistance) {
                 // Found shorter path
                 distances.set(neighbor, newDistance);
                 predecessors.set(neighbor, [current]);
-                pathCounts.set(neighbor, pathCounts.get(current)!);
+                const currentPathCount = pathCounts.get(current);
+                if (currentPathCount !== undefined) {
+                    pathCounts.set(neighbor, currentPathCount);
+                }
+
                 queue.push(neighbor);
             } else if (Math.abs(newDistance - neighborDistance) < 1e-10) {
                 // Found alternative shortest path
-                predecessors.get(neighbor)!.push(current);
-                pathCounts.set(neighbor, pathCounts.get(neighbor)! + pathCounts.get(current)!);
+                const neighborPredecessors = predecessors.get(neighbor);
+                const neighborPathCount = pathCounts.get(neighbor);
+                const currentPathCount = pathCounts.get(current);
+
+                if (neighborPredecessors && neighborPathCount !== undefined && currentPathCount !== undefined) {
+                    neighborPredecessors.push(current);
+                    pathCounts.set(neighbor, neighborPathCount + currentPathCount);
+                }
             }
         }
     }
@@ -215,11 +263,14 @@ function findAllShortestPaths(graph: Graph, source: NodeId) {
  */
 function getEdgeKey(source: NodeId, target: NodeId): string {
     // For undirected graphs, ensure consistent ordering
-    if (source <= target) {
-        return `${source}|${target}`;
-    } else {
-        return `${target}|${source}`;
+    const sourceStr = String(source);
+    const targetStr = String(target);
+
+    if (sourceStr <= targetStr) {
+        return `${sourceStr}|${targetStr}`;
     }
+
+    return `${targetStr}|${sourceStr}`;
 }
 
 /**
@@ -227,10 +278,12 @@ function getEdgeKey(source: NodeId, target: NodeId): string {
  */
 function calculateModularity(
     graph: Graph,
-    communityMap: Map<NodeId, number>
+    communityMap: Map<NodeId, number>,
 ): number {
     const totalEdgeWeight = getTotalEdgeWeight(graph);
-    if (totalEdgeWeight === 0) return 0;
+    if (totalEdgeWeight === 0) {
+        return 0;
+    }
 
     let modularity = 0;
 
@@ -240,11 +293,11 @@ function calculateModularity(
             if (communityMap.get(nodeI.id) === communityMap.get(nodeJ.id)) {
                 const edge = graph.getEdge(nodeI.id, nodeJ.id);
                 const edgeWeight = edge?.weight ?? 0;
-                
+
                 const degreeI = getNodeDegree(graph, nodeI.id);
                 const degreeJ = getNodeDegree(graph, nodeJ.id);
-                
-                modularity += edgeWeight - (degreeI * degreeJ) / (2 * totalEdgeWeight);
+
+                modularity += edgeWeight - ((degreeI * degreeJ) / (2 * totalEdgeWeight));
             }
         }
     }
@@ -257,11 +310,11 @@ function calculateModularity(
  */
 function getTotalEdgeWeight(graph: Graph): number {
     let totalWeight = 0;
-    
+
     for (const edge of graph.edges()) {
         totalWeight += edge.weight ?? 1;
     }
-    
+
     return totalWeight;
 }
 
@@ -270,12 +323,12 @@ function getTotalEdgeWeight(graph: Graph): number {
  */
 function getNodeDegree(graph: Graph, nodeId: NodeId): number {
     let degree = 0;
-    
+
     for (const neighbor of graph.neighbors(nodeId)) {
         const edge = graph.getEdge(nodeId, neighbor);
         degree += edge?.weight ?? 1;
     }
-    
+
     return degree;
 }
 
@@ -285,14 +338,14 @@ function getNodeDegree(graph: Graph, nodeId: NodeId): number {
 function getConnectedComponentsResult(graph: Graph): ComponentResult {
     const components = connectedComponents(graph);
     const componentMap = new Map<NodeId, number>();
-    
+
     components.forEach((component, index) => {
-        component.forEach(nodeId => {
+        component.forEach((nodeId) => {
             componentMap.set(nodeId, index);
         });
     });
-    
-    return { components, componentMap };
+
+    return {components, componentMap};
 }
 
 /**
@@ -302,7 +355,7 @@ function cloneGraph(graph: Graph): Graph {
     const clone = new Graph({
         directed: graph.isDirected,
         allowSelfLoops: true,
-        allowParallelEdges: false
+        allowParallelEdges: false,
     });
 
     // Add all nodes

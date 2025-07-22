@@ -113,8 +113,8 @@ export function betweennessCentrality(
 
                 if (vSigma > 0 && wSigma > 0) {
                     let contribution = (vSigma / wSigma) * (1 + wDelta);
-                    
-                    // Apply endpoints option: when false, exclude endpoint contributions  
+
+                    // Apply endpoints option: when false, exclude endpoint contributions
                     if (!options.endpoints) {
                         // For standard betweenness, don't count paths that only involve endpoints
                         const isTargetEndpoint = predecessors.get(w)?.length === 0 && w !== source;
@@ -122,7 +122,7 @@ export function betweennessCentrality(
                             contribution = 0; // Exclude endpoint contributions
                         }
                     }
-                    
+
                     delta.set(v, vDelta + contribution);
                 }
             }
@@ -275,7 +275,7 @@ export function edgeBetweennessCentrality(
 
                 if (vSigma > 0 && wSigma > 0) {
                     let edgeContribution = vSigma / wSigma * (1 + wDelta);
-                    
+
                     // Apply endpoints option for edge betweenness
                     if (!options.endpoints) {
                         const isTargetEndpoint = predecessors.get(w)?.length === 0 && w !== source;

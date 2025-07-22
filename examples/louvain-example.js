@@ -102,21 +102,21 @@ console.log('✓ Basic result should find 3 communities:',
 console.log('✓ Modularity should be positive for good community structure:', 
     result.modularity > 0);
 console.log('✓ All nodes should be assigned to exactly one community:', 
-    result.communities.reduce((total, community) => total + community.size, 0) === socialNetwork.nodeCount);
+    result.communities.reduce((total, community) => total + community.length, 0) === socialNetwork.nodeCount);
 console.log('✓ Higher resolution should find more communities:', 
     highResResult.communities.length >= result.communities.length);
 console.log('✓ Lower resolution should find fewer communities:', 
     lowResResult.communities.length <= result.communities.length);
 console.log('✓ Communities should be non-empty:', 
-    result.communities.every(community => community.size > 0));
+    result.communities.every(community => community.length > 0));
 
 // Check community quality by examining within vs between community edges
 let withinCommunityEdges = 0;
 let betweenCommunityEdges = 0;
 
 for (const edge of socialNetwork.edges()) {
-    const sourceCommunity = result.communities.findIndex(c => c.has(edge.source));
-    const targetCommunity = result.communities.findIndex(c => c.has(edge.target));
+    const sourceCommunity = result.communities.findIndex(c => c.includes(edge.source));
+    const targetCommunity = result.communities.findIndex(c => c.includes(edge.target));
     
     if (sourceCommunity === targetCommunity) {
         withinCommunityEdges++;

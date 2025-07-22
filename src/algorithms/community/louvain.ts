@@ -18,14 +18,14 @@ import type {CommunityResult, LouvainOptions, NodeId} from "../../types/index.js
  */
 export function louvain(
     graph: Graph,
-    options: LouvainOptions = {}
+    options: LouvainOptions = {},
 ): CommunityResult {
     const resolution = options.resolution ?? 1.0;
     const maxIterations = options.maxIterations ?? 100;
     const tolerance = options.tolerance ?? 1e-6;
 
     // Initialize: each node in its own community
-    let communities = initializeCommunities(graph);
+    const communities = initializeCommunities(graph);
     let modularity = calculateModularity(graph, communities, resolution);
     let iteration = 0;
     let improved = true;
@@ -33,26 +33,24 @@ export function louvain(
     while (iteration < maxIterations && improved) {
         // Phase 1: Local optimization
         improved = louvainPhase1(graph, communities, resolution);
-        
-        if (!improved) {
-            break;
-        }
 
-        const newModularity = calculateModularity(graph, communities, resolution);
-        
-        // Check for convergence
-        if ((newModularity - modularity) < tolerance) {
-            break;
-        }
+        if (improved) {
+            const newModularity = calculateModularity(graph, communities, resolution);
 
-        modularity = newModularity;
-        iteration++;
+            // Check for convergence
+            if ((newModularity - modularity) < tolerance) {
+                break;
+            }
+
+            modularity = newModularity;
+            iteration++;
+        }
     }
 
     return {
         communities: extractCommunities(communities),
         modularity: calculateModularity(graph, communities, resolution),
-        iterations: iteration
+        iterations: iteration,
     };
 }
 
@@ -62,11 +60,11 @@ export function louvain(
 function initializeCommunities(graph: Graph): Map<NodeId, number> {
     const communities = new Map<NodeId, number>();
     let communityId = 0;
-    
+
     for (const node of graph.nodes()) {
         communities.set(node.id, communityId++);
     }
-    
+
     return communities;
 }
 
@@ -78,7 +76,7 @@ function initializeCommunities(graph: Graph): Map<NodeId, number> {
 function louvainPhase1(
     graph: Graph,
     communities: Map<NodeId, number>,
-    resolution: number
+    resolution: number,
 ): boolean {
     let globalImprovement = false;
     let localImprovement = true;
@@ -88,11 +86,15 @@ function louvainPhase1(
 
         for (const node of graph.nodes()) {
             const nodeId = node.id;
-            const currentCommunity = communities.get(nodeId)!;
-            
+            const currentCommunity = communities.get(nodeId);
+
+            if (currentCommunity === undefined) {
+                continue;
+            }
+
             // Calculate current modularity contribution
             const currentModularity = nodeModularityContribution(
-                graph, nodeId, currentCommunity, communities, resolution
+                graph, nodeId, currentCommunity, communities, resolution,
             );
 
             let bestCommunity = currentCommunity;
@@ -100,12 +102,14 @@ function louvainPhase1(
 
             // Try moving to neighboring communities
             const neighborCommunities = getNeighborCommunities(graph, nodeId, communities);
-            
+
             for (const neighborCommunity of neighborCommunities) {
-                if (neighborCommunity === currentCommunity) continue;
+                if (neighborCommunity === currentCommunity) {
+                    continue;
+                }
 
                 const newModularity = nodeModularityContribution(
-                    graph, nodeId, neighborCommunity, communities, resolution
+                    graph, nodeId, neighborCommunity, communities, resolution,
                 );
 
                 if (newModularity > bestModularity) {
@@ -134,13 +138,14 @@ function nodeModularityContribution(
     nodeId: NodeId,
     community: number,
     communities: Map<NodeId, number>,
-    resolution: number
+    resolution: number,
 ): number {
     const totalEdgeWeight = getTotalEdgeWeight(graph);
-    if (totalEdgeWeight === 0) return 0;
+    if (totalEdgeWeight === 0) {
+        return 0;
+    }
 
     let internalLinks = 0;
-    let externalLinks = 0;
     let nodeDegree = 0;
     let communityDegree = 0;
 
@@ -152,8 +157,6 @@ function nodeModularityContribution(
 
         if (communities.get(neighbor) === community) {
             internalLinks += weight;
-        } else {
-            externalLinks += weight;
         }
     }
 
@@ -164,12 +167,9 @@ function nodeModularityContribution(
         }
     }
 
-    // Add the node's degree if it would be in this community
-    const totalCommunityDegree = communityDegree + nodeDegree;
-
     // Modularity formula: Q = (1/2m) * Σ[A_ij - (k_i * k_j)/(2m)] * δ(c_i, c_j)
-    const modularityIncrease = (internalLinks - resolution * (nodeDegree * communityDegree) / (2 * totalEdgeWeight)) / totalEdgeWeight;
-    
+    const modularityIncrease = (internalLinks - ((resolution * nodeDegree * communityDegree) / (2 * totalEdgeWeight))) / totalEdgeWeight;
+
     return modularityIncrease;
 }
 
@@ -179,17 +179,17 @@ function nodeModularityContribution(
 function getNeighborCommunities(
     graph: Graph,
     nodeId: NodeId,
-    communities: Map<NodeId, number>
+    communities: Map<NodeId, number>,
 ): Set<number> {
     const neighborCommunities = new Set<number>();
-    
+
     for (const neighbor of graph.neighbors(nodeId)) {
         const community = communities.get(neighbor);
         if (community !== undefined) {
             neighborCommunities.add(community);
         }
     }
-    
+
     return neighborCommunities;
 }
 
@@ -199,13 +199,15 @@ function getNeighborCommunities(
 function calculateModularity(
     graph: Graph,
     communities: Map<NodeId, number>,
-    resolution: number
+    resolution: number,
 ): number {
     const totalEdgeWeight = getTotalEdgeWeight(graph);
-    if (totalEdgeWeight === 0) return 0;
+    if (totalEdgeWeight === 0) {
+        return 0;
+    }
 
     let modularity = 0;
-    
+
     // For undirected graphs, we need to be careful not to double-count edges
     const countedEdges = new Set<string>();
 
@@ -214,23 +216,33 @@ function calculateModularity(
         for (const nodeJ of graph.nodes()) {
             // Skip if already counted this pair in undirected graph
             if (!graph.isDirected) {
-                const edgeKey = nodeI.id <= nodeJ.id ? `${nodeI.id}-${nodeJ.id}` : `${nodeJ.id}-${nodeI.id}`;
-                if (countedEdges.has(edgeKey)) continue;
+                const nodeIStr = String(nodeI.id);
+                const nodeJStr = String(nodeJ.id);
+                const edgeKey = nodeIStr <= nodeJStr ? `${nodeIStr}-${nodeJStr}` : `${nodeJStr}-${nodeIStr}`;
+                if (countedEdges.has(edgeKey)) {
+                    continue;
+                }
+
                 countedEdges.add(edgeKey);
             }
-            
+
             if (communities.get(nodeI.id) === communities.get(nodeJ.id)) {
                 const edge = graph.getEdge(nodeI.id, nodeJ.id);
                 const reverseEdge = !graph.isDirected ? graph.getEdge(nodeJ.id, nodeI.id) : null;
-                
+
                 let edgeWeight = 0;
-                if (edge) edgeWeight += edge.weight ?? 1;
-                if (reverseEdge && nodeI.id !== nodeJ.id) edgeWeight += reverseEdge.weight ?? 1;
-                
+                if (edge) {
+                    edgeWeight += edge.weight ?? 1;
+                }
+
+                if (reverseEdge && nodeI.id !== nodeJ.id) {
+                    edgeWeight += reverseEdge.weight ?? 1;
+                }
+
                 const degreeI = getNodeDegree(graph, nodeI.id);
                 const degreeJ = getNodeDegree(graph, nodeJ.id);
-                
-                modularity += edgeWeight - resolution * (degreeI * degreeJ) / (2 * totalEdgeWeight);
+
+                modularity += edgeWeight - ((resolution * degreeI * degreeJ) / (2 * totalEdgeWeight));
             }
         }
     }
@@ -239,69 +251,22 @@ function calculateModularity(
 }
 
 /**
- * Build a new graph where each community becomes a node
- */
-function buildCommunityGraph(
-    graph: Graph,
-    communities: Map<NodeId, number>
-): Graph {
-    const communityGraph = new Graph({ 
-        directed: graph.isDirected,
-        allowParallelEdges: true
-    });
-    const communityWeights = new Map<string, number>();
-
-    // Get unique communities
-    const uniqueCommunities = new Set(communities.values());
-    
-    // Add community nodes
-    for (const community of uniqueCommunities) {
-        communityGraph.addNode(community);
-    }
-
-    // Add edges between communities
-    for (const edge of graph.edges()) {
-        const sourceCommunity = communities.get(edge.source)!;
-        const targetCommunity = communities.get(edge.target)!;
-        
-        if (sourceCommunity !== targetCommunity) {
-            const edgeKey = `${sourceCommunity}-${targetCommunity}`;
-            const weight = edge.weight ?? 1;
-            
-            if (communityWeights.has(edgeKey)) {
-                communityWeights.set(edgeKey, communityWeights.get(edgeKey)! + weight);
-            } else {
-                communityWeights.set(edgeKey, weight);
-            }
-        }
-    }
-
-    // Add weighted edges between communities
-    for (const [edgeKey, weight] of communityWeights) {
-        const [sourceStr, targetStr] = edgeKey.split('-');
-        const source = Number(sourceStr);
-        const target = Number(targetStr);
-        if (sourceStr && targetStr && !isNaN(source) && !isNaN(target) && !communityGraph.hasEdge(source, target)) {
-            communityGraph.addEdge(source, target, weight);
-        }
-    }
-
-    return communityGraph;
-}
-
-/**
  * Extract final community structure
  */
 function extractCommunities(communities: Map<NodeId, number>): NodeId[][] {
     const communityMap = new Map<number, NodeId[]>();
-    
+
     for (const [nodeId, community] of communities) {
         if (!communityMap.has(community)) {
             communityMap.set(community, []);
         }
-        communityMap.get(community)!.push(nodeId);
+
+        const communityNodes = communityMap.get(community);
+        if (communityNodes) {
+            communityNodes.push(nodeId);
+        }
     }
-    
+
     return Array.from(communityMap.values());
 }
 
@@ -310,11 +275,11 @@ function extractCommunities(communities: Map<NodeId, number>): NodeId[][] {
  */
 function getTotalEdgeWeight(graph: Graph): number {
     let totalWeight = 0;
-    
+
     for (const edge of graph.edges()) {
         totalWeight += edge.weight ?? 1;
     }
-    
+
     return totalWeight;
 }
 
@@ -323,11 +288,11 @@ function getTotalEdgeWeight(graph: Graph): number {
  */
 function getNodeDegree(graph: Graph, nodeId: NodeId): number {
     let degree = 0;
-    
+
     for (const neighbor of graph.neighbors(nodeId)) {
         const edge = graph.getEdge(nodeId, neighbor);
         degree += edge?.weight ?? 1;
     }
-    
+
     return degree;
 }

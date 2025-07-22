@@ -1,5 +1,5 @@
 // Degree Centrality Example
-import { Graph, degreeCentrality, inDegreeCentrality } from '../dist/algorithms.js';
+import { Graph, degreeCentrality } from '../dist/algorithms.js';
 
 console.log('=== Degree Centrality Example ===');
 
@@ -38,71 +38,104 @@ Object.entries(socialCentrality)
         console.log(`  ${person}: ${centrality.toFixed(3)} (degree: ${degree})`);
     });
 
-// Create a directed citation network
-const citationNetwork = new Graph({ directed: true });
+// Create a directed graph (Twitter-like follow network)
+console.log('\n\n=== Directed Network (Twitter follows) ===');
+const twitterNetwork = new Graph({ directed: true });
 
-// Add citations (directed edges: A cites B means A -> B)
-citationNetwork.addEdge('Paper1', 'Paper2');
-citationNetwork.addEdge('Paper1', 'Paper3');
-citationNetwork.addEdge('Paper2', 'Paper3');
-citationNetwork.addEdge('Paper2', 'Paper4');
-citationNetwork.addEdge('Paper3', 'Paper4');
-citationNetwork.addEdge('Paper4', 'Paper5');
-citationNetwork.addEdge('Paper5', 'Paper3');
-citationNetwork.addEdge('Paper6', 'Paper3');
-citationNetwork.addEdge('Paper6', 'Paper4');
+// Add directed edges (A follows B)
+twitterNetwork.addEdge('Alice', 'Bob');      // Alice follows Bob
+twitterNetwork.addEdge('Alice', 'Charlie');
+twitterNetwork.addEdge('Bob', 'Alice');      // Bob follows Alice (mutual)
+twitterNetwork.addEdge('Charlie', 'Alice');
+twitterNetwork.addEdge('David', 'Alice');
+twitterNetwork.addEdge('Eve', 'Alice');
+twitterNetwork.addEdge('Bob', 'Charlie');
+twitterNetwork.addEdge('Charlie', 'David');
+twitterNetwork.addEdge('David', 'Eve');
+twitterNetwork.addEdge('Frank', 'Bob');
+twitterNetwork.addEdge('Frank', 'Eve');
 
-console.log('\n2. Citation Network (directed):');
-console.log('Paper1 -> Paper2 -> Paper4 -> Paper5');
-console.log('   |        |        ^        |');
-console.log('   v        v        |        v');
-console.log('Paper3 <----+--------+    Paper3');
-console.log('   ^                     (cycle)');
-console.log('   |');
-console.log('Paper6');
+console.log('Twitter Follow Network:');
+console.log('→ means "follows"');
+console.log('Alice ⟷ Bob → Charlie');
+console.log('  ↑      ↑       ↓');
+console.log('  |      |       ↓');
+console.log('Charlie  Frank   David');
+console.log('  ↑              ↓');
+console.log('  |              ↓');
+console.log('David ← Eve ← ─ ┘');
 
-// Calculate out-degree centrality (how many papers this paper cites)
-console.log('\n3. Out-Degree Centrality (citation activity):');
-const outDegreeCentrality = degreeCentrality(citationNetwork);
-console.log('Out-degree centrality (citing papers):');
-Object.entries(outDegreeCentrality)
+// Calculate different types of degree centrality
+console.log('\n2. In-Degree Centrality (followers):');
+const inCentrality = degreeCentrality(twitterNetwork, { mode: 'in' });
+console.log('Who has the most followers:');
+Object.entries(inCentrality)
     .sort((a, b) => b[1] - a[1])
-    .forEach(([paper, centrality]) => {
-        const outDegree = citationNetwork.outDegree(paper);
-        console.log(`  ${paper}: ${centrality.toFixed(3)} (out-degree: ${outDegree})`);
-    });
-
-// Calculate in-degree centrality (how many papers cite this paper)
-console.log('\n4. In-Degree Centrality (citation impact):');
-const inDegreeCentrality = inDegreeCentrality(citationNetwork);
-console.log('In-degree centrality (cited papers):');
-Object.entries(inDegreeCentrality)
-    .sort((a, b) => b[1] - a[1])
-    .forEach(([paper, centrality]) => {
-        const inDegree = citationNetwork.inDegree(paper);
-        console.log(`  ${paper}: ${centrality.toFixed(3)} (in-degree: ${inDegree})`);
-    });
-
-// Normalized degree centrality
-console.log('\n5. Normalized Degree Centrality:');
-const normalizedCentrality = degreeCentrality(socialNetwork, { normalized: true });
-console.log('Normalized centrality (max possible connections):');
-Object.entries(normalizedCentrality)
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 3)
     .forEach(([person, centrality]) => {
-        console.log(`  ${person}: ${centrality.toFixed(3)}`);
+        const inDegree = twitterNetwork.inDegree(person);
+        console.log(`  ${person}: ${centrality.toFixed(3)} (${inDegree} followers)`);
+    });
+
+console.log('\n3. Out-Degree Centrality (following):');
+const outCentrality = degreeCentrality(twitterNetwork, { mode: 'out' });
+console.log('Who follows the most people:');
+Object.entries(outCentrality)
+    .sort((a, b) => b[1] - a[1])
+    .forEach(([person, centrality]) => {
+        const outDegree = twitterNetwork.outDegree(person);
+        console.log(`  ${person}: ${centrality.toFixed(3)} (follows ${outDegree} people)`);
+    });
+
+console.log('\n4. Total Degree Centrality:');
+const totalCentrality = degreeCentrality(twitterNetwork, { mode: 'total' });
+console.log('Most active users (followers + following):');
+Object.entries(totalCentrality)
+    .sort((a, b) => b[1] - a[1])
+    .forEach(([person, centrality]) => {
+        const totalDegree = twitterNetwork.degree(person);
+        console.log(`  ${person}: ${centrality.toFixed(3)} (total connections: ${totalDegree})`);
+    });
+
+// Weighted network example
+console.log('\n\n=== Weighted Network (Collaboration strength) ===');
+const collaborationNetwork = new Graph({ weighted: true });
+
+// Add weighted edges representing collaboration frequency
+collaborationNetwork.addEdge('Researcher A', 'Researcher B', 5);
+collaborationNetwork.addEdge('Researcher A', 'Researcher C', 3);
+collaborationNetwork.addEdge('Researcher B', 'Researcher C', 2);
+collaborationNetwork.addEdge('Researcher B', 'Researcher D', 4);
+collaborationNetwork.addEdge('Researcher C', 'Researcher D', 1);
+collaborationNetwork.addEdge('Researcher D', 'Researcher E', 6);
+
+console.log('Collaboration Network (edge weights = number of papers):');
+console.log('A --5-- B');
+console.log('|\\      |');
+console.log('| 3     4');
+console.log('|  \\    |');
+console.log('|   C--D');
+console.log('|  /  / |');
+console.log('| 2  1  6');
+console.log('|/  /   |');
+console.log('B--´    E');
+
+// Calculate weighted degree centrality
+console.log('\n5. Weighted Degree Centrality:');
+const weightedCentrality = degreeCentrality(collaborationNetwork, { weighted: true });
+console.log('Collaboration strength (sum of edge weights):');
+Object.entries(weightedCentrality)
+    .sort((a, b) => b[1] - a[1])
+    .forEach(([researcher, centrality]) => {
+        console.log(`  ${researcher}: ${centrality.toFixed(3)}`);
     });
 
 // Verify results
 console.log('\n=== Verification ===');
-const maxSocialCentrality = Math.max(...Object.values(socialCentrality));
-const mostConnectedPerson = Object.entries(socialCentrality)
-    .find(([, centrality]) => centrality === maxSocialCentrality)[0];
-console.log('✓ Most connected person in social network:', mostConnectedPerson);
-console.log('✓ Alice should have high centrality (4 connections):', 
-    socialCentrality.Alice >= 0.6);
-console.log('✓ Paper3 should have high in-degree (most cited):', 
-    inDegreeCentrality.Paper3 > 0.3);
-console.log('✓ Normalized centrality should be ≤ 1.0:', 
-    Object.values(normalizedCentrality).every(c => c <= 1.0));
+console.log('✓ Alice should have highest degree in social network:', 
+    Object.entries(socialCentrality).sort((a, b) => b[1] - a[1])[0][0] === 'Alice');
+console.log('✓ Degree centrality values should be normalized (0-1):', 
+    Object.values(socialCentrality).every(c => c >= 0 && c <= 1));
+console.log('✓ In directed graph, in-degree + out-degree = total degree:', 
+    Math.abs((inCentrality['Alice'] + outCentrality['Alice']) - totalCentrality['Alice']) < 0.001);
+console.log('✓ Weighted centrality should reflect edge weights:', 
+    weightedCentrality['Researcher D'] > weightedCentrality['Researcher C']);

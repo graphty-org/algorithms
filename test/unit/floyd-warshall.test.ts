@@ -652,19 +652,19 @@ describe("Floyd-Warshall Algorithm", () => {
 
         it("should handle all undefined distance check branches in triple loop", () => {
             const graph = new Graph();
-            
+
             // Create structure to hit undefined checks in the k-i-j loop
             graph.addNode("i");
             graph.addNode("j");
             graph.addNode("k");
-            
+
             // Add some edges to create paths
             graph.addEdge("i", "k", 2);
             graph.addEdge("k", "j", 3);
             graph.addEdge("i", "j", 10);
-            
+
             const result = floydWarshall(graph);
-            
+
             // Should find shorter path through k
             expect(result.distances.get("i")?.get("j")).toBe(5);
             expect(result.predecessors.get("i")?.get("j")).toBe("k");
@@ -673,14 +673,14 @@ describe("Floyd-Warshall Algorithm", () => {
         it("should handle missing maps edge case in triple loop", () => {
             // Edge case to test distancesI, distancesK, predecessorsI, predecessorsK checks
             const graph = new Graph();
-            
+
             graph.addNode("test1");
             graph.addNode("test2");
             graph.addNode("test3");
-            
+
             // No edges - all should remain at infinity except self-distances
             const result = floydWarshall(graph);
-            
+
             expect(result.distances.get("test1")?.get("test1")).toBe(0);
             expect(result.distances.get("test1")?.get("test2")).toBe(Infinity);
             expect(result.distances.get("test2")?.get("test3")).toBe(Infinity);
@@ -688,38 +688,38 @@ describe("Floyd-Warshall Algorithm", () => {
 
         it("should handle negative cycle detection with missing nodeDistances", () => {
             const graph = new Graph();
-            
+
             // Single node to test nodeDistances check in negative cycle detection
             graph.addNode("single");
-            
+
             const result = floydWarshall(graph);
-            
+
             expect(result.hasNegativeCycle).toBe(false);
             expect(result.distances.get("single")?.get("single")).toBe(0);
         });
 
         it("should test path reconstruction with null current edge case", () => {
             const graph = new Graph();
-            
+
             // Create disconnected nodes to test path reconstruction failure
             graph.addNode("disconnected1");
             graph.addNode("disconnected2");
-            
+
             const path = floydWarshallPath(graph, "disconnected1", "disconnected2");
-            
+
             expect(path).toBeNull();
         });
 
         it("should test sourcePredecessors null check in path reconstruction", () => {
             const graph = new Graph();
-            
+
             // Simple connected graph for path reconstruction
             graph.addNode("source");
             graph.addNode("target");
             graph.addEdge("source", "target", 1);
-            
+
             const path = floydWarshallPath(graph, "source", "target");
-            
+
             expect(path).not.toBeNull();
             expect(path!.path).toEqual(["source", "target"]);
             expect(path!.distance).toBe(1);
@@ -727,17 +727,17 @@ describe("Floyd-Warshall Algorithm", () => {
 
         it("should test infinite loop protection in path reconstruction", () => {
             const graph = new Graph();
-            
+
             // Create a scenario that could theoretically cause infinite loop
             graph.addNode("a");
             graph.addNode("b");
             graph.addNode("c");
-            
+
             graph.addEdge("a", "b", 1);
             graph.addEdge("b", "c", 1);
-            
+
             const path = floydWarshallPath(graph, "a", "c");
-            
+
             expect(path).not.toBeNull();
             expect(path!.path).toEqual(["a", "b", "c"]);
             expect(path!.distance).toBe(2);
@@ -745,17 +745,17 @@ describe("Floyd-Warshall Algorithm", () => {
 
         it("should test current !== source final check", () => {
             const graph = new Graph();
-            
+
             // Test case where path reconstruction reaches source correctly
             graph.addNode("start");
             graph.addNode("middle");
             graph.addNode("end");
-            
+
             graph.addEdge("start", "middle", 2);
             graph.addEdge("middle", "end", 3);
-            
+
             const path = floydWarshallPath(graph, "start", "end");
-            
+
             expect(path).not.toBeNull();
             expect(path!.path[0]).toBe("start");
             expect(path!.distance).toBe(5);
@@ -763,31 +763,31 @@ describe("Floyd-Warshall Algorithm", () => {
 
         it("should handle edge weight null/undefined edge case", () => {
             const graph = new Graph();
-            
+
             graph.addNode("x");
             graph.addNode("y");
-            
+
             // Add edge without explicit weight (should default to 1)
             graph.addEdge("x", "y");
-            
+
             const result = floydWarshall(graph);
-            
+
             expect(result.distances.get("x")?.get("y")).toBe(1);
             expect(result.predecessors.get("x")?.get("y")).toBe("x");
         });
 
         it("should test undirected graph branch coverage", () => {
             const graph = new Graph({directed: false});
-            
+
             graph.addNode("u1");
-            graph.addNode("u2"); 
+            graph.addNode("u2");
             graph.addNode("u3");
-            
+
             graph.addEdge("u1", "u2", 4);
             graph.addEdge("u2", "u3", 2);
-            
+
             const result = floydWarshall(graph);
-            
+
             // Should have bidirectional paths
             expect(result.distances.get("u1")?.get("u3")).toBe(6);
             expect(result.distances.get("u3")?.get("u1")).toBe(6);
@@ -797,18 +797,18 @@ describe("Floyd-Warshall Algorithm", () => {
 
         it("should test transitive closure with infinity distances", () => {
             const graph = new Graph();
-            
+
             // Disconnected components
             graph.addNode("comp1a");
             graph.addNode("comp1b");
             graph.addNode("comp2a");
             graph.addNode("comp2b");
-            
+
             graph.addEdge("comp1a", "comp1b", 1);
             graph.addEdge("comp2a", "comp2b", 1);
-            
+
             const closure = transitiveClosure(graph);
-            
+
             // Each component should only reach nodes within itself
             expect(closure.get("comp1a")?.has("comp1b")).toBe(true);
             expect(closure.get("comp1a")?.has("comp2a")).toBe(false);

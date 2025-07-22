@@ -47,7 +47,7 @@ console.log('\n1. Minimum Spanning Tree (Kruskal):');
 const mst = kruskalMST(graph);
 console.log('MST Edges:');
 let totalWeight = 0;
-const mstEdges = Array.from(mst.edges());
+const mstEdges = Array.from(mst.edges);
 mstEdges
     .sort((a, b) => (a.weight || 0) - (b.weight || 0))
     .forEach(edge => {
@@ -64,7 +64,7 @@ console.log(`Number of nodes: ${graph.nodeCount}`);
 console.log('\n2. Using minimumSpanningTree alias:');
 const mst2 = minimumSpanningTree(graph);
 console.log('Same result with alias:');
-console.log(`MST edges: ${mst2.edgeCount}, Total weight: ${Array.from(mst2.edges()).reduce((sum, e) => sum + (e.weight || 0), 0)}`);
+console.log(`MST edges: ${mst2.edges.length}, Total weight: ${Array.from(mst2.edges).reduce((sum, e) => sum + (e.weight || 0), 0)}`);
 
 // Example with a smaller graph to verify step-by-step
 console.log('\n3. Small example for verification:');
@@ -76,7 +76,7 @@ smallGraph.addEdge('X', 'Z', 3);
 console.log('Small graph edges: X-Y(1), Y-Z(2), X-Z(3)');
 const smallMST = kruskalMST(smallGraph);
 console.log('Small MST edges:');
-Array.from(smallMST.edges()).forEach(edge => {
+Array.from(smallMST.edges).forEach(edge => {
     console.log(`  ${edge.source} -- ${edge.target}: ${edge.weight}`);
 });
 
@@ -90,14 +90,14 @@ equalGraph.addEdge('P', 'S', 5);
 
 const equalMST = kruskalMST(equalGraph);
 console.log('Equal weights MST:');
-Array.from(equalMST.edges()).forEach(edge => {
+Array.from(equalMST.edges).forEach(edge => {
     console.log(`  ${edge.source} -- ${edge.target}: ${edge.weight}`);
 });
 
 // Test efficiency claim
 console.log('\n5. Efficiency verification:');
 const originalEdges = graph.edgeCount;
-const mstEdges2 = mst.edgeCount;
+const mstEdges2 = mst.edges.length;
 const savedEdges = originalEdges - mstEdges2;
 console.log(`Original edges: ${originalEdges}`);
 console.log(`MST edges: ${mstEdges2}`);
@@ -110,10 +110,10 @@ console.log('✓ MST should have n-1 edges for n nodes:',
 console.log('✓ MST should be connected (spanning):', 
     mst.nodeCount === graph.nodeCount);
 console.log('✓ Small graph MST should have 2 edges:', 
-    smallMST.edgeCount === 2);
+    smallMST.edges.length === 2);
 console.log('✓ Small graph MST weight should be 3 (1+2):', 
-    Array.from(smallMST.edges()).reduce((sum, e) => sum + (e.weight || 0), 0) === 3);
+    Array.from(smallMST.edges).reduce((sum, e) => sum + (e.weight || 0), 0) === 3);
 console.log('✓ Equal weights MST should have 3 edges:', 
-    equalMST.edgeCount === 3);
+    equalMST.edges.length === 3);
 console.log('✓ MST and alias should produce same result:', 
-    mst.edgeCount === mst2.edgeCount);
+    mst.edges.length === mst2.edges.length);

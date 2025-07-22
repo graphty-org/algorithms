@@ -37,7 +37,7 @@ console.log('\n1. MST starting from Downtown (Prim):');
 const mstFromDowntown = primMST(cityGraph, 'Downtown');
 console.log('MST Edges from Downtown:');
 let totalCost = 0;
-const edges = Array.from(mstFromDowntown.edges());
+const edges = mstFromDowntown.edges;
 edges
     .sort((a, b) => (a.weight || 0) - (b.weight || 0))
     .forEach(edge => {
@@ -52,7 +52,7 @@ console.log(`Roads needed: ${edges.length}`);
 // Find MST starting from a different node
 console.log('\n2. MST starting from Eastside:');
 const mstFromEastside = primMST(cityGraph, 'Eastside');
-const eastsideCost = Array.from(mstFromEastside.edges())
+const eastsideCost = Array.from(mstFromEastside.edges)
     .reduce((sum, e) => sum + (e.weight || 0), 0);
 console.log(`Total cost from Eastside: $${eastsideCost}k`);
 console.log('Same total cost (MST is unique):', totalCost === eastsideCost);
@@ -67,7 +67,7 @@ triangle.addEdge('A', 'C', 2);
 console.log('Triangle: A-B(3), B-C(1), A-C(2)');
 const triangleMST = primMST(triangle, 'A');
 console.log('Triangle MST edges:');
-Array.from(triangleMST.edges()).forEach(edge => {
+Array.from(triangleMST.edges).forEach(edge => {
     console.log(`  ${edge.source} -- ${edge.target}: ${edge.weight}`);
 });
 
@@ -80,7 +80,7 @@ unweighted.addEdge('X', 'Z');
 
 const unweightedMST = primMST(unweighted, 'X');
 console.log('Unweighted MST (default weight 1):');
-Array.from(unweightedMST.edges()).forEach(edge => {
+Array.from(unweightedMST.edges).forEach(edge => {
     console.log(`  ${edge.source} -- ${edge.target}: ${edge.weight || 1}`);
 });
 
@@ -97,7 +97,7 @@ console.log('Step graph: Start connects to A(2) and B(3), A-B(1), A-C(4), B-C(5)
 const stepMST = primMST(stepGraph, 'Start');
 console.log('Expected order: Start-A(2), then A-B(1), then A-C(4)');
 console.log('Actual MST:');
-Array.from(stepMST.edges())
+Array.from(stepMST.edges)
     .sort((a, b) => (a.weight || 0) - (b.weight || 0))
     .forEach(edge => {
         console.log(`  ${edge.source} -- ${edge.target}: ${edge.weight}`);
@@ -112,7 +112,7 @@ console.log('✓ MST should span all nodes:',
 console.log('✓ Different starting points give same total weight:', 
     totalCost === eastsideCost);
 console.log('✓ Triangle MST should have weight 3 (1+2):', 
-    Array.from(triangleMST.edges()).reduce((sum, e) => sum + (e.weight || 0), 0) === 3);
+    Array.from(triangleMST.edges).reduce((sum, e) => sum + (e.weight || 0), 0) === 3);
 console.log('✓ Step MST should have minimum total weight:', 
-    Array.from(stepMST.edges()).reduce((sum, e) => sum + (e.weight || 0), 0) === 7);
+    Array.from(stepMST.edges).reduce((sum, e) => sum + (e.weight || 0), 0) === 7);
 console.log('✓ All MST graphs should be connected and acyclic');

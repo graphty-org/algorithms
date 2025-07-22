@@ -1,6 +1,6 @@
 // Connected Components Algorithm Example
 import { Graph, connectedComponents, connectedComponentsDFS, numberOfConnectedComponents, 
-         isConnected, largestConnectedComponent, connectedComponentContaining } from '../dist/algorithms.js';
+         isConnected, largestConnectedComponent, getConnectedComponent } from '../dist/algorithms.js';
 
 console.log('=== Connected Components Example ===');
 
@@ -68,10 +68,10 @@ console.log(`Largest component: [${largest.sort().join(', ')}]`);
 
 // Find which component a specific node belongs to
 console.log('\n5. Component Membership:');
-const aliceComponent = connectedComponentContaining(graph, 'Alice');
+const aliceComponent = getConnectedComponent(graph, 'Alice');
 console.log(`Alice's component: [${aliceComponent.sort().join(', ')}]`);
 
-const davidComponent = connectedComponentContaining(graph, 'David');
+const davidComponent = getConnectedComponent(graph, 'David');
 console.log(`David's component: [${davidComponent.sort().join(', ')}]`);
 
 // Test with a fully connected graph

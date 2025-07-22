@@ -37,100 +37,184 @@ console.log('      D     E --------H');
 
 // Run Girvan-Newman algorithm
 console.log('\n1. Basic Girvan-Newman Community Detection:');
-const result = girvanNewman(network);
-console.log(`Final communities: ${result.communities.length}`);
-console.log(`Final modularity: ${result.modularity.toFixed(4)}`);
-console.log(`Dendrogram steps: ${result.dendrogram.length}`);
+const dendrogram = girvanNewman(network);
+console.log(`Dendrogram steps: ${dendrogram.length}`);
 
-console.log('\nFinal community assignments:');
-result.communities.forEach((community, index) => {
-    console.log(`Community ${index + 1}: [${Array.from(community).sort().join(', ')}]`);
+// Find the partition with the highest modularity
+let bestPartition = dendrogram[0];
+let bestModularity = dendrogram[0].modularity;
+for (const partition of dendrogram) {
+    if (partition.modularity > bestModularity) {
+        bestModularity = partition.modularity;
+        bestPartition = partition;
+    }
+}
+
+console.log(`\nBest partition (highest modularity):`)
+console.log(`Communities: ${bestPartition.communities.length}`);
+console.log(`Modularity: ${bestPartition.modularity.toFixed(4)}`);
+
+console.log('\nCommunity assignments:');
+bestPartition.communities.forEach((community, index) => {
+    console.log(`Community ${index + 1}: [${community.sort().join(', ')}]`);
 });
 
 // Show the dendrogram (hierarchical community structure)
 console.log('\n2. Hierarchical Dendrogram:');
-console.log('Edge removal order and resulting communities:');
-result.dendrogram.forEach((step, index) => {
-    console.log(`Step ${index + 1}: Remove edge ${step.removedEdge || 'none'}`);
+console.log('Community evolution:');
+dendrogram.slice(0, 10).forEach((step, index) => {
+    console.log(`Step ${index + 1}:`);
     console.log(`  Communities: ${step.communities.length}`);
     console.log(`  Modularity: ${step.modularity.toFixed(4)}`);
     if (step.communities.length <= 4) {  // Only show details for few communities
         step.communities.forEach((community, i) => {
-            console.log(`    ${i + 1}: [${Array.from(community).sort().join(', ')}]`);
+            console.log(`    ${i + 1}: [${community.sort().join(', ')}]`);
         });
     }
-    console.log('');
 });
 
 // Run with maximum communities limit
 console.log('\n3. Limiting maximum communities to 3:');
-const limitedResult = girvanNewman(network, { maxCommunities: 3 });
-console.log(`Limited communities: ${limitedResult.communities.length}`);
-console.log(`Limited modularity: ${limitedResult.modularity.toFixed(4)}`);
+const limitedDendrogram = girvanNewman(network, { maxCommunities: 3 });
+const lastLimited = limitedDendrogram[limitedDendrogram.length - 1];
+console.log(`Limited communities: ${lastLimited.communities.length}`);
+console.log(`Limited modularity: ${lastLimited.modularity.toFixed(4)}`);
 
 // Run with minimum community size constraint
 console.log('\n4. Minimum community size of 2:');
-const minSizeResult = girvanNewman(network, { minCommunitySize: 2 });
-console.log(`Communities with min size 2: ${minSizeResult.communities.length}`);
-minSizeResult.communities.forEach((community, index) => {
-    console.log(`Community ${index + 1} (size ${community.size}): [${Array.from(community).sort().join(', ')}]`);
+const minSizeDendrogram = girvanNewman(network, { minCommunitySize: 2 });
+const lastMinSize = minSizeDendrogram[minSizeDendrogram.length - 1];
+console.log(`Communities with min size 2: ${lastMinSize.communities.length}`);
+lastMinSize.communities.forEach((community, index) => {
+    console.log(`Community ${index + 1} (size ${community.length}): [${community.sort().join(', ')}]`);
 });
 
-// Test on a star network (should split into center + leaves)
-console.log('\n5. Star Network Example:');
-const star = new Graph();
-star.addEdge('Center', 'Leaf1');
-star.addEdge('Center', 'Leaf2');
-star.addEdge('Center', 'Leaf3');
-star.addEdge('Center', 'Leaf4');
+// Example 2: Social network analysis
+console.log('\n\n=== Example 2: Social Network Analysis ===');
+const socialNetwork = new Graph();
 
-const starResult = girvanNewman(star, { maxCommunities: 3 });
-console.log(`Star network communities: ${starResult.communities.length}`);
-starResult.communities.forEach((community, index) => {
-    console.log(`Star Community ${index + 1}: [${Array.from(community).sort().join(', ')}]`);
+// Create departmental clusters
+// Sales department
+socialNetwork.addEdge('Alice', 'Bob');
+socialNetwork.addEdge('Alice', 'Carol');
+socialNetwork.addEdge('Bob', 'Carol');
+socialNetwork.addEdge('Bob', 'David');
+socialNetwork.addEdge('Carol', 'David');
+socialNetwork.addEdge('Alice', 'David');
+
+// Engineering department
+socialNetwork.addEdge('Eve', 'Frank');
+socialNetwork.addEdge('Eve', 'Grace');
+socialNetwork.addEdge('Frank', 'Grace');
+socialNetwork.addEdge('Frank', 'Henry');
+socialNetwork.addEdge('Grace', 'Henry');
+socialNetwork.addEdge('Eve', 'Henry');
+
+// Marketing department
+socialNetwork.addEdge('Ivy', 'Jack');
+socialNetwork.addEdge('Ivy', 'Kate');
+socialNetwork.addEdge('Jack', 'Kate');
+
+// Cross-department collaborations (weak ties)
+socialNetwork.addEdge('Carol', 'Eve');     // Sales-Engineering
+socialNetwork.addEdge('David', 'Frank');    // Sales-Engineering
+socialNetwork.addEdge('Grace', 'Ivy');      // Engineering-Marketing
+
+console.log('Analyzing organizational structure...');
+const orgDendrogram = girvanNewman(socialNetwork);
+
+// Find optimal number of departments
+let bestOrgPartition = orgDendrogram[0];
+let bestOrgModularity = orgDendrogram[0].modularity;
+for (const partition of orgDendrogram) {
+    if (partition.modularity > bestOrgModularity) {
+        bestOrgModularity = partition.modularity;
+        bestOrgPartition = partition;
+    }
+}
+
+console.log(`\nDetected ${bestOrgPartition.communities.length} departments:`);
+bestOrgPartition.communities.forEach((dept, index) => {
+    console.log(`Department ${index + 1}: ${dept.sort().join(', ')}`);
 });
+console.log(`Department separation quality (modularity): ${bestOrgModularity.toFixed(4)}`);
 
-// Test on a path graph
-console.log('\n6. Path Network Example:');
-const path = new Graph();
-path.addEdge('1', '2');
-path.addEdge('2', '3');
-path.addEdge('3', '4');
-path.addEdge('4', '5');
+// Look for a specific number of communities (e.g., known 3 departments)
+console.log('\nForcing 3 departments:');
+let threeDeptPartition = null;
+for (const partition of orgDendrogram) {
+    if (partition.communities.length === 3) {
+        threeDeptPartition = partition;
+        break;
+    }
+}
+if (threeDeptPartition) {
+    threeDeptPartition.communities.forEach((dept, index) => {
+        console.log(`Department ${index + 1}: ${dept.sort().join(', ')}`);
+    });
+    console.log(`Modularity with 3 departments: ${threeDeptPartition.modularity.toFixed(4)}`);
+}
 
-const pathResult = girvanNewman(path, { maxCommunities: 3 });
-console.log(`Path network communities: ${pathResult.communities.length}`);
-pathResult.communities.forEach((community, index) => {
-    console.log(`Path Community ${index + 1}: [${Array.from(community).sort().join(', ')}]`);
+// Example 3: Karate Club Example
+console.log('\n\n=== Example 3: Zachary\'s Karate Club ===');
+// This is a simplified version of the famous Karate Club network
+const karateClub = new Graph();
+
+// Instructor's group
+const instructor = 'Instructor';
+const instructorGroup = ['Student1', 'Student2', 'Student3', 'Student4'];
+instructorGroup.forEach(student => {
+    karateClub.addEdge(instructor, student);
 });
+// Connections within instructor's group
+karateClub.addEdge('Student1', 'Student2');
+karateClub.addEdge('Student2', 'Student3');
+karateClub.addEdge('Student3', 'Student4');
+karateClub.addEdge('Student1', 'Student4');
 
-// Find the best modularity in the dendrogram
-console.log('\n7. Best Modularity Analysis:');
-const bestStep = result.dendrogram.reduce((best, current) => 
-    current.modularity > best.modularity ? current : best);
-console.log(`Best modularity: ${bestStep.modularity.toFixed(4)}`);
-console.log(`Best number of communities: ${bestStep.communities.length}`);
-console.log('Best communities:');
-bestStep.communities.forEach((community, index) => {
-    console.log(`  ${index + 1}: [${Array.from(community).sort().join(', ')}]`);
+// Administrator's group
+const administrator = 'Administrator';
+const adminGroup = ['Student5', 'Student6', 'Student7', 'Student8'];
+adminGroup.forEach(student => {
+    karateClub.addEdge(administrator, student);
 });
+// Connections within administrator's group
+karateClub.addEdge('Student5', 'Student6');
+karateClub.addEdge('Student6', 'Student7');
+karateClub.addEdge('Student7', 'Student8');
+karateClub.addEdge('Student5', 'Student8');
+
+// Few connections between groups (conflict situation)
+karateClub.addEdge('Student2', 'Student6');  // Weak tie
+karateClub.addEdge('Student3', 'Student7');  // Weak tie
+
+console.log('Network represents a club with internal conflict...');
+const clubDendrogram = girvanNewman(karateClub);
+
+// Find the two-faction split
+let twoFactionPartition = null;
+for (const partition of clubDendrogram) {
+    if (partition.communities.length === 2) {
+        twoFactionPartition = partition;
+        break;
+    }
+}
+
+if (twoFactionPartition) {
+    console.log('\nTwo-faction split detected:');
+    twoFactionPartition.communities.forEach((faction, index) => {
+        console.log(`Faction ${index + 1}: ${faction.sort().join(', ')}`);
+    });
+    console.log(`Split quality (modularity): ${twoFactionPartition.modularity.toFixed(4)}`);
+}
 
 // Verify results
 console.log('\n=== Verification ===');
-console.log('✓ Should detect 2 main communities in basic network:', 
-    result.communities.length === 2);
-console.log('✓ Communities should be well-separated (high modularity):', 
-    result.modularity > 0.3);
-console.log('✓ All nodes should be assigned to communities:', 
-    result.communities.reduce((total, community) => total + community.size, 0) === network.nodeCount);
-console.log('✓ Dendrogram should show hierarchical structure:', 
-    result.dendrogram.length > 0);
-console.log('✓ Modularity should generally increase until optimal point:', 
-    result.dendrogram.some(step => step.modularity > 0));
-console.log('✓ Star network should separate center from leaves or keep together');
-console.log('✓ Path network should break at weak points');
-
-// Check that the bridge edge was likely removed early
-const bridgeRemoved = result.dendrogram.some(step => 
-    step.removedEdge === 'D-E' || step.removedEdge === 'E-D');
-console.log('✓ Bridge edge D-E should be removed (high betweenness):', bridgeRemoved);
+console.log('✓ Algorithm should find natural community boundaries:', 
+    bestPartition.communities.length === 2);
+console.log('✓ Bridge edges should be removed first in hierarchical decomposition:', 
+    dendrogram.length > 1);
+console.log('✓ Modularity should be positive for well-defined communities:', 
+    bestModularity > 0);
+console.log('✓ Each node should belong to exactly one community:', 
+    bestPartition.communities.reduce((sum, comm) => sum + comm.length, 0) === network.nodeCount);

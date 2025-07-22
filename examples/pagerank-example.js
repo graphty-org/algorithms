@@ -30,9 +30,9 @@ console.log('   +-> ProductB');
 
 // Calculate basic PageRank
 console.log('\n1. Basic PageRank (default damping factor 0.85):');
-const pageRankScores = pageRank(graph);
+const pageRankResult = pageRank(graph);
 console.log('PageRank scores:');
-Object.entries(pageRankScores)
+Object.entries(pageRankResult.ranks)
     .sort((a, b) => b[1] - a[1])
     .forEach(([page, score]) => {
         console.log(`  ${page}: ${score.toFixed(4)}`);
@@ -40,9 +40,9 @@ Object.entries(pageRankScores)
 
 // Calculate PageRank with different damping factor
 console.log('\n2. PageRank with damping factor 0.5:');
-const lowDampingScores = pageRank(graph, { dampingFactor: 0.5 });
+const lowDampingResult = pageRank(graph, { dampingFactor: 0.5 });
 console.log('PageRank scores (damping 0.5):');
-Object.entries(lowDampingScores)
+Object.entries(lowDampingResult.ranks)
     .sort((a, b) => b[1] - a[1])
     .slice(0, 3)
     .forEach(([page, score]) => {
@@ -51,9 +51,9 @@ Object.entries(lowDampingScores)
 
 // Calculate Personalized PageRank
 console.log('\n3. Personalized PageRank (biased toward Products):');
-const personalizedScores = personalizedPageRank(graph, ['Products']);
+const personalizedResult = personalizedPageRank(graph, ['Products']);
 console.log('Personalized PageRank scores:');
-Object.entries(personalizedScores)
+Object.entries(personalizedResult.ranks)
     .sort((a, b) => b[1] - a[1])
     .forEach(([page, score]) => {
         console.log(`  ${page}: ${score.toFixed(4)}`);
@@ -74,8 +74,8 @@ Object.entries(centrality)
 console.log('\n5. Top 3 pages by PageRank:');
 const topPages = topPageRankNodes(graph, 3);
 console.log('Top pages:');
-topPages.forEach(({ node, score }, index) => {
-    console.log(`  ${index + 1}. ${node}: ${score.toFixed(4)}`);
+topPages.forEach(({ node, rank }, index) => {
+    console.log(`  ${index + 1}. ${node}: ${rank.toFixed(4)}`);
 });
 
 // Test with weighted edges
@@ -86,9 +86,9 @@ weightedGraph.addEdge('A', 'C', 1);
 weightedGraph.addEdge('B', 'C', 2);
 weightedGraph.addEdge('C', 'A', 1);
 
-const weightedScores = pageRank(weightedGraph, { weighted: true });
+const weightedResult = pageRank(weightedGraph, { weighted: true });
 console.log('Weighted PageRank scores:');
-Object.entries(weightedScores)
+Object.entries(weightedResult.ranks)
     .sort((a, b) => b[1] - a[1])
     .forEach(([node, score]) => {
         console.log(`  ${node}: ${score.toFixed(4)}`);
@@ -96,10 +96,10 @@ Object.entries(weightedScores)
 
 // Verify results
 console.log('\n=== Verification ===');
-const totalScore = Object.values(pageRankScores).reduce((sum, score) => sum + score, 0);
+const totalScore = Object.values(pageRankResult.ranks).reduce((sum, score) => sum + score, 0);
 console.log('✓ PageRank scores sum to ~1.0:', Math.abs(totalScore - 1.0) < 0.001);
-console.log('✓ All scores are positive:', Object.values(pageRankScores).every(score => score > 0));
+console.log('✓ All scores are positive:', Object.values(pageRankResult.ranks).every(score => score > 0));
 console.log('✓ HomePage should have high PageRank (many incoming links):', 
-    pageRankScores.HomePage > 0.15);
+    pageRankResult.ranks.HomePage > 0.15);
 console.log('✓ Products should be highly ranked in personalized PageRank:', 
-    personalizedScores.Products > personalizedScores.About);
+    personalizedResult.ranks.Products > personalizedResult.ranks.About);
