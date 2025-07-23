@@ -1,17 +1,18 @@
 # @graphty/algorithms
 
-[![Build Status](https://github.com/graphty-org/algorithms/workflows/CI/badge.svg)](https://github.com/graphty-org/algorithms/actions)
-[![Coverage Status](https://codecov.io/gh/graphty-org/algorithms/branch/main/graph/badge.svg)](https://codecov.io/gh/graphty-org/algorithms)
+[![Build Status](https://github.com/graphty-org/algorithms/actions/workflows/test.yml/badge.svg)](https://github.com/graphty-org/algorithms/actions/workflows/test.yml)
+[![Coverage Status](https://coveralls.io/repos/github/graphty-org/algorithms/badge.svg)](https://coveralls.io/github/graphty-org/algorithms)
 [![npm version](https://img.shields.io/npm/v/@graphty/algorithms.svg)](https://www.npmjs.com/package/@graphty/algorithms)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-A comprehensive TypeScript graph algorithms library with 65+ algorithms optimized for browser environments and visualization applications.
+A comprehensive TypeScript graph algorithms library with 100+ algorithms optimized for browser environments and visualization applications.
 
 ## Features
 
 - **TypeScript-first**: Full type safety with comprehensive type definitions
 - **Browser-optimized**: Designed to run efficiently in web browsers
 - **Modular**: Import only the algorithms you need
-- **Comprehensive**: 65+ graph algorithms including traversal, shortest paths, centrality, clustering, flow, and more
+- **Comprehensive**: 100+ graph algorithms including traversal, shortest paths, centrality, clustering, flow, matching, link prediction, and more
 - **Well-tested**: Extensive test suite with high coverage
 - **Standards-compliant**: Follows conventional commits and semantic versioning
 
@@ -46,7 +47,9 @@ const traversal = breadthFirstSearch(graph, 'A');
 console.log(traversal.order); // ['A', 'B', 'C']
 
 const shortestPaths = dijkstra(graph, 'A');
-console.log(shortestPaths.distances); // Map { 'A' => 0, 'B' => 1, 'C' => 3 }
+// Get distance to C
+const pathToC = shortestPaths.get('C');
+console.log(pathToC?.distance); // 3
 ```
 
 ## API Reference
@@ -171,7 +174,7 @@ graph.clear(): void
 #### Breadth-First Search (BFS)
 
 ```typescript
-import { breadthFirstSearch, shortestPathBFS, singleSourceShortestPathBFS } from '@graphty/algorithms';
+import { breadthFirstSearch, shortestPathBFS, singleSourceShortestPathBFS, isBipartite } from '@graphty/algorithms';
 
 // Basic BFS traversal
 const result = breadthFirstSearch(graph, startNode, {
@@ -196,7 +199,7 @@ const bipartite = isBipartite(graph);
 #### Depth-First Search (DFS)
 
 ```typescript
-import { depthFirstSearch, topologicalSort, hasCycleDFS } from '@graphty/algorithms';
+import { depthFirstSearch, topologicalSort, hasCycleDFS, findStronglyConnectedComponents } from '@graphty/algorithms';
 
 // Basic DFS traversal
 const result = depthFirstSearch(graph, startNode, {
@@ -212,6 +215,10 @@ const sorted = topologicalSort(graph);
 // Cycle detection
 const hasCycle = hasCycleDFS(graph);
 // Returns: boolean
+
+// Find strongly connected components using DFS
+const sccs = findStronglyConnectedComponents(graph);
+// Returns: NodeId[][]
 ```
 
 ### Shortest Path Algorithms
@@ -225,19 +232,20 @@ import { dijkstra, dijkstraPath, singleSourceShortestPath, allPairsShortestPath 
 const result = dijkstra(graph, source, {
   target?: NodeId        // Optional: stop when target is reached
 });
-// Returns: Map<NodeId, { path: NodeId[], distance: number, predecessor: NodeId | null }>
+// Returns: Map<NodeId, ShortestPathResult>
+// ShortestPathResult = { distance: number, path: NodeId[], predecessor: Map<NodeId, NodeId | null> }
 
 // Get specific path
 const path = dijkstraPath(graph, source, target);
-// Returns: { path: NodeId[], distance: number } | null
+// Returns: ShortestPathResult | null
 
 // All shortest paths from source
 const paths = singleSourceShortestPath(graph, source);
-// Returns: Map<NodeId, { path: NodeId[], distance: number }>
+// Returns: Map<NodeId, ShortestPathResult>
 
 // All pairs shortest paths
 const allPairs = allPairsShortestPath(graph);
-// Returns: Map<NodeId, Map<NodeId, { path: NodeId[], distance: number }>>
+// Returns: Map<NodeId, Map<NodeId, ShortestPathResult>>
 ```
 
 #### Bellman-Ford Algorithm
@@ -256,7 +264,7 @@ const result = bellmanFord(graph, source);
 
 // Get specific path
 const path = bellmanFordPath(graph, source, target);
-// Returns: { path: NodeId[], distance: number } | null
+// Returns: ShortestPathResult | null
 
 // Check for negative cycles
 const result = hasNegativeCycle(graph);
@@ -293,7 +301,7 @@ const centralities = degreeCentrality(graph, {
   normalized?: boolean,   // Default: false
   weight?: string        // Optional: edge property for weighted degree
 });
-// Returns: CentralityResult (Map<NodeId, number>)
+// Returns: CentralityResult (Record<string, number>)
 
 // Calculate for single node
 const centrality = nodeDegreeCentrality(graph, nodeId, { normalized?: boolean });
@@ -311,7 +319,7 @@ const centralities = betweennessCentrality(graph, {
   weight?: string,       // Optional: use weighted shortest paths
   endpoints?: boolean    // Default: false, include endpoints in paths
 });
-// Returns: CentralityResult
+// Returns: CentralityResult (Record<string, number>)
 
 // Single node betweenness
 const centrality = nodeBetweennessCentrality(graph, nodeId, options);
@@ -331,7 +339,7 @@ import { closenessCentrality, nodeClosenessCentrality, weightedClosenessCentrali
 const centralities = closenessCentrality(graph, {
   normalized?: boolean    // Default: false
 });
-// Returns: CentralityResult
+// Returns: CentralityResult (Record<string, number>)
 
 // Single node closeness
 const centrality = nodeClosenessCentrality(graph, nodeId, { normalized?: boolean });
@@ -342,7 +350,7 @@ const centralities = weightedClosenessCentrality(graph, {
   normalized?: boolean,
   weight?: string        // Edge property for weights
 });
-// Returns: CentralityResult
+// Returns: CentralityResult (Record<string, number>)
 ```
 
 #### PageRank
@@ -363,11 +371,65 @@ const result = pageRank(graph, {
 // Personalized PageRank (with bias)
 const ranks = personalizedPageRank(graph, personalization, options);
 // personalization: Map<NodeId, number> - restart probabilities
-// Returns: CentralityResult
+// Returns: CentralityResult (Record<string, number>)
 
 // Get top N nodes by PageRank
 const topNodes = topPageRankNodes(graph, n, options);
 // Returns: Array<{ node: NodeId, rank: number }>
+```
+
+#### Eigenvector Centrality
+
+```typescript
+import { eigenvectorCentrality, nodeEigenvectorCentrality } from '@graphty/algorithms';
+
+// Calculate eigenvector centrality for all nodes
+const centralities = eigenvectorCentrality(graph, {
+  maxIterations?: number,    // Default: 100
+  tolerance?: number         // Default: 1e-6
+});
+// Returns: CentralityResult (Record<string, number>)
+
+// Single node eigenvector centrality
+const centrality = nodeEigenvectorCentrality(graph, nodeId, options);
+// Returns: number
+```
+
+#### Katz Centrality
+
+```typescript
+import { katzCentrality, nodeKatzCentrality } from '@graphty/algorithms';
+
+// Calculate Katz centrality for all nodes
+const centralities = katzCentrality(graph, {
+  alpha?: number,           // Attenuation factor (default: 0.1)
+  beta?: number,            // Weight for direct connections (default: 1.0)
+  maxIterations?: number,   // Default: 100
+  tolerance?: number,       // Default: 1e-6
+  normalized?: boolean      // Default: true
+});
+// Returns: CentralityResult (Record<string, number>)
+
+// Single node Katz centrality
+const centrality = nodeKatzCentrality(graph, nodeId, options);
+// Returns: number
+```
+
+#### HITS Algorithm
+
+```typescript
+import { hits, nodeHITS } from '@graphty/algorithms';
+
+// Calculate hub and authority scores
+const result = hits(graph, {
+  maxIterations?: number,   // Default: 100
+  tolerance?: number        // Default: 1e-6
+});
+// Returns: HITSResult { hubs: CentralityResult, authorities: CentralityResult }
+
+// Single node HITS scores
+const scores = nodeHITS(graph, nodeId, options);
+// Returns: { hub: number, authority: number }
 ```
 
 ### Connected Components
@@ -429,6 +491,10 @@ const stronglyConnected = isStronglyConnected(graph);
 // Create condensation graph (DAG of SCCs)
 const condensation = condensationGraph(graph);
 // Returns: { graph: Graph, componentMap: Map<NodeId, number> }
+
+// Alternative DFS-based connected components
+const components = connectedComponentsDFS(graph);
+// Returns: ComponentResult
 ```
 
 #### Weakly Connected Components
@@ -599,6 +665,10 @@ const flow = fordFulkerson(graph, source, sink, {
 
 // Edmonds-Karp using BFS (better complexity)
 const flow = edmondsKarp(graph, source, sink, options);
+
+// Create bipartite flow network
+const flowNetwork = createBipartiteFlowNetwork(leftNodes, rightNodes, edges, capacities?);
+// Returns: FlowNetwork
 ```
 
 #### Minimum Cut
@@ -627,29 +697,29 @@ const cut = kargerMinCut(graph, iterations?);
 import { hierarchicalClustering, cutDendrogram, cutDendrogramKClusters } from '@graphty/algorithms';
 
 // Agglomerative clustering
-const dendrogram = hierarchicalClustering(graph, {
-  linkage: 'single' | 'complete' | 'average',  // Default: 'average'
-  distanceMetric?: (a: NodeId, b: NodeId) => number
-});
-// Returns: Dendrogram structure
+const result = hierarchicalClustering(graph, linkage);
+// graph: Map<NodeId, Set<NodeId>>
+// linkage: 'single' | 'complete' | 'average' | 'ward' (default: 'single')
+// Returns: HierarchicalClusteringResult { root: ClusterNode, dendrogram: ClusterNode[], clusters: Map<number, Set<NodeId>[]> }
 
 // Cut at specific height
-const clusters = cutDendrogram(dendrogram, height);
-// Returns: NodeId[][]
+const clusters = cutDendrogram(result.root, height);
+// Returns: Set<NodeId>[]
 
 // Get exactly k clusters
-const clusters = cutDendrogramKClusters(dendrogram, k);
-// Returns: NodeId[][]
+const clusters = cutDendrogramKClusters(result.root, k);
+// Returns: Set<NodeId>[]
 ```
 
 #### K-Core Decomposition
 
 ```typescript
-import { kCoreDecomposition, getKCore, kTruss } from '@graphty/algorithms';
+import { kCoreDecomposition, getKCore, kTruss, degeneracyOrdering } from '@graphty/algorithms';
 
 // Find all k-cores
-const cores = kCoreDecomposition(graph);
-// Returns: Map<NodeId, number> (node to core number)
+const result = kCoreDecomposition(graph);
+// graph: Map<NodeId, Set<NodeId>>
+// Returns: KCoreResult { cores: Map<number, Set<NodeId>>, coreness: Map<NodeId, number>, maxCore: number }
 
 // Extract specific k-core subgraph
 const kCore = getKCore(graph, k);
@@ -657,8 +727,230 @@ const kCore = getKCore(graph, k);
 
 // Find k-truss (triangular cores)
 const truss = kTruss(graph, k);
-// Returns: Graph
+// Returns: Set<string> (edge strings)
+
+// Degeneracy ordering
+const ordering = degeneracyOrdering(graph);
+// Returns: NodeId[]
 ```
+
+#### Spectral Clustering
+
+```typescript
+import { spectralClustering } from '@graphty/algorithms';
+
+// Spectral clustering using graph Laplacian
+const result = spectralClustering(graph, {
+  k: number,                // Number of clusters
+  laplacianType?: 'unnormalized' | 'normalized' | 'randomWalk',  // Default: 'normalized'
+  maxIterations?: number,   // Default: 100
+  tolerance?: number        // Default: 1e-4
+});
+// Returns: SpectralClusteringResult { communities: NodeId[][], clusterAssignments: Map<NodeId, number> }
+```
+
+#### Markov Clustering (MCL)
+
+```typescript
+import { markovClustering } from '@graphty/algorithms';
+
+// MCL algorithm for network clustering
+const result = markovClustering(graph, {
+  expansion?: number,       // Expansion parameter (default: 2)
+  inflation?: number,       // Inflation parameter (default: 2)
+  maxIterations?: number,   // Default: 100
+  tolerance?: number        // Default: 1e-6
+});
+// Returns: MCLResult { communities: NodeId[][], attractors: Set<NodeId>, iterations: number, converged: boolean }
+```
+
+### Matching Algorithms
+
+#### Bipartite Matching
+
+```typescript
+import { maximumBipartiteMatching, greedyBipartiteMatching, bipartitePartition } from '@graphty/algorithms';
+
+// Maximum bipartite matching (Hungarian algorithm)
+const matching = maximumBipartiteMatching(graph, {
+  leftNodes?: Set<NodeId>,   // Optional: specify left partition
+  rightNodes?: Set<NodeId>,  // Optional: specify right partition
+});
+// Returns: BipartiteMatchingResult { matching: Map<NodeId, NodeId>, size: number }
+
+// Greedy bipartite matching (faster, approximate)
+const matching = greedyBipartiteMatching(graph, options);
+
+// Partition graph into bipartite sets
+const partition = bipartitePartition(graph);
+// Returns: { left: Set<NodeId>, right: Set<NodeId> } | null
+```
+
+#### Graph Isomorphism
+
+```typescript
+import { isGraphIsomorphic, findAllIsomorphisms } from '@graphty/algorithms';
+
+// Check if two graphs are isomorphic
+const result = isGraphIsomorphic(graph1, graph2, {
+  nodeMatch?: (node1: NodeId, node2: NodeId, g1: Graph, g2: Graph) => boolean,
+  edgeMatch?: (edge1: [NodeId, NodeId], edge2: [NodeId, NodeId], g1: Graph, g2: Graph) => boolean,
+  findAllMappings?: boolean     // Find all possible isomorphisms
+});
+// Returns: IsomorphismResult { isIsomorphic: boolean, mapping?: Map<NodeId, NodeId> }
+
+// Find all isomorphism mappings
+const mappings = findAllIsomorphisms(graph1, graph2, options);
+// Returns: Array<Map<NodeId, NodeId>>
+```
+
+### Link Prediction Algorithms
+
+#### Common Neighbors
+
+```typescript
+import { commonNeighborsScore, commonNeighborsPrediction, commonNeighborsForPairs } from '@graphty/algorithms';
+
+// Score for a specific pair
+const score = commonNeighborsScore(graph, node1, node2);
+// Returns: number
+
+// Predict links for all non-connected pairs
+const predictions = commonNeighborsPrediction(graph, {
+  directed?: boolean,        // Consider direction
+  includeExisting?: boolean, // Include existing edges
+  topK?: number             // Return only top K predictions
+});
+// Returns: LinkPredictionScore[]
+
+// Score multiple specific pairs
+const scores = commonNeighborsForPairs(graph, pairs, options);
+// Returns: LinkPredictionScore[]
+
+// Evaluate prediction performance
+const evaluation = evaluateCommonNeighbors(graph, testEdges);
+// Returns: { precision, recall, f1Score }
+
+// Get top candidates for a node
+const candidates = getTopCandidatesForNode(graph, nodeId, { topK?: number });
+// Returns: LinkPredictionScore[]
+```
+
+#### Adamic-Adar Index
+
+```typescript
+import { adamicAdarScore, adamicAdarPrediction, adamicAdarForPairs } from '@graphty/algorithms';
+
+// Adamic-Adar score for a pair (weighted by neighbor degrees)
+const score = adamicAdarScore(graph, node1, node2);
+// Returns: number
+
+// Predict links using Adamic-Adar
+const predictions = adamicAdarPrediction(graph, {
+  directed?: boolean,
+  includeExisting?: boolean,
+  topK?: number
+});
+// Returns: LinkPredictionScore[]
+
+// Score multiple pairs
+const scores = adamicAdarForPairs(graph, pairs, options);
+// Returns: LinkPredictionScore[]
+
+// Compare Adamic-Adar with Common Neighbors
+const comparison = compareAdamicAdarWithCommonNeighbors(graph, pairs);
+// Returns: Array<{ source, target, adamicAdar, commonNeighbors }>
+
+// Evaluate prediction performance
+const evaluation = evaluateAdamicAdar(graph, testEdges);
+// Returns: { precision, recall, f1Score }
+
+// Get top candidates for a node
+const candidates = getTopAdamicAdarCandidatesForNode(graph, nodeId, { topK?: number });
+// Returns: LinkPredictionScore[]
+```
+
+### Research Algorithms (2023-2025)
+
+Cutting-edge graph algorithms based on recent research.
+
+#### SynC - Synergistic Deep Graph Clustering
+
+```typescript
+import { syncClustering } from '@graphty/algorithms';
+
+// Deep learning based clustering
+const result = syncClustering(graph, {
+  k: number,                  // Number of clusters
+  maxIterations?: number,     // Default: 100
+  learningRate?: number,      // Default: 0.01
+  hiddenDim?: number,         // Default: 64
+  randomSeed?: number
+});
+// Returns: SynCResult { 
+//   communities: NodeId[][], 
+//   clusterAssignments: Map<NodeId, number>,
+//   embeddings: Map<NodeId, number[]>,
+//   iterations: number,
+//   converged: boolean
+// }
+```
+
+#### TeraHAC - Scalable Hierarchical Agglomerative Clustering
+
+```typescript
+import { teraHAC } from '@graphty/algorithms';
+
+// Scalable hierarchical clustering
+const result = teraHAC(graph, {
+  linkage?: 'single' | 'complete' | 'average',  // Default: 'average'
+  k?: number,                   // Target number of clusters
+  threshold?: number,           // Distance threshold for merging
+  sampleSize?: number,          // Default: 1000
+  randomSeed?: number
+});
+// Returns: TeraHACResult {
+//   root: TeraHACClusterNode,
+//   dendrogram: TeraHACClusterNode[],
+//   clusters: NodeId[][],
+//   mergeDistances: number[]
+// }
+```
+
+#### GRSBM - Greedy Recursive Spectral Bisection with Modularity
+
+```typescript
+import { grsbm } from '@graphty/algorithms';
+
+// Explainable community detection
+const result = grsbm(graph, {
+  minClusterSize?: number,      // Default: 5
+  maxDepth?: number,            // Default: 10
+  modularityThreshold?: number, // Default: 0.1
+  explainClusters?: boolean     // Default: true
+});
+// Returns: GRSBMResult {
+//   clusters: GRSBMCluster[],   // Each cluster has id, nodes, modularity, explanation
+//   hierarchy: Map<number, number[]>,
+//   totalModularity: number
+// }
+```
+
+## Algorithm Categories Summary
+
+### Available Algorithms by Category:
+
+- **Traversal**: BFS, DFS, Topological Sort, Cycle Detection, Bipartite Check
+- **Shortest Path**: Dijkstra, Bellman-Ford, Floyd-Warshall, A*
+- **Centrality**: Degree, Betweenness, Closeness, PageRank, Eigenvector, Katz, HITS
+- **Components**: Connected, Strongly Connected, Weakly Connected, Condensation Graph
+- **Community Detection**: Louvain, Leiden, Label Propagation, Girvan-Newman
+- **Clustering**: Hierarchical, K-Core, Spectral, Markov (MCL)
+- **Minimum Spanning Tree**: Kruskal, Prim
+- **Network Flow**: Ford-Fulkerson, Edmonds-Karp, Min-Cut (Stoer-Wagner, Karger)
+- **Matching**: Bipartite Matching, Graph Isomorphism
+- **Link Prediction**: Common Neighbors, Adamic-Adar
+- **Research Algorithms**: SynC, TeraHAC, GRSBM
 
 ## Examples
 
@@ -676,6 +968,9 @@ The library includes comprehensive examples demonstrating each algorithm. Find t
 - [Betweenness Centrality](https://github.com/graphty-org/algorithms/blob/main/examples/betweenness-centrality-example.js) - Bridge nodes
 - [Closeness Centrality](https://github.com/graphty-org/algorithms/blob/main/examples/closeness-centrality-example.js) - Central nodes
 - [PageRank](https://github.com/graphty-org/algorithms/blob/main/examples/pagerank-example.js) - Node ranking algorithm
+- [Eigenvector Centrality](https://github.com/graphty-org/algorithms/blob/main/examples/eigenvector-centrality-example.js) - Influence from important nodes
+- [Katz Centrality](https://github.com/graphty-org/algorithms/blob/main/examples/katz-centrality-example.js) - Weighted path counting
+- [HITS Algorithm](https://github.com/graphty-org/algorithms/blob/main/examples/hits-algorithm-example.js) - Hub and authority scores
 
 ### Graph Structure
 - [Connected Components](https://github.com/graphty-org/algorithms/blob/main/examples/connected-components-example.js) - Find graph components
@@ -688,13 +983,30 @@ The library includes comprehensive examples demonstrating each algorithm. Find t
 - [Label Propagation](https://github.com/graphty-org/algorithms/blob/main/examples/label-propagation.ts) - Fast community detection
 - [Girvan-Newman](https://github.com/graphty-org/algorithms/blob/main/examples/girvan-newman-example.js) - Hierarchical communities
 
+### Clustering
+- [Hierarchical Clustering](https://github.com/graphty-org/algorithms/blob/main/examples/hierarchical-clustering.ts) - Graph clustering
+- [K-Core Decomposition](https://github.com/graphty-org/algorithms/blob/main/examples/k-core-decomposition.ts) - Core analysis
+- [Spectral Clustering](https://github.com/graphty-org/algorithms/blob/main/examples/spectral-clustering-example.js) - Eigenvalue-based clustering
+- [MCL Clustering](https://github.com/graphty-org/algorithms/blob/main/examples/mcl-clustering-example.js) - Markov clustering
+
+### Matching
+- [Bipartite Matching](https://github.com/graphty-org/algorithms/blob/main/examples/bipartite-matching-example.js) - Job assignment, dating apps
+- [Graph Isomorphism](https://github.com/graphty-org/algorithms/blob/main/examples/graph-isomorphism-example.js) - Structural equivalence
+
+### Link Prediction
+- [Common Neighbors](https://github.com/graphty-org/algorithms/blob/main/examples/common-neighbors-example.js) - Friend suggestions
+- [Adamic-Adar](https://github.com/graphty-org/algorithms/blob/main/examples/adamic-adar-example.js) - Weighted predictions
+
 ### Advanced Algorithms
 - [A* Pathfinding](https://github.com/graphty-org/algorithms/blob/main/examples/astar-pathfinding.ts) - Heuristic pathfinding
 - [Flow Algorithms](https://github.com/graphty-org/algorithms/blob/main/examples/flow-algorithms.ts) - Maximum flow and applications
 - [Ford-Fulkerson Flow](https://github.com/graphty-org/algorithms/blob/main/examples/ford-fulkerson-flow.ts) - Maximum flow implementation
 - [Minimum Cut](https://github.com/graphty-org/algorithms/blob/main/examples/min-cut.ts) - Graph partitioning
-- [Hierarchical Clustering](https://github.com/graphty-org/algorithms/blob/main/examples/hierarchical-clustering.ts) - Graph clustering
-- [K-Core Decomposition](https://github.com/graphty-org/algorithms/blob/main/examples/k-core-decomposition.ts) - Core analysis
+
+### Research Algorithms
+- [SynC Clustering](https://github.com/graphty-org/algorithms/blob/main/examples/sync-example.js) - Deep learning based clustering
+- [TeraHAC](https://github.com/graphty-org/algorithms/blob/main/examples/terahac-example.js) - Scalable hierarchical clustering
+- [GRSBM](https://github.com/graphty-org/algorithms/blob/main/examples/grsbm-example.js) - Explainable community detection
 
 ## Advanced Usage Examples
 
@@ -849,6 +1161,77 @@ interface CommunityResult {
   communities: Map<NodeId, number>;
   modularity: number;
 }
+
+interface ComponentResult {
+  components: NodeId[][];
+  componentMap: Map<NodeId, number>;
+}
+
+interface HITSResult {
+  hubs: CentralityResult;
+  authorities: CentralityResult;
+}
+
+interface SpectralClusteringResult {
+  communities: NodeId[][];
+  clusterAssignments: Map<NodeId, number>;
+}
+
+interface MCLResult {
+  communities: NodeId[][];
+  attractors: Set<NodeId>;
+  iterations: number;
+  converged: boolean;
+}
+
+interface BipartiteMatchingResult {
+  matching: Map<NodeId, NodeId>;
+  size: number;
+}
+
+interface LinkPredictionScore {
+  source: NodeId;
+  target: NodeId;
+  score: number;
+}
+
+interface HierarchicalClusteringResult<T> {
+  root: ClusterNode<T>;
+  dendrogram: ClusterNode<T>[];
+  clusters: Map<number, Set<T>[]>;
+}
+
+interface KCoreResult<T> {
+  cores: Map<number, Set<T>>;
+  coreness: Map<T, number>;
+  maxCore: number;
+}
+
+interface IsomorphismResult {
+  isIsomorphic: boolean;
+  mapping?: Map<NodeId, NodeId>;
+}
+
+interface SynCResult {
+  communities: NodeId[][];
+  clusterAssignments: Map<NodeId, number>;
+  embeddings: Map<NodeId, number[]>;
+  iterations: number;
+  converged: boolean;
+}
+
+interface TeraHACResult {
+  root: TeraHACClusterNode;
+  dendrogram: TeraHACClusterNode[];
+  clusters: NodeId[][];
+  mergeDistances: number[];
+}
+
+interface GRSBMResult {
+  clusters: GRSBMCluster[];
+  hierarchy: Map<number, number[]>;
+  totalModularity: number;
+}
 ```
 
 ## Performance Considerations
@@ -868,6 +1251,9 @@ interface CommunityResult {
   - Edmonds-Karp: O(VE²)
   - Louvain/Leiden: O(n log n) average case
   - Hierarchical Clustering: O(n² log n)
+  - SynC: O(kni) where k is clusters, n is nodes, i is iterations
+  - TeraHAC: O(n log n) with sampling
+  - GRSBM: O(m log n) where m is edges
 - **Memory Usage**: O(V + E) for graph storage
 - **Browser Optimization**: Algorithms use iterative approaches where possible to avoid stack overflow
 

@@ -37,6 +37,8 @@
     "build": "tsc",
     "build:watch": "tsc --watch",
     "dev": "tsc --watch",
+    "examples": "node examples/run-all-examples.js",
+    "examples:run": "node examples/run-all-examples.js",
     "commit": "cz",
     "ready:commit": "npm run build && npm run lint && npm run test:all"
   },

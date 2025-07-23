@@ -233,7 +233,7 @@ describe("Spectral Clustering", () => {
     });
 
     describe("clustering quality", () => {
-        it.skip("should separate well-defined clusters (requires full eigendecomposition)", () => {
+        it("should separate well-defined clusters (requires full eigendecomposition)", () => {
             const graph = new Graph();
 
             // Create two dense clusters
@@ -313,6 +313,326 @@ describe("Spectral Clustering", () => {
             expect(duration).toBeLessThan(10000); // Should complete within 10 seconds
             expect(result.communities.length).toBeGreaterThan(0);
             expect(result.clusterAssignments.size).toBe(50);
+        });
+    });
+
+    describe("k-means clustering edge cases", () => {
+        it("should handle k-means when data is empty", () => {
+            const graph = new Graph();
+            const result = spectralClustering(graph, {k: 0});
+            expect(result.communities).toHaveLength(0);
+            expect(result.clusterAssignments.size).toBe(0);
+        });
+
+        it("should handle graph with nodes but no edges (isolated nodes)", () => {
+            const graph = new Graph();
+            // Add several isolated nodes
+            for (let i = 0; i < 10; i++) {
+                graph.addNode(`node${i}`);
+            }
+
+            const result = spectralClustering(graph, {k: 3});
+            expect(result.communities.length).toBeGreaterThan(0);
+            expect(result.clusterAssignments.size).toBe(10);
+        });
+
+        it("should handle large k value relative to nodes", () => {
+            const graph = new Graph();
+            graph.addEdge("a", "b");
+            graph.addEdge("b", "c");
+            graph.addEdge("c", "d");
+
+            // k is larger than number of nodes
+            const result = spectralClustering(graph, {k: 10});
+            expect(result.communities).toHaveLength(4); // Each node gets its own cluster
+            expect(result.clusterAssignments.size).toBe(4);
+        });
+
+        it("should handle graphs with zero-weight edges", () => {
+            const graph = new Graph();
+            graph.addEdge("a", "b", 0);
+            graph.addEdge("b", "c", 0);
+            graph.addEdge("c", "d", 1);
+
+            const result = spectralClustering(graph, {k: 2});
+            expect(result.communities.length).toBeGreaterThan(0);
+            expect(result.clusterAssignments.size).toBe(4);
+        });
+
+        it("should handle k-means convergence with identical points", () => {
+            const graph = new Graph();
+            // Create a symmetric structure where spectral embedding might produce identical points
+            graph.addEdge("a", "center", 1);
+            graph.addEdge("b", "center", 1);
+            graph.addEdge("c", "center", 1);
+            graph.addEdge("d", "center", 1);
+
+            const result = spectralClustering(graph, {k: 2, maxIterations: 5});
+            expect(result.communities.length).toBeGreaterThan(0);
+            expect(result.clusterAssignments.size).toBe(5);
+        });
+
+        it("should handle graphs where k-means needs many iterations", () => {
+            const graph = new Graph();
+            // Create a chain that might require more iterations
+            for (let i = 0; i < 20; i++) {
+                graph.addEdge(`n${i}`, `n${i + 1}`);
+            }
+
+            const result = spectralClustering(graph, {k: 5, maxIterations: 50});
+            expect(result.communities.length).toBeGreaterThan(0);
+            expect(result.clusterAssignments.size).toBe(21);
+        });
+
+        it("should handle unnormalized Laplacian with isolated nodes", () => {
+            const graph = new Graph();
+            graph.addEdge("a", "b");
+            graph.addNode("isolated1");
+            graph.addNode("isolated2");
+
+            const result = spectralClustering(graph, {k: 2, laplacianType: "unnormalized"});
+            expect(result.communities.length).toBeGreaterThan(0);
+            expect(result.clusterAssignments.size).toBe(4);
+        });
+
+        it("should handle random walk Laplacian with weighted edges", () => {
+            const graph = new Graph();
+            graph.addEdge("a", "b", 10);
+            graph.addEdge("b", "c", 0.1);
+            graph.addEdge("c", "d", 10);
+
+            const result = spectralClustering(graph, {k: 2, laplacianType: "randomWalk"});
+            expect(result.communities.length).toBeGreaterThan(0);
+            expect(result.clusterAssignments.size).toBe(4);
+        });
+
+        it("should handle eigenvector computation for small matrices", () => {
+            const graph = new Graph();
+            // Small graph where n <= 3
+            graph.addEdge("a", "b");
+            graph.addNode("c");
+
+            const result = spectralClustering(graph, {k: 2});
+            expect(result.communities.length).toBeGreaterThan(0);
+            expect(result.eigenvalues).toBeDefined();
+            expect(result.eigenvectors).toBeDefined();
+        });
+
+        it("should handle eigenvector computation with k = n", () => {
+            const graph = new Graph();
+            graph.addEdge("a", "b");
+            graph.addEdge("b", "c");
+
+            const result = spectralClustering(graph, {k: 3});
+            expect(result.communities).toHaveLength(3);
+            // When k >= n, eigenvalues/eigenvectors might not be returned
+            // since each node becomes its own cluster
+        });
+
+        it("should handle graphs with very small edge weights", () => {
+            const graph = new Graph();
+            graph.addEdge("a", "b", 0.0001);
+            graph.addEdge("b", "c", 0.0001);
+            graph.addEdge("c", "d", 0.0001);
+
+            const result = spectralClustering(graph, {k: 2});
+            expect(result.communities.length).toBeGreaterThan(0);
+            expect(result.clusterAssignments.size).toBe(4);
+        });
+
+        it("should handle k-means with k = 1", () => {
+            const graph = new Graph();
+            // Create a connected component
+            graph.addEdge("a", "b");
+            graph.addEdge("b", "c");
+            graph.addEdge("c", "d");
+            graph.addEdge("d", "e");
+
+            const result = spectralClustering(graph, {k: 1});
+            expect(result.communities).toHaveLength(1);
+            expect(result.communities[0]).toHaveLength(5);
+            expect(result.clusterAssignments.size).toBe(5);
+        });
+
+        it("should handle case where k-means needs to fill remaining centroids", () => {
+            const graph = new Graph();
+            // Create a very small graph where data points < k
+            graph.addNode("a");
+            graph.addNode("b");
+
+            // Request more clusters than data points in embedding space
+            const result = spectralClustering(graph, {k: 5});
+            expect(result.communities).toHaveLength(2); // Each node as its own cluster
+            expect(result.clusterAssignments.size).toBe(2);
+        });
+
+        it("should handle k-means convergence in first iteration", () => {
+            const graph = new Graph();
+            // Single node graph
+            graph.addNode("a");
+
+            const result = spectralClustering(graph, {k: 1});
+            expect(result.communities).toHaveLength(1);
+            expect(result.communities[0]).toContain("a");
+        });
+
+        it("should handle empty data in k-means", () => {
+            const graph = new Graph();
+            const result = spectralClustering(graph, {k: 3});
+            expect(result.communities).toHaveLength(0);
+        });
+
+        it("should handle case with large graph for eigendecomposition", () => {
+            const graph = new Graph();
+            // Create a graph with exactly 4 nodes to test the n > 3 branch
+            graph.addEdge("a", "b");
+            graph.addEdge("b", "c");
+            graph.addEdge("c", "d");
+            graph.addEdge("d", "a");
+
+            const result = spectralClustering(graph, {k: 2});
+            expect(result.communities.length).toBeGreaterThan(0);
+            expect(result.clusterAssignments.size).toBe(4);
+        });
+
+        it("should handle k-means with all points assigned to same cluster initially", () => {
+            const graph = new Graph();
+            // Create symmetric graph that might result in similar embeddings
+            const nodes = ["a", "b", "c", "d", "e", "f"];
+            for (let i = 0; i < nodes.length; i++) {
+                for (let j = i + 1; j < nodes.length; j++) {
+                    graph.addEdge(nodes[i], nodes[j], 1);
+                }
+            }
+
+            const result = spectralClustering(graph, {k: 3, maxIterations: 2});
+            expect(result.communities.length).toBeGreaterThan(0);
+            expect(result.clusterAssignments.size).toBe(6);
+        });
+
+        it("should test euclidean distance calculation edge cases", () => {
+            const graph = new Graph();
+            // Create a graph that will test the euclidean distance function
+            graph.addEdge("a", "b", 1);
+            graph.addEdge("b", "c", 1);
+            graph.addEdge("c", "d", 1);
+
+            const result = spectralClustering(graph, {k: 2, maxIterations: 10});
+            expect(result.communities.length).toBeGreaterThan(0);
+        });
+
+        it("should handle normalized laplacian with zero degree nodes", () => {
+            const graph = new Graph();
+            graph.addNode("isolated");
+            graph.addEdge("a", "b");
+
+            const result = spectralClustering(graph, {k: 2, laplacianType: "normalized"});
+            expect(result.communities.length).toBeGreaterThan(0);
+            expect(result.clusterAssignments.has("isolated")).toBe(true);
+        });
+
+        it("should handle random walk laplacian with zero degree nodes", () => {
+            const graph = new Graph();
+            graph.addNode("isolated");
+            graph.addEdge("a", "b");
+
+            const result = spectralClustering(graph, {k: 2, laplacianType: "randomWalk"});
+            expect(result.communities.length).toBeGreaterThan(0);
+            expect(result.clusterAssignments.has("isolated")).toBe(true);
+        });
+
+        it("should test k-means when centroids need to be filled with random values", () => {
+            const graph = new Graph();
+            // Create graph where eigenvector decomposition might produce fewer valid vectors than k
+            graph.addNode("a");
+            graph.addNode("b");
+            // With 2 nodes but k=5, it should handle the case where we need more centroids
+            const result = spectralClustering(graph, {k: 5});
+            expect(result.communities).toHaveLength(2);
+        });
+
+        it("should handle k-means with immediate convergence", () => {
+            const graph = new Graph();
+            // Single cluster case
+            graph.addEdge("a", "b");
+            graph.addEdge("b", "c");
+            graph.addEdge("c", "a");
+
+            const result = spectralClustering(graph, {k: 1, maxIterations: 1});
+            expect(result.communities).toHaveLength(1);
+            expect(result.communities[0]).toHaveLength(3);
+        });
+
+        it("should handle graph that produces eigenvectors with n > 3 and k < n", () => {
+            const graph = new Graph();
+            // Create a 5-node graph to trigger power iteration in eigendecomposition
+            for (let i = 0; i < 5; i++) {
+                for (let j = i + 1; j < 5; j++) {
+                    graph.addEdge(`n${i}`, `n${j}`);
+                }
+            }
+
+            const result = spectralClustering(graph, {k: 3});
+            expect(result.communities).toHaveLength(3);
+            expect(result.clusterAssignments.size).toBe(5);
+        });
+
+        it("should handle k-means with data dimension d = 0", () => {
+            const graph = new Graph();
+            // Empty graph should produce empty eigenvectors
+            const result = spectralClustering(graph, {k: 2});
+            expect(result.communities).toHaveLength(0);
+        });
+
+        it("should test eigenvector orthogonalization in power iteration", () => {
+            const graph = new Graph();
+            // Create a graph large enough to trigger multiple eigenvector computations
+            const nodes = [];
+            for (let i = 0; i < 6; i++) {
+                nodes.push(`v${i}`);
+            }
+            // Create a specific structure to test orthogonalization
+            graph.addEdge(nodes[0], nodes[1]);
+            graph.addEdge(nodes[1], nodes[2]);
+            graph.addEdge(nodes[2], nodes[3]);
+            graph.addEdge(nodes[3], nodes[4]);
+            graph.addEdge(nodes[4], nodes[5]);
+            graph.addEdge(nodes[5], nodes[0]);
+
+            const result = spectralClustering(graph, {k: 3});
+            expect(result.communities.length).toBeGreaterThan(0);
+            expect(result.eigenvalues).toBeDefined();
+        });
+
+        it("should handle eigenvector computation with zero norm", () => {
+            const graph = new Graph();
+            // Create isolated nodes which might lead to zero eigenvectors
+            for (let i = 0; i < 4; i++) {
+                graph.addNode(`isolated${i}`);
+            }
+
+            const result = spectralClustering(graph, {k: 2});
+            expect(result.communities.length).toBeGreaterThan(0);
+        });
+
+        it("should test laplacian matrix computation branches", () => {
+            const graph = new Graph();
+            // Test with edges that have very small weights
+            graph.addEdge("a", "b", 0.0001);
+            graph.addEdge("b", "c", 0.0001);
+            graph.addNode("d"); // isolated node
+
+            // Test unnormalized laplacian
+            const result1 = spectralClustering(graph, {k: 2, laplacianType: "unnormalized"});
+            expect(result1.communities.length).toBeGreaterThan(0);
+
+            // Test normalized laplacian with zero degree node
+            const result2 = spectralClustering(graph, {k: 2, laplacianType: "normalized"});
+            expect(result2.communities.length).toBeGreaterThan(0);
+
+            // Test random walk laplacian
+            const result3 = spectralClustering(graph, {k: 2, laplacianType: "randomWalk"});
+            expect(result3.communities.length).toBeGreaterThan(0);
         });
     });
 });

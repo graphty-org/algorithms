@@ -33,5 +33,8 @@ export type {
 // Algorithm exports
 export * from "./algorithms/index.js";
 
+// Research algorithms exports (Priority 4)
+export * from "./research/index.js";
+
 // Data structure exports
 export * from "./data-structures/index.js";

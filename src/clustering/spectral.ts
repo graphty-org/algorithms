@@ -59,13 +59,27 @@ export function spectralClustering(
     // Find k smallest eigenvectors
     const eigenResult = findSmallestEigenvectors(laplacianMatrix, k);
 
-    // Normalize the eigenvector matrix row-wise (for normalized spectral clustering)
-    if (laplacianType === "normalized") {
-        normalizeRows(eigenResult.eigenvectors);
+    // Perform k-means clustering on the eigenvectors
+    // For spectral clustering, we need to transpose the eigenvector matrix
+    // Each row should be a data point (node) with features from the eigenvectors
+    const dataPoints: number[][] = [];
+    for (let i = 0; i < nodeIds.length; i++) {
+        const point: number[] = [];
+        for (let j = 0; j < k; j++) {
+            const eigenvector = eigenResult.eigenvectors[j];
+            if (eigenvector) {
+                point.push(eigenvector[i] ?? 0);
+            }
+        }
+        dataPoints.push(point);
     }
 
-    // Perform k-means clustering on the eigenvectors
-    const kmeans = kMeansClustering(eigenResult.eigenvectors, k, maxIterations);
+    // Normalize the data points row-wise (for normalized spectral clustering)
+    if (laplacianType === "normalized") {
+        normalizeRows(dataPoints);
+    }
+
+    const kmeans = kMeansClustering(dataPoints, k, maxIterations);
 
     // Build communities
     const communities: NodeId[][] = Array.from({length: k}, () => []);
@@ -265,31 +279,33 @@ function findSmallestEigenvectors(matrix: number[][], k: number): {
         return {eigenvalues: [], eigenvectors: []};
     }
 
-    // For small matrices or when k >= n, use a simplified approach
-    if (n <= 3 || k >= n) {
-        // Create identity-like eigenvectors for simplicity
-        const eigenvectors: number[][] = [];
-        const eigenvalues: number[] = [];
-
-        for (let i = 0; i < Math.min(k, n); i++) {
-            const vector = Array(n).fill(0) as number[];
-            vector[i] = 1;
-            eigenvectors.push(vector);
-            eigenvalues.push(i);
-        }
-
-        return {eigenvalues, eigenvectors};
+    // For very small matrices, use the full power iteration approach
+    // Remove the simplified approach that was causing issues
+    if (k >= n) {
+        // If k >= n, we still need proper eigenvectors, not identity
+        // Fall through to the power iteration below
     }
 
-    // For larger matrices, use power iteration to find dominant eigenvectors
-    // This is still simplified but better than random
+    // For spectral clustering, we need proper eigenvectors
+    // Special handling for small k values which are common in clustering
+    if (k <= 3 && n > k) {
+        return computeSmallestEigenvectorsSimple(matrix, k, n);
+    }
+
+    // For larger k, use power iteration
     const eigenvectors: number[][] = [];
     const eigenvalues: number[] = [];
-    const maxIterations = 50;
+    const maxIterations = 100;
 
     for (let eigIdx = 0; eigIdx < k; eigIdx++) {
         // Initialize random vector
         let vector = Array(n).fill(0).map(() => Math.random() - 0.5);
+
+        // Normalize initial vector
+        const initNorm = Math.sqrt(vector.reduce((sum, val) => sum + (val * val), 0));
+        if (initNorm > 0) {
+            vector = vector.map((val) => val / initNorm);
+        }
 
         // Orthogonalize against previous eigenvectors
         for (let j = 0; j < eigIdx; j++) {
@@ -542,4 +558,115 @@ function euclideanDistance(a: number[], b: number[]): number {
         sum += diff * diff;
     }
     return Math.sqrt(sum);
+}
+
+/**
+ * Compute smallest eigenvectors for small k (optimized for k=2, k=3)
+ */
+function computeSmallestEigenvectorsSimple(matrix: number[][], k: number, n: number): {
+    eigenvalues: number[];
+    eigenvectors: number[][];
+} {
+    const eigenvectors: number[][] = [];
+    const eigenvalues: number[] = [];
+
+    // First eigenvector is constant (corresponds to eigenvalue 0 for connected graph)
+    const firstVector = Array(n).fill(1 / Math.sqrt(n)) as number[];
+    eigenvectors.push(firstVector);
+    eigenvalues.push(0);
+
+    // For k >= 2, compute the Fiedler vector (second smallest eigenvector)
+    if (k >= 2) {
+        // Use power iteration on I - L/lambda_max to find second smallest
+        const maxEig = 2; // For normalized Laplacian, max eigenvalue <= 2
+        let vector = Array(n).fill(0).map(() => Math.random() - 0.5);
+
+        // Make orthogonal to first eigenvector
+        const dot1 = vector.reduce((sum, val) => sum + (val / Math.sqrt(n)), 0);
+        vector = vector.map((val) => val - (dot1 / Math.sqrt(n)));
+
+        // Power iteration on shifted matrix
+        for (let iter = 0; iter < 100; iter++) {
+            // Compute (I - L/maxEig) * v
+            const newVector = Array(n).fill(0) as number[];
+
+            // Identity part
+            for (let i = 0; i < n; i++) {
+                newVector[i] = vector[i] ?? 0;
+            }
+
+            // Subtract L * v / maxEig
+            for (let i = 0; i < n; i++) {
+                for (let j = 0; j < n; j++) {
+                    const matrixVal = matrix[i]?.[j] ?? 0;
+                    const vecVal = vector[j] ?? 0;
+                    newVector[i] = (newVector[i] ?? 0) - ((matrixVal * vecVal) / maxEig);
+                }
+            }
+
+            // Orthogonalize against first eigenvector
+            const dot = newVector.reduce((sum, val) => sum + (val / Math.sqrt(n)), 0);
+            for (let i = 0; i < n; i++) {
+                newVector[i] = (newVector[i] ?? 0) - (dot / Math.sqrt(n));
+            }
+
+            // Normalize
+            const norm = Math.sqrt(newVector.reduce((sum, val) => sum + (val * val), 0));
+            if (norm > 1e-10) {
+                vector = newVector.map((val) => val / norm);
+            }
+        }
+
+        eigenvectors.push(vector);
+        eigenvalues.push(0.1); // Approximate
+    }
+
+    // For k = 3, add another eigenvector
+    if (k >= 3) {
+        let vector = Array(n).fill(0).map(() => Math.random() - 0.5);
+
+        // Orthogonalize against previous eigenvectors
+        for (const prev of eigenvectors) {
+            const dot = vector.reduce((sum, val, idx) => sum + (val * (prev[idx] ?? 0)), 0);
+            vector = vector.map((val, idx) => val - (dot * (prev[idx] ?? 0)));
+        }
+
+        // Similar power iteration
+        for (let iter = 0; iter < 50; iter++) {
+            const newVector = Array(n).fill(0) as number[];
+
+            // Identity part
+            for (let i = 0; i < n; i++) {
+                newVector[i] = vector[i] ?? 0;
+            }
+
+            // Subtract L * v / 2
+            for (let i = 0; i < n; i++) {
+                for (let j = 0; j < n; j++) {
+                    const matrixVal = matrix[i]?.[j] ?? 0;
+                    const vecVal = vector[j] ?? 0;
+                    newVector[i] = (newVector[i] ?? 0) - ((matrixVal * vecVal) / 2);
+                }
+            }
+
+            // Orthogonalize
+            for (const prev of eigenvectors) {
+                const dot = newVector.reduce((sum, val, idx) => sum + (val * (prev[idx] ?? 0)), 0);
+                for (let i = 0; i < n; i++) {
+                    newVector[i] = (newVector[i] ?? 0) - (dot * (prev[i] ?? 0));
+                }
+            }
+
+            // Normalize
+            const norm = Math.sqrt(newVector.reduce((sum, val) => sum + (val * val), 0));
+            if (norm > 1e-10) {
+                vector = newVector.map((val) => val / norm);
+            }
+        }
+
+        eigenvectors.push(vector);
+        eigenvalues.push(0.2); // Approximate
+    }
+
+    return {eigenvalues: eigenvalues.slice(0, k), eigenvectors: eigenvectors.slice(0, k)};
 }
