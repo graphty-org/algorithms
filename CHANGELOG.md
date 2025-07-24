@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/graphty-org/algorithms/compare/v1.1.0...v1.2.0) (2025-07-24)
+
+
+### Features
+
+* add priority 4 algorithms (modern research) ([8f36071](https://github.com/graphty-org/algorithms/commit/8f360716c0f233639026d37b8a0a8755d47df6db))
+
 # [1.1.0](https://github.com/graphty-org/algorithms/compare/v1.0.1...v1.1.0) (2025-07-22)
 
 
