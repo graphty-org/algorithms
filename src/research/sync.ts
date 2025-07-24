@@ -111,7 +111,10 @@ export function syncClustering(graph: Graph, config: SynCConfig): SynCResult {
 
             for (let k = 0; k < numClusters; k++) {
                 const center = clusterCenters[k];
-                if (!center) continue;
+                if (!center) {
+                    continue;
+                }
+
                 const distance = euclideanDistance(nodeEmbedding, center);
                 if (distance < minDistance) {
                     minDistance = distance;
@@ -151,7 +154,10 @@ export function syncClustering(graph: Graph, config: SynCConfig): SynCResult {
 
         for (let k = 0; k < numClusters; k++) {
             const center = clusterCenters[k];
-            if (!center) continue;
+            if (!center) {
+                continue;
+            }
+
             const distance = euclideanDistance(nodeEmbedding, center);
             if (distance < minDistance) {
                 minDistance = distance;
@@ -224,9 +230,10 @@ function initializeClusterCenters(embeddings: Map<NodeId, number[]>, numClusters
         let randomValue = Math.random() * totalDistance;
         for (let i = 0; i < embeddingArray.length; i++) {
             const distanceValue = distances[i];
-        if (distanceValue !== undefined) {
-            randomValue -= distanceValue;
-        }
+            if (distanceValue !== undefined) {
+                randomValue -= distanceValue;
+            }
+
             if (randomValue <= 0) {
                 const newCenter = embeddingArray[i];
                 if (newCenter) {
@@ -329,7 +336,7 @@ function updateClusterCenters(
     const clusterSums: number[][] = Array.from({length: numClusters}, () =>
         new Array(dimensions).fill(0) as number[],
     );
-    const clusterCounts = new Array(numClusters).fill(0);
+    const clusterCounts = new Array<number>(numClusters).fill(0);
 
     // Sum embeddings for each cluster
     for (const [nodeId, clusterIdx] of clusters) {
@@ -340,16 +347,18 @@ function updateClusterCenters(
 
         for (let i = 0; i < embedding.length; i++) {
             const clusterSum = clusterSums[clusterIdx];
-            if (!clusterSum) continue;
+            if (!clusterSum) {
+                continue;
+            }
+
             const sumVal = clusterSum[i];
             const embVal = embedding[i];
             if (sumVal !== undefined && embVal !== undefined) {
                 clusterSum[i] = sumVal + embVal;
             }
         }
-        const count = clusterCounts[clusterIdx];
-        if (count !== undefined) {
-            clusterCounts[clusterIdx] = count + 1;
+        if (clusterCounts[clusterIdx] !== undefined) {
+            clusterCounts[clusterIdx]++;
         }
     }
 
@@ -391,7 +400,10 @@ function calculateLoss(
         }
 
         const center = clusterCenters[clusterIdx];
-        if (!center) continue;
+        if (!center) {
+            continue;
+        }
+
         clusteringLoss += euclideanDistance(embedding, center) ** 2;
     }
 

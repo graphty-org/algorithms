@@ -89,7 +89,10 @@ export function teraHAC(graph: Graph, config: TeraHACConfig = {}): TeraHACResult
 
     for (let i = 0; i < nodeCount; i++) {
         const node = nodes[i];
-        if (!node) continue;
+        if (!node) {
+            continue;
+        }
+
         const clusterId = i.toString();
         clusters.set(clusterId, {
             id: clusterId,
@@ -165,7 +168,10 @@ export function teraHAC(graph: Graph, config: TeraHACConfig = {}): TeraHACResult
         } else {
             for (let i = 1; i < remainingClusters.length; i++) {
                 const currentCluster = remainingClusters[i];
-                if (!currentCluster) continue;
+                if (!currentCluster) {
+                    continue;
+                }
+
                 const newRoot: ClusterNode = {
                     id: (nextClusterId++).toString(),
                     members: new Set([... root.members, ... currentCluster.members]),
@@ -176,7 +182,9 @@ export function teraHAC(graph: Graph, config: TeraHACConfig = {}): TeraHACResult
                 };
                 root = newRoot;
             }
+            dendrogram = root;
         }
+
         dendrogram = root;
     }
 
@@ -209,17 +217,26 @@ function calculateDistanceMatrix(graph: Graph, nodes: {id: NodeId}[], useGraphDi
         // Use graph-based distances (shortest path)
         for (let i = 0; i < n; i++) {
             const node = nodes[i];
-            if (!node) continue;
+            if (!node) {
+                continue;
+            }
+
             const distances = bfsShortestPaths(graph, node.id);
             for (let j = 0; j < n; j++) {
                 if (i !== j) {
                     const targetNode = nodes[j];
-                    if (targetNode) {
-                        const distance = distances.get(targetNode.id);
-                        matrix[i]![j] = distance ?? Infinity;
+                    if (targetNode && i < matrix.length && j < n) {
+                        const row = matrix[i];
+                        if (row && j < row.length) {
+                            const distance = distances.get(targetNode.id);
+                            row[j] = distance ?? Infinity;
+                        }
                     }
-                } else {
-                    matrix[i]![j] = 0;
+                } else if (i < matrix.length) {
+                    const row = matrix[i];
+                    if (row && j < row.length) {
+                        row[j] = 0;
+                    }
                 }
             }
         }
@@ -232,11 +249,27 @@ function calculateDistanceMatrix(graph: Graph, nodes: {id: NodeId}[], useGraphDi
                 if (node1 && node2) {
                     const hasEdge = graph.hasEdge(node1.id, node2.id);
                     const distance = hasEdge ? 1 : 2; // Connected: 1, not connected: 2
-                    matrix[i]![j] = distance;
-                    matrix[j]![i] = distance;
+                    if (i < matrix.length) {
+                        const rowI = matrix[i];
+                        if (rowI && j < rowI.length) {
+                            rowI[j] = distance;
+                        }
+                    }
+
+                    if (j < matrix.length) {
+                        const rowJ = matrix[j];
+                        if (rowJ && i < rowJ.length) {
+                            rowJ[i] = distance;
+                        }
+                    }
                 }
             }
-            matrix[i]![i] = 0;
+            if (i < matrix.length) {
+                const row = matrix[i];
+                if (row && i < row.length) {
+                    row[i] = 0;
+                }
+            }
         }
     }
 
@@ -288,9 +321,15 @@ function initializeMergeCandidates(
         for (let j = i + 1; j < clusterIds.length; j++) {
             const id1 = clusterIds[i];
             const id2 = clusterIds[j];
-            if (!id1 || !id2) continue;
+            if (!id1 || !id2) {
+                continue;
+            }
+
             const row = distanceMatrix[parseInt(id1)];
-            if (!row) continue;
+            if (!row) {
+                continue;
+            }
+
             const distance = row[parseInt(id2)] ?? Infinity;
             // Include all candidates, even disconnected ones (with finite but large distance)
             candidates.push({
@@ -336,7 +375,10 @@ function updateMergeCandidates(
     // Remove candidates involving the merged clusters
     for (let i = mergeCandidates.length - 1; i >= 0; i--) {
         const candidate = mergeCandidates[i];
-        if (!candidate) continue;
+        if (!candidate) {
+            continue;
+        }
+
         if (candidate.cluster1Id === oldCluster1Id || candidate.cluster1Id === oldCluster2Id ||
             candidate.cluster2Id === oldCluster1Id || candidate.cluster2Id === oldCluster2Id) {
             mergeCandidates.splice(i, 1);
@@ -434,7 +476,7 @@ function extractFlatClustering(dendrogram: ClusterNode, numClusters: number): Ma
     const queue: ClusterNode[] = [dendrogram];
 
     while (queue.length > 0 && clusterNodes.length < numClusters) {
-            const current = queue.shift();
+        const current = queue.shift();
         if (!current) {
             break;
         }
@@ -451,7 +493,10 @@ function extractFlatClustering(dendrogram: ClusterNode, numClusters: number): Ma
     // Assign cluster IDs
     for (let i = 0; i < clusterNodes.length; i++) {
         const cluster = clusterNodes[i];
-        if (!cluster) continue;
+        if (!cluster) {
+            continue;
+        }
+
         for (const member of cluster.members) {
             clusters.set(member, i);
         }

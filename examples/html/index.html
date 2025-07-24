@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Eruda Mobile Console -->
+    <script src="https://cdn.jsdelivr.net/npm/eruda@3/eruda.min.js"></script>
+    <script>
+      // Initialize Eruda console for mobile debugging
+      if (typeof eruda !== "undefined") {
+        eruda.init();
+        // Auto-show on mobile devices
+        if (/mobile|android|ios|iphone|ipad|ipod/i.test(navigator.userAgent.toLowerCase())) {
+          eruda.show();
+        }
+      }
+    </script>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Graph Algorithms - Interactive Examples</title>
+    <link rel="stylesheet" href="shared/styles.css">
+    <style>
+        .hero {
+            background: linear-gradient(135deg, #2c5aa0 0%, #4CAF50 100%);
+            color: white;
+            text-align: center;
+            padding: 3rem 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .hero h1 {
+            font-size: 3rem;
+            margin: 0 0 1rem 0;
+            color: white;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto;
+            opacity: 0.9;
+        }
+        
+        .category-section {
+            margin-bottom: 3rem;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-align: center;
+            border-top: 4px solid var(--primary-green);
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary-blue);
+            display: block;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="hero">
+        <h1>Graph Algorithms</h1>
+        <p>Interactive demonstrations of fundamental graph algorithms implemented in TypeScript. 
+           Explore, learn, and visualize how these algorithms work on different graph structures.</p>
+    </div>
+
+    <main>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <span class="stat-number">4</span>
+                <div class="stat-label">Algorithms</div>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number">3</span>
+                <div class="stat-label">Categories</div>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number">∞</span>
+                <div class="stat-label">Possibilities</div>
+            </div>
+        </div>
+
+        <div class="algorithms-grid">
+            <!-- Traversal Algorithms -->
+            <div class="card category-section">
+                <h2>🔍 Graph Traversal</h2>
+                <p>Fundamental algorithms for visiting nodes in a graph systematically.</p>
+                <div class="algorithm-list">
+                    <a href="algorithms/traversal/bfs.html" class="algorithm-link">
+                        <strong>Breadth-First Search (BFS)</strong><br>
+                        <small>Level-by-level graph exploration</small>
+                    </a>
+                    <a href="algorithms/traversal/dfs.html" class="algorithm-link">
+                        <strong>Depth-First Search (DFS)</strong><br>
+                        <small>Deep exploration before backtracking</small>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Shortest Path Algorithms -->
+            <div class="card category-section">
+                <h2>🛣️ Shortest Path</h2>
+                <p>Find the optimal path between nodes with minimum cost or distance.</p>
+                <div class="algorithm-list">
+                    <a href="algorithms/shortest-path/dijkstra.html" class="algorithm-link">
+                        <strong>Dijkstra's Algorithm</strong><br>
+                        <small>Single-source shortest paths</small>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Centrality Algorithms -->
+            <div class="card category-section">
+                <h2>⭐ Centrality Measures</h2>
+                <p>Identify the most important nodes in a network based on different criteria.</p>
+                <div class="algorithm-list">
+                    <a href="algorithms/centrality/degree.html" class="algorithm-link">
+                        <strong>Degree Centrality</strong><br>
+                        <small>Node importance by connection count</small>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Coming Soon Section -->
+            <div class="card category-section">
+                <h2>🚧 Coming Soon</h2>
+                <p>Additional algorithms are being implemented. Check back soon for updates!</p>
+                <div class="algorithm-list">
+                    <div style="padding: 1rem; background: #f0f8ff; border-radius: 8px; border-left: 4px solid #2c5aa0;">
+                        <strong>Planned Algorithms:</strong><br>
+                        <small>
+                            • More Centrality Measures (PageRank, Betweenness, Closeness)<br>
+                            • Community Detection (Louvain, Leiden)<br>
+                            • Connected Components<br>
+                            • Minimum Spanning Tree (Kruskal, Prim)<br>
+                            • Network Flow (Ford-Fulkerson)<br>
+                            • Advanced Research Algorithms<br>
+                            • And many more...
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" style="margin-top: 3rem; text-align: center;">
+            <h3>About This Project</h3>
+            <p>
+                These interactive examples demonstrate the algorithms implemented in the 
+                <strong>@graphty/algorithms</strong> TypeScript library. Each example provides:
+            </p>
+            <ul style="text-align: left; max-width: 600px; margin: 1rem auto;">
+                <li>Interactive visualization with SVG graphics</li>
+                <li>Step-by-step algorithm execution</li>
+                <li>Parameter adjustment and different graph types</li>
+                <li>Educational information about complexity and applications</li>
+                <li>Real-time results and performance metrics</li>
+            </ul>
+            <p>
+                <a href="https://github.com/graphty-org/algorithms" style="color: var(--primary-blue);">
+                    View on GitHub
+                </a> | 
+                <a href="https://www.npmjs.com/package/@graphty/algorithms" style="color: var(--primary-blue);">
+                    Install via npm
+                </a>
+            </p>
+        </div>
+    </main>
+
+    <script>
+        // Add some interactivity to the index page
+        document.addEventListener('DOMContentLoaded', () => {
+            // Count total algorithms
+            const algorithmLinks = document.querySelectorAll('.algorithm-link');
+            const totalAlgorithms = algorithmLinks.length;
+            
+            // Update the stats (already set to correct value)
+            // Stats are now hardcoded to show 3 algorithms, 2 categories
+            
+            // Add hover effects to category cards
+            const categoryCards = document.querySelectorAll('.category-section');
+            categoryCards.forEach(card => {
+                card.addEventListener('mouseenter', () => {
+                    card.style.transform = 'translateY(-5px)';
+                });
+                
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = 'translateY(0)';
+                });
+            });
+            
+            // Simple search functionality
+            const searchInput = document.createElement('input');
+            searchInput.type = 'text';
+            searchInput.placeholder = 'Search algorithms...';
+            searchInput.style.cssText = `
+                width: 100%;
+                max-width: 400px;
+                padding: 1rem;
+                font-size: 1rem;
+                border: 2px solid #ddd;
+                border-radius: 8px;
+                margin: 2rem auto;
+                display: block;
+            `;
+            
+            const main = document.querySelector('main');
+            main.insertBefore(searchInput, main.querySelector('.algorithms-grid'));
+            
+            searchInput.addEventListener('input', (e) => {
+                const query = e.target.value.toLowerCase();
+                
+                algorithmLinks.forEach(link => {
+                    const text = link.textContent.toLowerCase();
+                    const parent = link.closest('.category-section');
+                    
+                    if (text.includes(query)) {
+                        link.style.display = 'block';
+                    } else {
+                        link.style.display = 'none';
+                    }
+                });
+                
+                // Hide empty categories
+                categoryCards.forEach(card => {
+                    const visibleLinks = card.querySelectorAll('.algorithm-link[style*="block"], .algorithm-link:not([style*="none"])');
+                    const hasVisibleLinks = Array.from(card.querySelectorAll('.algorithm-link')).some(link => 
+                        !link.style.display || link.style.display !== 'none'
+                    );
+                    
+                    card.style.display = hasVisibleLinks ? 'block' : 'none';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

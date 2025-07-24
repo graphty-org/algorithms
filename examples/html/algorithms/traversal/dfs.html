@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Eruda Mobile Console -->
+    <script src="https://cdn.jsdelivr.net/npm/eruda@3/eruda.min.js"></script>
+    <script>
+      // Initialize Eruda console for mobile debugging
+      if (typeof eruda !== "undefined") {
+        eruda.init();
+        // Auto-show on mobile devices
+        if (/mobile|android|ios|iphone|ipad|ipod/i.test(navigator.userAgent.toLowerCase())) {
+          eruda.show();
+        }
+      }
+    </script>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DFS - Simple Visual Explanation</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        
+        h1 {
+            color: #2c5aa0;
+            text-align: center;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        #graph {
+            width: 100%;
+            height: 400px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .controls {
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        button:hover {
+            background: #45a049;
+        }
+        
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .explanation {
+            background: #e8f0fe;
+            border-left: 4px solid #2c5aa0;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        
+        .step-info {
+            text-align: center;
+            font-size: 18px;
+            color: #333;
+            margin: 20px 0;
+            min-height: 30px;
+        }
+        
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .legend-circle {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid #333;
+        }
+        
+        .current { background: #ff9800; }
+        .visited { background: #4CAF50; }
+        .unvisited { background: #e0e0e0; }
+        
+        .intro {
+            text-align: center;
+            color: #666;
+            margin: 20px 0;
+        }
+        
+        .back-link {
+            color: #2c5aa0;
+            text-decoration: none;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        
+        .code-section {
+            margin-top: 30px;
+            border-top: 2px solid #e0e0e0;
+            padding-top: 20px;
+        }
+        
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .code-toggle {
+            background: #2c5aa0;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .code-toggle:hover {
+            background: #1e3f73;
+        }
+        
+        .code-content {
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            max-height: 1000px;
+        }
+        
+        .code-content.collapsed {
+            max-height: 0;
+        }
+        
+        pre {
+            background: #f4f4f4;
+            border-radius: 4px;
+            padding: 15px;
+            overflow-x: auto;
+            margin: 0;
+        }
+        
+        code {
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+        }
+    </style>
+</head>
+<body>
+    <a href="../../index.html" class="back-link">← Back to Examples</a>
+    
+    <h1>Depth-First Search (DFS) Explained</h1>
+    
+    <div class="container">
+        <div class="intro">
+            <p><strong>DFS explores as deep as possible before backtracking.</strong></p>
+            <p>Think of it like exploring a maze - you go as far as you can down one path, then back up and try another.</p>
+        </div>
+        
+        <svg id="graph"></svg>
+        
+        <div class="step-info" id="step-info">Click "Start" to see how DFS works</div>
+        
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-circle current"></div>
+                <span>Currently Exploring</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-circle visited"></div>
+                <span>Already Visited</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-circle unvisited"></div>
+                <span>Not Yet Visited</span>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <button id="start-btn" onclick="startDFS()">Start DFS</button>
+        </div>
+        
+        <div class="explanation">
+            <h3>What you're seeing:</h3>
+            <ul id="explanation-list">
+                <li>We'll start at node A and explore as deep as possible</li>
+                <li>When we can't go deeper, we backtrack and try another path</li>
+                <li>The numbers show the order in which nodes are visited</li>
+            </ul>
+        </div>
+        
+        <div class="code-section">
+            <div class="code-header">
+                <h3>Code Example</h3>
+                <button class="code-toggle" id="code-toggle">Hide Code ▲</button>
+            </div>
+            <div class="code-content" id="code-content">
+                <pre><code class="language-javascript" id="code-display">Loading code...</code></pre>
+            </div>
+        </div>
+    </div>
+
+    <!-- Load Prism for syntax highlighting -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    
+    <script type="module">
+        // Import our DFS implementation
+        import { runDFSAlgorithm } from './dfs.js';
+        
+        // Load and display the actual code
+        async function loadCodeExample() {
+            try {
+                const response = await fetch('./dfs.js');
+                const code = await response.text();
+                const codeDisplay = document.getElementById('code-display');
+                codeDisplay.textContent = code;
+                
+                // Re-highlight the code with Prism
+                if (typeof Prism !== 'undefined') {
+                    Prism.highlightElement(codeDisplay);
+                }
+            } catch (error) {
+                console.error('Failed to load code example:', error);
+                document.getElementById('code-display').textContent = '// Failed to load code example';
+            }
+        }
+        
+        // Load code on page load
+        loadCodeExample();
+        
+        // Graph structure for visualization
+        const nodes = [
+            {id: 'A', x: 400, y: 50, label: 'A'},
+            {id: 'B', x: 200, y: 150, label: 'B'},
+            {id: 'C', x: 600, y: 150, label: 'C'},
+            {id: 'D', x: 100, y: 250, label: 'D'},
+            {id: 'E', x: 300, y: 250, label: 'E'},
+            {id: 'F', x: 500, y: 250, label: 'F'},
+            {id: 'G', x: 700, y: 250, label: 'G'},
+            {id: 'H', x: 200, y: 350, label: 'H'}
+        ];
+        
+        const edges = [
+            {from: 'A', to: 'B'},
+            {from: 'A', to: 'C'},
+            {from: 'B', to: 'D'},
+            {from: 'B', to: 'E'},
+            {from: 'C', to: 'F'},
+            {from: 'C', to: 'G'},
+            {from: 'E', to: 'H'}
+        ];
+        
+        let visitOrder = [];
+        let currentStep = -1;
+        let animationTimer = null;
+        
+        // Code toggle functionality
+        document.getElementById('code-toggle').addEventListener('click', function() {
+            const codeContent = document.getElementById('code-content');
+            const toggle = document.getElementById('code-toggle');
+            
+            codeContent.classList.toggle('collapsed');
+            toggle.textContent = codeContent.classList.contains('collapsed') 
+                ? 'Show Code ▼' 
+                : 'Hide Code ▲';
+        });
+        
+        // Initialize SVG
+        function initGraph() {
+            const svg = document.getElementById('graph');
+            svg.innerHTML = '';
+            
+            // Add edges
+            edges.forEach(edge => {
+                const fromNode = nodes.find(n => n.id === edge.from);
+                const toNode = nodes.find(n => n.id === edge.to);
+                
+                const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                line.setAttribute('x1', fromNode.x);
+                line.setAttribute('y1', fromNode.y);
+                line.setAttribute('x2', toNode.x);
+                line.setAttribute('y2', toNode.y);
+                line.setAttribute('stroke', '#999');
+                line.setAttribute('stroke-width', '2');
+                svg.appendChild(line);
+            });
+            
+            // Add nodes
+            nodes.forEach(node => {
+                const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+                
+                const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                circle.setAttribute('cx', node.x);
+                circle.setAttribute('cy', node.y);
+                circle.setAttribute('r', '30');
+                circle.setAttribute('fill', '#e0e0e0');
+                circle.setAttribute('stroke', '#333');
+                circle.setAttribute('stroke-width', '2');
+                circle.setAttribute('id', 'node-' + node.id);
+                
+                const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                text.setAttribute('x', node.x);
+                text.setAttribute('y', node.y + 5);
+                text.setAttribute('text-anchor', 'middle');
+                text.setAttribute('font-size', '20');
+                text.setAttribute('font-weight', 'bold');
+                text.setAttribute('fill', '#333');
+                text.textContent = node.label;
+                
+                const orderText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                orderText.setAttribute('x', node.x);
+                orderText.setAttribute('y', node.y - 40);
+                orderText.setAttribute('text-anchor', 'middle');
+                orderText.setAttribute('font-size', '16');
+                orderText.setAttribute('font-weight', 'bold');
+                orderText.setAttribute('fill', '#2c5aa0');
+                orderText.setAttribute('id', 'order-' + node.id);
+                
+                g.appendChild(circle);
+                g.appendChild(text);
+                g.appendChild(orderText);
+                svg.appendChild(g);
+            });
+        }
+        
+        // Animate one step
+        function animateStep() {
+            if (currentStep >= visitOrder.length - 1) {
+                document.getElementById('step-info').textContent = 'DFS Complete! All reachable nodes have been visited.';
+                document.getElementById('start-btn').textContent = 'Restart';
+                document.getElementById('start-btn').disabled = false;
+                clearInterval(animationTimer);
+                return;
+            }
+            
+            currentStep++;
+            const nodeId = visitOrder[currentStep];
+            
+            // Clear previous current
+            document.querySelectorAll('circle').forEach(circle => {
+                if (circle.getAttribute('fill') === '#ff9800') {
+                    circle.setAttribute('fill', '#4CAF50');
+                }
+            });
+            
+            // Highlight current node
+            const circle = document.getElementById('node-' + nodeId);
+            circle.setAttribute('fill', '#ff9800');
+            
+            // Add visit order number
+            const orderText = document.getElementById('order-' + nodeId);
+            orderText.textContent = currentStep + 1;
+            
+            // Update step info
+            document.getElementById('step-info').textContent = currentStep === 0 
+                ? `Starting at node ${nodeId}` 
+                : `Visiting node ${nodeId}`;
+        }
+        
+        // Start the animation
+        window.startDFS = function() {
+            // Reset
+            clearInterval(animationTimer);
+            currentStep = -1;
+            
+            // Initialize graph
+            initGraph();
+            
+            // Run DFS algorithm using the imported function
+            const result = runDFSAlgorithm();
+            visitOrder = result.order;
+            
+            // Log the result for educational purposes
+            console.log('DFS Result:', result);
+            
+            // Disable button during animation
+            document.getElementById('start-btn').disabled = true;
+            
+            // Start animation
+            animationTimer = setInterval(animateStep, 2000);
+        }
+        
+        // Initialize on load
+        window.onload = initGraph;
+    </script>
+</body>
+</html>

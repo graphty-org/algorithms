@@ -1299,7 +1299,47 @@ npm run lint:pkg     # Check for unused dependencies
 
 # Git
 npm run commit       # Conventional commit helper
+
+# HTML Examples
+npm run examples:html # Run interactive HTML examples
+npm run build:gh-pages # Build for GitHub Pages deployment
 ```
+
+### Development Server
+
+The project includes interactive HTML examples demonstrating each algorithm. To run them locally:
+
+1. **Copy the environment configuration:**
+   ```bash
+   cp .env.example .env
+   ```
+
+2. **Configure the server (optional):**
+   Edit `.env` to set your preferred host and port:
+   ```bash
+   # Server host (defaults to true for network exposure)
+   HOST=localhost       # For local-only access
+   # HOST=0.0.0.0       # For network access
+   # HOST=my.server.com # Custom domain
+
+   # Server port (defaults to 9000)
+   PORT=9000           # Must be between 9000-9099
+   ```
+
+3. **Start the development server:**
+   ```bash
+   npm run examples:html
+   ```
+
+4. **Open your browser** to `http://localhost:9000` (or your configured host/port)
+
+The HTML examples provide:
+- Interactive visualizations for each algorithm
+- Step-by-step execution with play/pause controls
+- Multiple graph types for testing
+- Real-time parameter adjustment
+- Educational information about complexity and use cases
+- Mobile debugging console (Eruda) for testing on mobile devices
 
 ### Project Structure
 
@@ -1314,6 +1354,11 @@ src/
 ├── data-structures/   # Supporting data structures
 ├── types/            # TypeScript type definitions
 └── utils/            # Utility functions
+
+examples/
+├── html/             # Interactive HTML examples
+│   ├── shared/       # Shared utilities and styles
+│   └── algorithms/   # Algorithm-specific examples
 
 test/
 ├── unit/             # Unit tests

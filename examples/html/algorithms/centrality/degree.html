@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Eruda Mobile Console -->
+    <script src="https://cdn.jsdelivr.net/npm/eruda@3/eruda.min.js"></script>
+    <script>
+      // Initialize Eruda console for mobile debugging
+      if (typeof eruda !== "undefined") {
+        eruda.init();
+        // Auto-show on mobile devices
+        if (/mobile|android|ios|iphone|ipad|ipod/i.test(navigator.userAgent.toLowerCase())) {
+          eruda.show();
+        }
+      }
+    </script>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Degree Centrality - Graph Algorithms Demo</title>
+    <link rel="stylesheet" href="../../shared/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
+    <style>
+        /* Additional styles specific to degree centrality */
+        .centrality-bar {
+            background: #e0e0e0;
+            height: 20px;
+            border-radius: 4px;
+            margin: 5px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .centrality-fill {
+            background: linear-gradient(to right, #4CAF50, #2c5aa0);
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+        
+        .centrality-label {
+            position: absolute;
+            left: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 12px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .node-size-legend {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin: 20px 0;
+            justify-content: center;
+        }
+        
+        .size-example {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .size-circle {
+            border-radius: 50%;
+            background: #2c5aa0;
+            border: 2px solid white;
+        }
+    </style>
+</head>
+<body>
+    <a href="../../index.html" class="back-link">← Back to Examples</a>
+    
+    <h1>Degree Centrality Explained</h1>
+    
+    <div class="example-container">
+        <div class="content-section">
+            <div class="explanation">
+                <p><strong>Degree centrality measures how well-connected a node is.</strong></p>
+                <p>In-degree: number of incoming connections. Out-degree: number of outgoing connections.</p>
+            </div>
+            
+            <div class="controls">
+                <div class="control-group">
+                    <label for="graph-type">Graph Type:</label>
+                    <select id="graph-type">
+                        <option value="star">Star Graph</option>
+                        <option value="complete">Complete Graph</option>
+                        <option value="random">Random Graph</option>
+                        <option value="scale-free">Scale-free Network</option>
+                        <option value="path">Path Graph</option>
+                    </select>
+                </div>
+                
+                <div class="control-group">
+                    <label for="node-count">Number of Nodes:</label>
+                    <input type="range" id="node-count" min="5" max="20" value="10">
+                    <span class="range-value" id="node-count-value">10</span>
+                </div>
+                
+                <div class="control-group">
+                    <label for="directed">
+                        <input type="checkbox" id="directed">
+                        Directed Graph
+                    </label>
+                </div>
+                
+                <button id="generate-btn" onclick="generateNewGraph()">Generate Graph</button>
+                <button id="calculate-btn" onclick="calculateCentrality()" class="secondary">Calculate Centrality</button>
+            </div>
+            
+            <div class="visualization">
+                <svg id="graph-svg"></svg>
+                <div class="node-size-legend">
+                    <div class="size-example">
+                        <div class="size-circle" style="width: 10px; height: 10px;"></div>
+                        <span>Low degree</span>
+                    </div>
+                    <div class="size-example">
+                        <div class="size-circle" style="width: 20px; height: 20px;"></div>
+                        <span>Medium degree</span>
+                    </div>
+                    <div class="size-example">
+                        <div class="size-circle" style="width: 30px; height: 30px;"></div>
+                        <span>High degree</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="results" id="results" style="display: none;">
+                <h3>Degree Centrality Scores</h3>
+                <div id="centrality-scores"></div>
+                <div class="info-box" style="margin-top: 20px;">
+                    <p><strong>Interpretation:</strong></p>
+                    <ul style="margin: 10px 0;">
+                        <li>Higher degree = more connections = more central</li>
+                        <li>In directed graphs: in-degree shows popularity, out-degree shows influence</li>
+                        <li>Normalized values range from 0 to 1</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="code-section">
+                <div class="code-header">
+                    <h3>Code Example</h3>
+                    <button class="code-toggle" id="code-toggle">Hide Code ▲</button>
+                </div>
+                <div class="code-content" id="code-content">
+                    <pre><code class="language-javascript" id="code-display">Loading code...</code></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Load Prism for syntax highlighting -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    
+    <script type="module">
+        // Import degree centrality implementation
+        import { runDegreeCentrality } from './degree.js';
+        
+        // Load and display the actual code
+        async function loadCodeExample() {
+            try {
+                const response = await fetch('./degree.js');
+                const code = await response.text();
+                const codeDisplay = document.getElementById('code-display');
+                codeDisplay.textContent = code;
+                
+                // Re-highlight the code with Prism
+                if (typeof Prism !== 'undefined') {
+                    Prism.highlightElement(codeDisplay);
+                }
+            } catch (error) {
+                console.error('Failed to load code example:', error);
+                document.getElementById('code-display').textContent = '// Failed to load code example';
+            }
+        }
+        
+        // Load code on page load
+        loadCodeExample();
+        
+        // Code toggle functionality
+        document.getElementById('code-toggle').addEventListener('click', function() {
+            const codeContent = document.getElementById('code-content');
+            const toggle = document.getElementById('code-toggle');
+            
+            codeContent.classList.toggle('collapsed');
+            toggle.textContent = codeContent.classList.contains('collapsed') 
+                ? 'Show Code ▼' 
+                : 'Hide Code ▲';
+        });
+        
+        // Current graph data
+        let currentGraph = null;
+        let svg = null;
+        
+        // Update node count display
+        document.getElementById('node-count').addEventListener('input', function(e) {
+            document.getElementById('node-count-value').textContent = e.target.value;
+        });
+        
+        // Initialize visualization
+        function initVisualization() {
+            svg = document.getElementById('graph-svg');
+            generateNewGraph();
+        }
+        
+        // Generate new graph based on selected type
+        window.generateNewGraph = function() {
+            const type = document.getElementById('graph-type').value;
+            const nodeCount = parseInt(document.getElementById('node-count').value);
+            const directed = document.getElementById('directed').checked;
+            
+            // Clear previous results
+            document.getElementById('results').style.display = 'none';
+            
+            // Generate graph data
+            currentGraph = generateGraphData(type, nodeCount, directed);
+            
+            // Render graph
+            renderGraph(currentGraph);
+        }
+        
+        // Generate graph data based on type
+        function generateGraphData(type, nodeCount, directed) {
+            const nodes = [];
+            const edges = [];
+            
+            // Create nodes
+            for (let i = 0; i < nodeCount; i++) {
+                nodes.push({
+                    id: i.toString(),
+                    label: i.toString()
+                });
+            }
+            
+            // Create edges based on type
+            switch (type) {
+                case 'star':
+                    // Connect all nodes to node 0
+                    for (let i = 1; i < nodeCount; i++) {
+                        edges.push({ source: '0', target: i.toString() });
+                    }
+                    break;
+                    
+                case 'complete':
+                    // Connect all nodes to each other
+                    for (let i = 0; i < nodeCount; i++) {
+                        for (let j = directed ? 0 : i + 1; j < nodeCount; j++) {
+                            if (i !== j) {
+                                edges.push({ source: i.toString(), target: j.toString() });
+                            }
+                        }
+                    }
+                    break;
+                    
+                case 'random':
+                    // Random connections
+                    const probability = 0.3;
+                    for (let i = 0; i < nodeCount; i++) {
+                        for (let j = directed ? 0 : i + 1; j < nodeCount; j++) {
+                            if (i !== j && Math.random() < probability) {
+                                edges.push({ source: i.toString(), target: j.toString() });
+                            }
+                        }
+                    }
+                    break;
+                    
+                case 'scale-free':
+                    // Preferential attachment
+                    if (nodeCount > 2) {
+                        edges.push({ source: '0', target: '1' });
+                        for (let i = 2; i < nodeCount; i++) {
+                            // Connect to existing nodes based on their degree
+                            const degrees = new Map();
+                            nodes.forEach(n => degrees.set(n.id, 0));
+                            edges.forEach(e => {
+                                degrees.set(e.source, (degrees.get(e.source) || 0) + 1);
+                                if (!directed) {
+                                    degrees.set(e.target, (degrees.get(e.target) || 0) + 1);
+                                }
+                            });
+                            
+                            // Connect to 2 existing nodes
+                            const targets = new Set();
+                            while (targets.size < Math.min(2, i)) {
+                                const target = weightedRandomChoice(degrees);
+                                if (target !== i.toString()) {
+                                    targets.add(target);
+                                }
+                            }
+                            targets.forEach(target => {
+                                edges.push({ source: i.toString(), target });
+                            });
+                        }
+                    }
+                    break;
+                    
+                case 'path':
+                    // Linear chain
+                    for (let i = 0; i < nodeCount - 1; i++) {
+                        edges.push({ source: i.toString(), target: (i + 1).toString() });
+                    }
+                    break;
+            }
+            
+            return { nodes, edges, directed };
+        }
+        
+        // Weighted random choice based on degree
+        function weightedRandomChoice(degrees) {
+            const total = Array.from(degrees.values()).reduce((a, b) => a + b, 0);
+            let random = Math.random() * total;
+            for (const [node, degree] of degrees) {
+                random -= degree;
+                if (random <= 0) return node;
+            }
+            return Array.from(degrees.keys())[0];
+        }
+        
+        // Render graph using D3-style approach
+        function renderGraph(graph) {
+            svg.innerHTML = '';
+            
+            const width = svg.clientWidth;
+            const height = svg.clientHeight;
+            const centerX = width / 2;
+            const centerY = height / 2;
+            const radius = Math.min(width, height) * 0.3;
+            
+            // Position nodes in a circle
+            graph.nodes.forEach((node, i) => {
+                const angle = (i / graph.nodes.length) * 2 * Math.PI;
+                node.x = centerX + radius * Math.cos(angle);
+                node.y = centerY + radius * Math.sin(angle);
+            });
+            
+            // Create edge elements
+            const edgeGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+            edgeGroup.setAttribute('class', 'edges');
+            
+            graph.edges.forEach(edge => {
+                const source = graph.nodes.find(n => n.id === edge.source);
+                const target = graph.nodes.find(n => n.id === edge.target);
+                
+                const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                line.setAttribute('x1', source.x);
+                line.setAttribute('y1', source.y);
+                line.setAttribute('x2', target.x);
+                line.setAttribute('y2', target.y);
+                line.setAttribute('stroke', '#999');
+                line.setAttribute('stroke-width', '2');
+                
+                if (graph.directed) {
+                    // Add arrowhead
+                    line.setAttribute('marker-end', 'url(#arrowhead)');
+                }
+                
+                edgeGroup.appendChild(line);
+            });
+            
+            svg.appendChild(edgeGroup);
+            
+            // Add arrowhead marker for directed graphs
+            if (graph.directed) {
+                const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+                const marker = document.createElementNS('http://www.w3.org/2000/svg', 'marker');
+                marker.setAttribute('id', 'arrowhead');
+                marker.setAttribute('markerWidth', '10');
+                marker.setAttribute('markerHeight', '7');
+                marker.setAttribute('refX', '15');
+                marker.setAttribute('refY', '3.5');
+                marker.setAttribute('orient', 'auto');
+                
+                const polygon = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+                polygon.setAttribute('points', '0 0, 10 3.5, 0 7');
+                polygon.setAttribute('fill', '#999');
+                
+                marker.appendChild(polygon);
+                defs.appendChild(marker);
+                svg.appendChild(defs);
+            }
+            
+            // Create node elements
+            const nodeGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+            nodeGroup.setAttribute('class', 'nodes');
+            
+            graph.nodes.forEach(node => {
+                const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+                
+                const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                circle.setAttribute('cx', node.x);
+                circle.setAttribute('cy', node.y);
+                circle.setAttribute('r', '20');
+                circle.setAttribute('fill', '#2c5aa0');
+                circle.setAttribute('stroke', 'white');
+                circle.setAttribute('stroke-width', '2');
+                circle.setAttribute('id', 'node-' + node.id);
+                
+                const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                text.setAttribute('x', node.x);
+                text.setAttribute('y', node.y + 5);
+                text.setAttribute('text-anchor', 'middle');
+                text.setAttribute('fill', 'white');
+                text.setAttribute('font-size', '14');
+                text.setAttribute('font-weight', 'bold');
+                text.textContent = node.label;
+                
+                g.appendChild(circle);
+                g.appendChild(text);
+                nodeGroup.appendChild(g);
+            });
+            
+            svg.appendChild(nodeGroup);
+        }
+        
+        // Calculate and display centrality
+        window.calculateCentrality = async function() {
+            if (!currentGraph) return;
+            
+            // Run degree centrality algorithm
+            const result = await runDegreeCentrality(currentGraph);
+            
+            // Update node sizes based on centrality
+            const maxCentrality = Math.max(...Object.values(result.centrality));
+            const minSize = 15;
+            const maxSize = 35;
+            
+            Object.entries(result.centrality).forEach(([nodeId, centrality]) => {
+                const circle = document.getElementById('node-' + nodeId);
+                if (circle) {
+                    const size = minSize + (centrality / maxCentrality) * (maxSize - minSize);
+                    circle.setAttribute('r', size);
+                    
+                    // Color based on centrality
+                    const hue = 220 - (centrality / maxCentrality) * 60; // Blue to green
+                    circle.setAttribute('fill', `hsl(${hue}, 70%, 50%)`);
+                }
+            });
+            
+            // Display results
+            displayResults(result);
+        }
+        
+        // Display centrality results
+        function displayResults(result) {
+            const resultsDiv = document.getElementById('results');
+            const scoresDiv = document.getElementById('centrality-scores');
+            
+            // Sort nodes by centrality
+            const sortedNodes = Object.entries(result.centrality)
+                .sort(([, a], [, b]) => b - a);
+            
+            // Create centrality bars
+            scoresDiv.innerHTML = '';
+            const maxCentrality = sortedNodes[0][1];
+            
+            sortedNodes.forEach(([nodeId, centrality]) => {
+                const barContainer = document.createElement('div');
+                barContainer.className = 'centrality-bar';
+                
+                const fill = document.createElement('div');
+                fill.className = 'centrality-fill';
+                fill.style.width = `${(centrality / maxCentrality) * 100}%`;
+                
+                const label = document.createElement('div');
+                label.className = 'centrality-label';
+                label.textContent = `Node ${nodeId}: ${centrality.toFixed(3)}`;
+                
+                barContainer.appendChild(fill);
+                barContainer.appendChild(label);
+                scoresDiv.appendChild(barContainer);
+            });
+            
+            // Add statistics
+            if (currentGraph.directed && result.inDegree && result.outDegree) {
+                const statsDiv = document.createElement('div');
+                statsDiv.style.marginTop = '20px';
+                statsDiv.innerHTML = '<h4>Directed Graph Statistics</h4>';
+                
+                const table = document.createElement('table');
+                table.style.width = '100%';
+                table.innerHTML = `
+                    <tr>
+                        <th>Node</th>
+                        <th>In-Degree</th>
+                        <th>Out-Degree</th>
+                        <th>Total Degree</th>
+                    </tr>
+                `;
+                
+                sortedNodes.forEach(([nodeId]) => {
+                    const row = table.insertRow();
+                    row.innerHTML = `
+                        <td>${nodeId}</td>
+                        <td>${result.inDegree[nodeId] || 0}</td>
+                        <td>${result.outDegree[nodeId] || 0}</td>
+                        <td>${result.centrality[nodeId].toFixed(3)}</td>
+                    `;
+                });
+                
+                statsDiv.appendChild(table);
+                scoresDiv.appendChild(statsDiv);
+            }
+            
+            resultsDiv.style.display = 'block';
+        }
+        
+        // Initialize on load
+        window.addEventListener('load', initVisualization);
+    </script>
+</body>
+</html>

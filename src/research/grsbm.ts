@@ -312,14 +312,14 @@ function spectralBisection(
 
     const leftMembers = new Set<NodeId>();
     const rightMembers = new Set<NodeId>();
-    
+
     for (const idx of leftIndices) {
         const nodeId = members[idx];
         if (nodeId !== undefined) {
             leftMembers.add(nodeId);
         }
     }
-    
+
     for (const idx of rightIndices) {
         const nodeId = members[idx];
         if (nodeId !== undefined) {
@@ -384,19 +384,29 @@ function createLaplacianMatrix(graph: Graph, nodes: NodeId[]): number[][] {
 
     for (let i = 0; i < n; i++) {
         const nodeId = nodes[i];
-        if (nodeId === undefined) continue;
+        if (nodeId === undefined) {
+            continue;
+        }
+
         for (const neighbor of graph.neighbors(nodeId)) {
             const neighborIdx = nodeIndex.get(neighbor);
-            if (neighborIdx !== undefined) {
-                laplacian[i]![neighborIdx] = -1;
-                degrees[i]!++;
+            if (neighborIdx !== undefined && i < laplacian.length && i < degrees.length) {
+                const row = laplacian[i];
+                if (row) {
+                    row[neighborIdx] = -1;
+                    degrees[i] = (degrees[i] ?? 0) + 1;
+                }
             }
         }
     }
 
     // Set diagonal (degree) values
     for (let i = 0; i < n; i++) {
-        laplacian[i]![i] = degrees[i]!;
+        const row = laplacian[i];
+        const degree = degrees[i];
+        if (row && degree !== undefined) {
+            row[i] = degree;
+        }
     }
 
     return laplacian;
@@ -420,14 +430,20 @@ function computeFiedlerVector(laplacian: number[][], tolerance: number, maxItera
     // Make orthogonal to all-ones vector
     const mean = vector.reduce((sum: number, val: number) => sum + val, 0) / n;
     for (let i = 0; i < n; i++) {
-        vector[i]! -= mean;
+        const val = vector[i];
+        if (val !== undefined) {
+            vector[i] = val - mean;
+        }
     }
 
     // Normalize
     const norm = Math.sqrt(vector.reduce((sum: number, val: number) => sum + (val * val), 0));
     if (norm > 0) {
         for (let i = 0; i < n; i++) {
-            vector[i]! /= norm;
+            const val = vector[i];
+            if (val !== undefined) {
+                vector[i] = val / norm;
+            }
         }
     }
 
@@ -438,23 +454,37 @@ function computeFiedlerVector(laplacian: number[][], tolerance: number, maxItera
         // Matrix-vector multiplication: newVector = L * vector
         for (let i = 0; i < n; i++) {
             let sum = 0;
-            for (let j = 0; j < n; j++) {
-                sum += laplacian[i]![j]! * vector[j]!;
+            const row = laplacian[i];
+            if (row) {
+                for (let j = 0; j < n; j++) {
+                    const matrixVal = row[j];
+                    const vectorVal = vector[j];
+                    if (matrixVal !== undefined && vectorVal !== undefined) {
+                        sum += matrixVal * vectorVal;
+                    }
+                }
             }
-            newVector[i]! = sum;
+
+            newVector[i] = sum;
         }
 
         // For smallest eigenvalue, we actually want inverse iteration
         // This is simplified - in practice would solve (L - shift*I)x = vector
         // For now, use power iteration on -L (approximately)
         for (let i = 0; i < n; i++) {
-            newVector[i]! = -newVector[i]!;
+            const val = newVector[i];
+            if (val !== undefined) {
+                newVector[i] = -val;
+            }
         }
 
         // Orthogonalize against all-ones vector
         const newMean = newVector.reduce((sum, val) => sum + val, 0) / n;
         for (let i = 0; i < n; i++) {
-            newVector[i]! -= newMean;
+            const val = newVector[i];
+            if (val !== undefined) {
+                newVector[i] = val - newMean;
+            }
         }
 
         // Normalize
@@ -464,7 +494,10 @@ function computeFiedlerVector(laplacian: number[][], tolerance: number, maxItera
         }
 
         for (let i = 0; i < n; i++) {
-            newVector[i]! /= newNorm;
+            const val = newVector[i];
+            if (val !== undefined) {
+                newVector[i] = val / newNorm;
+            }
         }
 
         // Check convergence
@@ -473,7 +506,7 @@ function computeFiedlerVector(laplacian: number[][], tolerance: number, maxItera
             const newVal = newVector[i];
             const oldVal = vector[i];
             if (newVal !== undefined && oldVal !== undefined) {
-                diff += Math.abs(newVal! - oldVal!);
+                diff += Math.abs(newVal - oldVal);
             }
         }
 

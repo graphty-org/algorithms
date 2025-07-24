@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Eruda Mobile Console -->
+    <script src="https://cdn.jsdelivr.net/npm/eruda@3/eruda.min.js"></script>
+    <script>
+      // Initialize Eruda console for mobile debugging
+      if (typeof eruda !== "undefined") {
+        eruda.init();
+        // Auto-show on mobile devices
+        if (/mobile|android|ios|iphone|ipad|ipod/i.test(navigator.userAgent.toLowerCase())) {
+          eruda.show();
+        }
+      }
+    </script>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dijkstra's Algorithm - Simple Visual Explanation</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        
+        h1 {
+            color: #2c5aa0;
+            text-align: center;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        #graph {
+            width: 100%;
+            height: 400px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .controls {
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        button:hover {
+            background: #45a049;
+        }
+        
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .explanation {
+            background: #e8f0fe;
+            border-left: 4px solid #2c5aa0;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        
+        .step-info {
+            text-align: center;
+            font-size: 18px;
+            color: #333;
+            margin: 20px 0;
+            min-height: 30px;
+        }
+        
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .legend-circle {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid #333;
+        }
+        
+        .current { background: #ff9800; }
+        .visited { background: #4CAF50; }
+        .unvisited { background: #e0e0e0; }
+        .path { background: #ff4757; }
+        
+        .intro {
+            text-align: center;
+            color: #666;
+            margin: 20px 0;
+        }
+        
+        .distances-display {
+            background: #f0f0f0;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 20px 0;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .distance-item {
+            text-align: center;
+            padding: 10px;
+            background: white;
+            border-radius: 4px;
+            min-width: 60px;
+        }
+        
+        .distance-label {
+            font-weight: bold;
+            color: #2c5aa0;
+        }
+        
+        .distance-value {
+            font-size: 18px;
+            color: #333;
+        }
+        
+        .back-link {
+            color: #2c5aa0;
+            text-decoration: none;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        
+        .code-section {
+            margin-top: 30px;
+            border-top: 2px solid #e0e0e0;
+            padding-top: 20px;
+        }
+        
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .code-toggle {
+            background: #2c5aa0;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .code-toggle:hover {
+            background: #1e3f73;
+        }
+        
+        .code-content {
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            max-height: 1200px;
+        }
+        
+        .code-content.collapsed {
+            max-height: 0;
+        }
+        
+        pre {
+            background: #f4f4f4;
+            border-radius: 4px;
+            padding: 15px;
+            overflow-x: auto;
+            margin: 0;
+        }
+        
+        code {
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+        }
+    </style>
+</head>
+<body>
+    <a href="../../index.html" class="back-link">← Back to Examples</a>
+    
+    <h1>Dijkstra's Algorithm Explained</h1>
+    
+    <div class="container">
+        <div class="intro">
+            <p><strong>Dijkstra finds the shortest path from a start node to all other nodes.</strong></p>
+            <p>It works by always exploring the nearest unvisited node next.</p>
+        </div>
+        
+        <svg id="graph"></svg>
+        
+        <div style="text-align: center; margin: 20px 0 10px 0;">
+            <strong>Shortest Distance from A to Each Node:</strong>
+            <br>
+            <small style="color: #666;">Watch how these values update as the algorithm explores the graph</small>
+        </div>
+        
+        <div class="distances-display" id="distances">
+            <div class="distance-item">
+                <div class="distance-label">A</div>
+                <div class="distance-value">0</div>
+            </div>
+            <div class="distance-item">
+                <div class="distance-label">B</div>
+                <div class="distance-value">∞</div>
+            </div>
+            <div class="distance-item">
+                <div class="distance-label">C</div>
+                <div class="distance-value">∞</div>
+            </div>
+            <div class="distance-item">
+                <div class="distance-label">D</div>
+                <div class="distance-value">∞</div>
+            </div>
+            <div class="distance-item">
+                <div class="distance-label">E</div>
+                <div class="distance-value">∞</div>
+            </div>
+            <div class="distance-item">
+                <div class="distance-label">F</div>
+                <div class="distance-value">∞</div>
+            </div>
+        </div>
+        
+        <div class="step-info" id="step-info">Click "Start" to find shortest paths from A to all nodes</div>
+        
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-circle current"></div>
+                <span>Currently Exploring</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-circle visited"></div>
+                <span>Distance Finalized</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-circle unvisited"></div>
+                <span>Not Yet Processed</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-circle path"></div>
+                <span>Shortest Path</span>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <button id="start-btn" onclick="startDijkstra()">Start Dijkstra's Algorithm</button>
+        </div>
+        
+        <div class="explanation">
+            <h3>How it works:</h3>
+            <ul>
+                <li>Start with distance 0 to the starting node, ∞ to all others</li>
+                <li>Always pick the unvisited node with smallest distance</li>
+                <li>Update distances to its neighbors if a shorter path is found</li>
+                <li>Mark the node as visited when done</li>
+            </ul>
+        </div>
+        
+        <div class="code-section">
+            <div class="code-header">
+                <h3>Code Example</h3>
+                <button class="code-toggle" id="code-toggle">Hide Code ▲</button>
+            </div>
+            <div class="code-content" id="code-content">
+                <pre><code class="language-javascript" id="code-display">Loading code...</code></pre>
+            </div>
+        </div>
+    </div>
+
+    <!-- Load Prism for syntax highlighting -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    
+    <script type="module">
+        // Import our Dijkstra implementation
+        import { runDijkstraAlgorithm, getShortestPath } from './dijkstra.js';
+        
+        // Load and display the actual code
+        async function loadCodeExample() {
+            try {
+                const response = await fetch('./dijkstra.js');
+                const code = await response.text();
+                const codeDisplay = document.getElementById('code-display');
+                codeDisplay.textContent = code;
+                
+                // Re-highlight the code with Prism
+                if (typeof Prism !== 'undefined') {
+                    Prism.highlightElement(codeDisplay);
+                }
+            } catch (error) {
+                console.error('Failed to load code example:', error);
+                document.getElementById('code-display').textContent = '// Failed to load code example';
+            }
+        }
+        
+        // Load code on page load
+        loadCodeExample();
+        
+        // Graph structure for visualization
+        const nodes = [
+            {id: 'A', x: 100, y: 200, label: 'A'},
+            {id: 'B', x: 250, y: 100, label: 'B'},
+            {id: 'C', x: 250, y: 300, label: 'C'},
+            {id: 'D', x: 450, y: 100, label: 'D'},
+            {id: 'E', x: 450, y: 300, label: 'E'},
+            {id: 'F', x: 600, y: 200, label: 'F'}
+        ];
+        
+        const edges = [
+            {from: 'A', to: 'B', weight: 4},
+            {from: 'A', to: 'C', weight: 2},
+            {from: 'B', to: 'D', weight: 5},
+            {from: 'C', to: 'B', weight: 1},
+            {from: 'C', to: 'E', weight: 8},
+            {from: 'D', to: 'F', weight: 3},
+            {from: 'E', to: 'D', weight: 2},
+            {from: 'E', to: 'F', weight: 1}
+        ];
+        
+        let steps = [];
+        let currentStep = -1;
+        let animationTimer = null;
+        let algorithmResult = null;
+        
+        // Code toggle functionality
+        document.getElementById('code-toggle').addEventListener('click', function() {
+            const codeContent = document.getElementById('code-content');
+            const toggle = document.getElementById('code-toggle');
+            
+            codeContent.classList.toggle('collapsed');
+            toggle.textContent = codeContent.classList.contains('collapsed') 
+                ? 'Show Code ▼' 
+                : 'Hide Code ▲';
+        });
+        
+        // Initialize SVG
+        function initGraph() {
+            const svg = document.getElementById('graph');
+            svg.innerHTML = '';
+            
+            // Add edges with weight labels
+            edges.forEach(edge => {
+                const fromNode = nodes.find(n => n.id === edge.from);
+                const toNode = nodes.find(n => n.id === edge.to);
+                
+                const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                line.setAttribute('x1', fromNode.x);
+                line.setAttribute('y1', fromNode.y);
+                line.setAttribute('x2', toNode.x);
+                line.setAttribute('y2', toNode.y);
+                line.setAttribute('stroke', '#999');
+                line.setAttribute('stroke-width', '2');
+                line.setAttribute('id', `edge-${edge.from}-${edge.to}`);
+                svg.appendChild(line);
+                
+                // Add weight label
+                const midX = (fromNode.x + toNode.x) / 2;
+                const midY = (fromNode.y + toNode.y) / 2;
+                
+                const weightBg = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                weightBg.setAttribute('cx', midX);
+                weightBg.setAttribute('cy', midY);
+                weightBg.setAttribute('r', '15');
+                weightBg.setAttribute('fill', 'white');
+                weightBg.setAttribute('stroke', '#666');
+                svg.appendChild(weightBg);
+                
+                const weightText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                weightText.setAttribute('x', midX);
+                weightText.setAttribute('y', midY + 5);
+                weightText.setAttribute('text-anchor', 'middle');
+                weightText.setAttribute('font-size', '14');
+                weightText.setAttribute('font-weight', 'bold');
+                weightText.setAttribute('fill', '#333');
+                weightText.textContent = edge.weight;
+                svg.appendChild(weightText);
+            });
+            
+            // Add nodes
+            nodes.forEach(node => {
+                const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+                
+                const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                circle.setAttribute('cx', node.x);
+                circle.setAttribute('cy', node.y);
+                circle.setAttribute('r', '30');
+                circle.setAttribute('fill', '#e0e0e0');
+                circle.setAttribute('stroke', '#333');
+                circle.setAttribute('stroke-width', '2');
+                circle.setAttribute('id', 'node-' + node.id);
+                
+                const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                text.setAttribute('x', node.x);
+                text.setAttribute('y', node.y + 5);
+                text.setAttribute('text-anchor', 'middle');
+                text.setAttribute('font-size', '20');
+                text.setAttribute('font-weight', 'bold');
+                text.setAttribute('fill', '#333');
+                text.textContent = node.label;
+                
+                g.appendChild(circle);
+                g.appendChild(text);
+                svg.appendChild(g);
+            });
+        }
+        
+        // Create animation steps from the algorithm
+        function createAnimationSteps() {
+            steps = [];
+            const distances = { A: 0, B: Infinity, C: Infinity, D: Infinity, E: Infinity, F: Infinity };
+            const previous = { A: null, B: null, C: null, D: null, E: null, F: null };
+            const visited = new Set();
+            
+            // Initial state
+            steps.push({
+                action: 'init',
+                message: 'Initialize: Start node A has distance 0, all others have distance ∞',
+                current: 'A',
+                distances: {...distances},
+                highlight: ['A']
+            });
+            
+            // Simulate Dijkstra's algorithm step by step
+            // Step 1: Process A
+            steps.push({
+                action: 'select',
+                message: 'Select A (distance: 0) - the unvisited node with smallest distance',
+                current: 'A',
+                distances: {...distances}
+            });
+            
+            // Update neighbors of A
+            distances.B = 4;  // A->B: 0 + 4 = 4
+            distances.C = 2;  // A->C: 0 + 2 = 2
+            previous.B = 'A';
+            previous.C = 'A';
+            steps.push({
+                action: 'update',
+                message: 'Update distances: A→B: 4, A→C: 2',
+                current: 'A',
+                distances: {...distances},
+                highlight: ['B', 'C'],
+                edges: [['A', 'B'], ['A', 'C']]
+            });
+            
+            visited.add('A');
+            steps.push({
+                action: 'finish',
+                message: 'Mark A as visited (shown in green)',
+                finished: 'A',
+                distances: {...distances}
+            });
+            
+            // Step 2: Process C (smallest unvisited distance)
+            steps.push({
+                action: 'select',
+                message: 'Select C (distance: 2) - the unvisited node with smallest distance',
+                current: 'C',
+                distances: {...distances}
+            });
+            
+            // Update neighbors of C
+            const newDistanceB = 2 + 1; // C->B: 2 + 1 = 3
+            if (newDistanceB < distances.B) {
+                distances.B = newDistanceB;
+                previous.B = 'C';
+            }
+            distances.E = 2 + 8; // C->E: 2 + 8 = 10
+            previous.E = 'C';
+            steps.push({
+                action: 'update',
+                message: 'Update distances: C→B: 3 (improved from 4), C→E: 10',
+                current: 'C',
+                distances: {...distances},
+                highlight: ['B', 'E'],
+                edges: [['C', 'B'], ['C', 'E']]
+            });
+            
+            visited.add('C');
+            steps.push({
+                action: 'finish',
+                message: 'Mark C as visited',
+                finished: 'C',
+                distances: {...distances}
+            });
+            
+            // Step 3: Process B (distance 3)
+            steps.push({
+                action: 'select',
+                message: 'Select B (distance: 3) - the unvisited node with smallest distance',
+                current: 'B',
+                distances: {...distances}
+            });
+            
+            // Update neighbors of B
+            distances.D = 3 + 5; // B->D: 3 + 5 = 8
+            previous.D = 'B';
+            steps.push({
+                action: 'update',
+                message: 'Update distances: B→D: 8',
+                current: 'B',
+                distances: {...distances},
+                highlight: ['D'],
+                edges: [['B', 'D']]
+            });
+            
+            visited.add('B');
+            steps.push({
+                action: 'finish',
+                message: 'Mark B as visited',
+                finished: 'B',
+                distances: {...distances}
+            });
+            
+            // Step 4: Process D (distance 8)
+            steps.push({
+                action: 'select',
+                message: 'Select D (distance: 8) - the unvisited node with smallest distance',
+                current: 'D',
+                distances: {...distances}
+            });
+            
+            // Update neighbors of D
+            distances.F = 8 + 3; // D->F: 8 + 3 = 11
+            previous.F = 'D';
+            steps.push({
+                action: 'update',
+                message: 'Update distances: D→F: 11',
+                current: 'D',
+                distances: {...distances},
+                highlight: ['F'],
+                edges: [['D', 'F']]
+            });
+            
+            visited.add('D');
+            steps.push({
+                action: 'finish',
+                message: 'Mark D as visited',
+                finished: 'D',
+                distances: {...distances}
+            });
+            
+            // Step 5: Process E (distance 10)
+            steps.push({
+                action: 'select',
+                message: 'Select E (distance: 10) - the unvisited node with smallest distance',
+                current: 'E',
+                distances: {...distances}
+            });
+            
+            // Update neighbors of E
+            const newDistanceD_E = 10 + 2; // E->D: 10 + 2 = 12 (not better than 8)
+            const newDistanceF = 10 + 1; // E->F: 10 + 1 = 11 (same as current)
+            steps.push({
+                action: 'update',
+                message: 'Check E→D: 12 (not better than 8), E→F: 11 (same as current)',
+                current: 'E',
+                distances: {...distances},
+                highlight: [],
+                edges: [['E', 'D'], ['E', 'F']]
+            });
+            
+            visited.add('E');
+            steps.push({
+                action: 'finish',
+                message: 'Mark E as visited',
+                finished: 'E',
+                distances: {...distances}
+            });
+            
+            // Step 6: Process F (distance 11)
+            steps.push({
+                action: 'select',
+                message: 'Select F (distance: 11) - the last unvisited node',
+                current: 'F',
+                distances: {...distances}
+            });
+            
+            visited.add('F');
+            steps.push({
+                action: 'finish',
+                message: 'Mark F as visited - all nodes processed!',
+                finished: 'F',
+                distances: {...distances}
+            });
+            
+            // Show shortest path to F
+            const pathToF = getShortestPath(algorithmResult, 'F');
+            steps.push({
+                action: 'complete',
+                message: `Algorithm complete! Shortest path A→F: ${pathToF.join('→')} (distance: ${algorithmResult.distance.F})`,
+                path: pathToF,
+                distances: {...algorithmResult.distance}
+            });
+        }
+        
+        // Update distance display
+        function updateDistances(dists) {
+            Object.keys(dists).forEach(nodeId => {
+                const items = document.querySelectorAll('.distance-item');
+                items.forEach(item => {
+                    if (item.querySelector('.distance-label').textContent === nodeId) {
+                        const value = dists[nodeId] === Infinity ? '∞' : dists[nodeId];
+                        item.querySelector('.distance-value').textContent = value;
+                        
+                        // Highlight updated distances
+                        if (value !== '∞') {
+                            item.style.background = '#e8f0fe';
+                            item.style.transform = 'scale(1.1)';
+                            setTimeout(() => {
+                                item.style.transform = 'scale(1)';
+                            }, 300);
+                        }
+                    }
+                });
+            });
+        }
+        
+        // Animate one step
+        function animateStep() {
+            if (currentStep >= steps.length - 1) {
+                document.getElementById('start-btn').textContent = 'Restart';
+                document.getElementById('start-btn').disabled = false;
+                clearInterval(animationTimer);
+                return;
+            }
+            
+            currentStep++;
+            const step = steps[currentStep];
+            
+            // Clear previous highlights
+            document.querySelectorAll('circle').forEach(circle => {
+                const id = circle.id.replace('node-', '');
+                if (circle.getAttribute('fill') === '#ff9800' && id !== step.current) {
+                    circle.setAttribute('fill', '#4CAF50');
+                }
+            });
+            
+            document.querySelectorAll('line').forEach(line => {
+                line.setAttribute('stroke', '#999');
+                line.setAttribute('stroke-width', '2');
+            });
+            
+            // Update visualization based on action
+            if (step.action === 'select' || step.action === 'init') {
+                const circle = document.getElementById('node-' + step.current);
+                circle.setAttribute('fill', '#ff9800');
+            } else if (step.action === 'update') {
+                // Keep current node highlighted
+                if (step.current) {
+                    const circle = document.getElementById('node-' + step.current);
+                    circle.setAttribute('fill', '#ff9800');
+                }
+                
+                // Highlight edges being checked
+                if (step.edges) {
+                    step.edges.forEach(([from, to]) => {
+                        const edge = document.getElementById(`edge-${from}-${to}`);
+                        if (edge) {
+                            edge.setAttribute('stroke', '#2196F3');
+                            edge.setAttribute('stroke-width', '4');
+                        }
+                    });
+                }
+                
+                // Pulse nodes being updated
+                if (step.highlight) {
+                    step.highlight.forEach(nodeId => {
+                        const circle = document.getElementById('node-' + nodeId);
+                        if (circle) {
+                            circle.style.animation = 'pulse 0.5s ease-in-out';
+                            setTimeout(() => {
+                                circle.style.animation = '';
+                            }, 500);
+                        }
+                    });
+                }
+            } else if (step.action === 'finish') {
+                const circle = document.getElementById('node-' + step.finished);
+                circle.setAttribute('fill', '#4CAF50');
+            } else if (step.action === 'complete') {
+                // Highlight shortest path
+                for (let i = 0; i < step.path.length - 1; i++) {
+                    const edge = document.getElementById(`edge-${step.path[i]}-${step.path[i+1]}`);
+                    if (edge) {
+                        edge.setAttribute('stroke', '#ff4757');
+                        edge.setAttribute('stroke-width', '4');
+                    }
+                }
+                step.path.forEach(nodeId => {
+                    const circle = document.getElementById('node-' + nodeId);
+                    circle.setAttribute('fill', '#ff4757');
+                });
+            }
+            
+            // Update distances display with animation
+            updateDistances(step.distances);
+            
+            // Update step info
+            document.getElementById('step-info').textContent = step.message;
+        }
+        
+        // Start the animation
+        window.startDijkstra = function() {
+            // Reset
+            clearInterval(animationTimer);
+            currentStep = -1;
+            
+            // Initialize graph
+            initGraph();
+            
+            // Reset distances display
+            updateDistances({
+                A: 0,
+                B: Infinity,
+                C: Infinity,
+                D: Infinity,
+                E: Infinity,
+                F: Infinity
+            });
+            
+            // Run Dijkstra algorithm using the imported function
+            algorithmResult = runDijkstraAlgorithm();
+            
+            // Log the result for educational purposes
+            console.log('Dijkstra Result:', algorithmResult);
+            console.log('Shortest path A→F:', getShortestPath(algorithmResult, 'F'));
+            
+            // Create animation steps
+            createAnimationSteps();
+            
+            // Disable button during animation
+            document.getElementById('start-btn').disabled = true;
+            
+            // Start animation
+            animationTimer = setInterval(animateStep, 2500);
+        }
+        
+        // Initialize on load
+        window.onload = initGraph;
+    </script>
+</body>
+</html>
