@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BFS Browser Performance Benchmark</title>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: #2d2d30;
+            border-radius: 8px;
+        }
+        .console {
+            background-color: #0c0c0c;
+            border: 1px solid #3c3c3c;
+            border-radius: 4px;
+            padding: 15px;
+            height: 400px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+        .controls {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        button {
+            background-color: #0e639c;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 0 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+        button:hover {
+            background-color: #1177bb;
+        }
+        button:disabled {
+            background-color: #666;
+            cursor: not-allowed;
+        }
+        .results {
+            background-color: #2d2d30;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        .system-info {
+            background-color: #2d2d30;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🚀 BFS Browser Performance Benchmark</h1>
+        <p>Cross-platform graph algorithm performance testing using Benchmark.js</p>
+    </div>
+
+    <div class="system-info">
+        <h3>System Information</h3>
+        <div id="systemInfo">Loading...</div>
+    </div>
+
+    <div class="controls">
+        <button id="quickBtn" onclick="runBenchmark('quick')">Run Quick Tests (~30s)</button>
+        <button id="comprehensiveBtn" onclick="runBenchmark('comprehensive')">Run Comprehensive Tests (~5min)</button>
+        <button id="clearBtn" onclick="clearConsole()">Clear Console</button>
+        <button id="downloadBtn" onclick="downloadResults()" disabled>Download Results</button>
+    </div>
+
+    <div class="console" id="console"></div>
+
+    <div class="results" id="results" style="display: none;">
+        <h3>Results Summary</h3>
+        <div id="resultsSummary"></div>
+    </div>
+
+    <!-- Load Benchmark.js from CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/benchmark@2.1.4/benchmark.min.js"></script>
+    
+    <!-- Load the compiled graph algorithms -->
+    <script type="module">
+        // This would be your compiled graph algorithms
+        // For demo purposes, we'll create a simple BFS implementation
+        
+        // Simple Graph implementation for demo
+        class SimpleGraph {
+            constructor(vertices) {
+                this.vertices = vertices;
+                this.adjacencyList = {};
+                for (let i = 0; i < vertices; i++) {
+                    this.adjacencyList[i] = [];
+                }
+            }
+            
+            addEdge(from, to) {
+                this.adjacencyList[from].push(to);
+                this.adjacencyList[to].push(from);
+            }
+            
+            hasNode(node) {
+                return node >= 0 && node < this.vertices;
+            }
+            
+            getNeighbors(node) {
+                return this.adjacencyList[node] || [];
+            }
+        }
+
+        // Simple BFS implementation for demo
+        function breadthFirstSearch(graph, startNode) {
+            if (!graph.hasNode(startNode)) {
+                throw new Error(`Start node ${startNode} not found in graph`);
+            }
+
+            const visited = new Set();
+            const queue = [startNode];
+            const order = [];
+
+            visited.add(startNode);
+
+            while (queue.length > 0) {
+                const node = queue.shift();
+                order.push(node);
+
+                for (const neighbor of graph.getNeighbors(node)) {
+                    if (!visited.has(neighbor)) {
+                        visited.add(neighbor);
+                        queue.push(neighbor);
+                    }
+                }
+            }
+
+            return {
+                visited,
+                order,
+                tree: new Map() // Simplified
+            };
+        }
+
+        // Graph generators for demo
+        function generateSparseGraph(vertices) {
+            const graph = new SimpleGraph(vertices);
+            const avgDegree = 6;
+            const numEdges = Math.floor(vertices * avgDegree / 2);
+            
+            for (let i = 0; i < numEdges; i++) {
+                const from = Math.floor(Math.random() * vertices);
+                const to = Math.floor(Math.random() * vertices);
+                if (from !== to) {
+                    graph.addEdge(from, to);
+                }
+            }
+            
+            return { graph, edges: numEdges };
+        }
+
+        // System info collection
+        function getSystemInfo() {
+            const nav = navigator;
+            const screen = window.screen;
+            const performance = window.performance;
+            
+            return {
+                platform: nav.platform,
+                userAgent: nav.userAgent,
+                language: nav.language,
+                hardwareConcurrency: nav.hardwareConcurrency || 'unknown',
+                screen: `${screen.width}x${screen.height}`,
+                devicePixelRatio: window.devicePixelRatio,
+                memory: performance.memory ? {
+                    usedJSHeapSize: performance.memory.usedJSHeapSize,
+                    totalJSHeapSize: performance.memory.totalJSHeapSize,
+                    jsHeapSizeLimit: performance.memory.jsHeapSizeLimit
+                } : 'not available',
+                timestamp: new Date().toISOString()
+            };
+        }
+
+        // Console logging
+        function log(message) {
+            const console = document.getElementById('console');
+            const time = new Date().toLocaleTimeString();
+            console.innerHTML += `<div>[${time}] ${message}</div>`;
+            console.scrollTop = console.scrollHeight;
+        }
+
+        function clearConsole() {
+            document.getElementById('console').innerHTML = '';
+        }
+
+        let currentResults = null;
+
+        // Benchmark configurations
+        const configs = {
+            quick: {
+                testType: 'quick',
+                platform: 'browser',
+                sizes: [100, 500, 2000],
+                iterations: 5
+            },
+            comprehensive: {
+                testType: 'comprehensive',
+                platform: 'browser',
+                sizes: [100, 500, 2000, 5000],
+                iterations: 10
+            }
+        };
+
+        // Main benchmark function
+        async function runBenchmark(configType) {
+            const config = configs[configType];
+            const buttons = document.querySelectorAll('button');
+            buttons.forEach(btn => btn.disabled = true);
+
+            log(`🚀 Starting ${configType} BFS benchmarks in browser`);
+            log('=' + '='.repeat(50));
+            
+            // Display system info
+            const sysInfo = getSystemInfo();
+            log(`Platform: ${sysInfo.platform}`);
+            log(`CPU Cores: ${sysInfo.hardwareConcurrency}`);
+            log(`Screen: ${sysInfo.screen}`);
+            log('');
+
+            // Pre-generate test graphs
+            log('Pre-generating test graphs...');
+            const testGraphs = new Map();
+            
+            for (const size of config.sizes) {
+                try {
+                    log(`  Generating ${size} vertex sparse graph...`);
+                    const { graph, edges } = generateSparseGraph(size);
+                    testGraphs.set(`sparse-${size}`, {
+                        graph,
+                        edges,
+                        size,
+                        type: 'sparse'
+                    });
+                    log(`    ✓ ${size} vertices, ~${edges} edges`);
+                } catch (error) {
+                    log(`    ✗ Failed to generate ${size} vertex graph: ${error.message}`);
+                }
+            }
+
+            // Create benchmark suite
+            const suite = new Benchmark.Suite(`BFS ${configType} Performance`);
+            const results = [];
+
+            // Add benchmark tests
+            log('\nAdding benchmark tests...');
+            for (const size of config.sizes) {
+                const testKey = `sparse-${size}`;
+                if (testGraphs.has(testKey)) {
+                    const testData = testGraphs.get(testKey);
+                    
+                    suite.add(`BFS ${size} vertices (sparse)`, function() {
+                        const result = breadthFirstSearch(testData.graph, 0);
+                        if (result.visited.size === 0) {
+                            throw new Error('BFS returned empty result');
+                        }
+                    }, {
+                        minSamples: config.iterations,
+                        setup: function() {
+                            // Browser GC hint (if available)
+                            if (window.gc) {
+                                window.gc();
+                            }
+                        }
+                    });
+                }
+            }
+
+            // Run benchmarks
+            log(`\nRunning ${configType} benchmarks...\n`);
+            
+            return new Promise((resolve) => {
+                suite
+                    .on('cycle', function(event) {
+                        const benchmark = event.target;
+                        const size = parseInt(benchmark.name.match(/BFS (\d+) vertices/)[1]);
+                        const testData = testGraphs.get(`sparse-${size}`);
+                        
+                        const result = {
+                            algorithm: 'BFS',
+                            graphType: 'sparse',
+                            graphSize: size,
+                            edges: testData.edges,
+                            executionTime: benchmark.stats.mean * 1000, // Convert to ms
+                            opsPerSecond: benchmark.hz,
+                            marginOfError: benchmark.stats.rme,
+                            samples: benchmark.stats.sample.length,
+                            platform: 'browser',
+                            testType: configType,
+                            timestamp: new Date().toISOString()
+                        };
+                        
+                        results.push(result);
+                        log(`  ${benchmark.name}: ${benchmark.toString()}`);
+                    })
+                    .on('complete', function() {
+                        log('\n' + '='.repeat(60));
+                        log('BENCHMARK RESULTS SUMMARY');
+                        log('='.repeat(60));
+                        log('Size\tTime(ms)\tOps/sec\tMargin');
+                        log('-'.repeat(40));
+                        
+                        results.forEach(result => {
+                            log(`${result.graphSize}\t${result.executionTime.toFixed(2)}\t\t${result.opsPerSecond.toFixed(0)}\t±${result.marginOfError.toFixed(1)}%`);
+                        });
+                        
+                        currentResults = {
+                            sessionId: Math.random().toString(36).substring(7),
+                            timestamp: new Date().toISOString(),
+                            systemInfo: sysInfo,
+                            testType: configType,
+                            results: results
+                        };
+                        
+                        log(`\n✅ Benchmark completed successfully!`);
+                        
+                        // Enable download button
+                        document.getElementById('downloadBtn').disabled = false;
+                        
+                        // Show results summary
+                        displayResults(results);
+                        
+                        // Re-enable buttons
+                        buttons.forEach(btn => btn.disabled = false);
+                        
+                        resolve(currentResults);
+                    })
+                    .on('error', function(error) {
+                        log(`❌ Benchmark failed: ${error.message}`);
+                        buttons.forEach(btn => btn.disabled = false);
+                    })
+                    .run({ async: true });
+            });
+        }
+
+        function displayResults(results) {
+            const resultsDiv = document.getElementById('results');
+            const summaryDiv = document.getElementById('resultsSummary');
+            
+            let html = '<table border="1" style="width: 100%; border-collapse: collapse;">';
+            html += '<tr><th>Size</th><th>Time (ms)</th><th>Ops/sec</th><th>Margin</th></tr>';
+            
+            results.forEach(result => {
+                html += `<tr>
+                    <td>${result.graphSize}</td>
+                    <td>${result.executionTime.toFixed(2)}</td>
+                    <td>${result.opsPerSecond.toFixed(0)}</td>
+                    <td>±${result.marginOfError.toFixed(1)}%</td>
+                </tr>`;
+            });
+            
+            html += '</table>';
+            summaryDiv.innerHTML = html;
+            resultsDiv.style.display = 'block';
+        }
+
+        function downloadResults() {
+            if (!currentResults) return;
+            
+            const dataStr = JSON.stringify(currentResults, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `browser-benchmark-${currentResults.testType}-${new Date().toISOString().split('T')[0]}.json`;
+            link.click();
+            
+            URL.revokeObjectURL(url);
+            log('📁 Results downloaded successfully!');
+        }
+
+        // Initialize system info display
+        document.addEventListener('DOMContentLoaded', function() {
+            const sysInfo = getSystemInfo();
+            const systemInfoDiv = document.getElementById('systemInfo');
+            systemInfoDiv.innerHTML = `
+                <strong>Platform:</strong> ${sysInfo.platform}<br>
+                <strong>User Agent:</strong> ${sysInfo.userAgent}<br>
+                <strong>CPU Cores:</strong> ${sysInfo.hardwareConcurrency}<br>
+                <strong>Screen:</strong> ${sysInfo.screen}<br>
+                <strong>Device Pixel Ratio:</strong> ${sysInfo.devicePixelRatio}<br>
+                <strong>Memory:</strong> ${typeof sysInfo.memory === 'object' ? 
+                    `${(sysInfo.memory.usedJSHeapSize / 1024 / 1024).toFixed(2)} MB used` : 
+                    sysInfo.memory}
+            `;
+        });
+
+        // Make functions globally available
+        window.runBenchmark = runBenchmark;
+        window.clearConsole = clearConsole;
+        window.downloadResults = downloadResults;
+    </script>
+</body>
+</html>

@@ -1,0 +1,2828 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Graph Algorithm Performance Report</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
+    <script>eruda.init();</script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        .summary-card {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #007bff;
+        }
+        .summary-card h3 {
+            margin: 0 0 10px 0;
+            color: #333;
+        }
+        .summary-card p {
+            margin: 5px 0;
+            color: #666;
+        }
+        .chart-container {
+            margin: 40px 0;
+            position: relative;
+            height: 400px;
+        }
+        .algorithm-summary {
+            margin: 40px 0;
+        }
+        .summary-table {
+            width: 100%;
+            margin: 20px 0;
+        }
+        .summary-table .best-group {
+            background-color: #e3f2fd;
+            border-left: 3px solid #2196f3;
+        }
+        .summary-table .largest-group {
+            background-color: #f3e5f5;
+            border-left: 3px solid #9c27b0;
+        }
+        .summary-table th.best-group {
+            background-color: #2196f3;
+            color: white;
+        }
+        .summary-table th.largest-group {
+            background-color: #9c27b0;
+            color: white;
+        }
+        .algorithm-link {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .algorithm-link:hover {
+            text-decoration: underline;
+        }
+        .algorithm-section {
+            margin: 40px 0;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+        }
+        .algorithm-charts {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .algorithm-charts .chart-container {
+            height: 300px;
+        }
+        .algorithm-section h2 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #007bff;
+            color: white;
+            font-weight: 600;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            color: #666;
+            font-size: 14px;
+        }
+        .system-info {
+            background-color: #e9ecef;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📊 Graph Algorithm Performance Report</h1>
+        <p class="subtitle">Generated on 7/24/2025, 8:34:31 PM</p>
+        
+        <div class="system-info">
+            <strong>System Information:</strong><br>
+            Platform: linux (x64)<br>
+            Node.js: v22.14.0<br>
+            CPU: Intel(R) Core(TM) i9-14900KF (32 cores @ 5700 MHz)<br>
+            Memory: 94 GB<br>
+            Library: @graphty/algorithms v1.2.0
+        </div>
+
+        <div class="summary">
+            <div class="summary-card">
+                <h3>📈 Algorithms Tested</h3>
+                <p><strong>17</strong> algorithms</p>
+                <p>Eigenvector Centrality, Betweenness Centrality, Degree Centrality, Floyd-Warshall, Connected Components, BFS, DFS, PageRank, Bellman-Ford, Common Neighbors, Maximum Bipartite Matching, K-Core, Closeness Centrality, Kruskal's MST, Katz Centrality, HITS, Dijkstra</p>
+            </div>
+            <div class="summary-card">
+                <h3>📊 Total Benchmarks</h3>
+                <p><strong>51</strong> benchmark runs</p>
+                <p>Across 17 sessions</p>
+            </div>
+            <div class="summary-card">
+                <h3>⚡ Performance Range</h3>
+                <p>From <strong>0.01ms</strong></p>
+                <p>To <strong>248.53ms</strong></p>
+            </div>
+        </div>
+
+        <div class="algorithm-summary">
+            <h2>📊 Algorithm Performance Summary</h2>
+            <table class="summary-table">
+                <thead>
+                    <tr>
+                        <th>Algorithm</th>
+                        <th>Avg Time (ms)</th>
+                        <th>Avg Memory (MB)</th>
+                        <th>Test Count</th>
+                        <th class="best-group">Best TEPS</th>
+                        <th class="best-group">Best Graph Size</th>
+                        <th class="largest-group">Largest Graph</th>
+                        <th class="largest-group">Largest Graph TEPS</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                    <tr>
+                        <td><a href="#eigenvector-centrality" class="algorithm-link">Eigenvector Centrality</a></td>
+                        <td>5.67</td>
+                        <td>12.04</td>
+                        <td>3</td>
+                        <td class="best-group">71155</td>
+                        <td class="best-group">50</td>
+                        <td class="largest-group">200</td>
+                        <td class="largest-group">59512</td>
+                    </tr>
+                    <tr>
+                        <td><a href="#betweenness-centrality" class="algorithm-link">Betweenness Centrality</a></td>
+                        <td>24.08</td>
+                        <td>8.52</td>
+                        <td>3</td>
+                        <td class="best-group">53769</td>
+                        <td class="best-group">50</td>
+                        <td class="largest-group">200</td>
+                        <td class="largest-group">10664</td>
+                    </tr>
+                    <tr>
+                        <td><a href="#degree-centrality" class="algorithm-link">Degree Centrality</a></td>
+                        <td>0.48</td>
+                        <td>14.26</td>
+                        <td>3</td>
+                        <td class="best-group">34112364</td>
+                        <td class="best-group">100</td>
+                        <td class="largest-group">5,000</td>
+                        <td class="largest-group">11265866</td>
+                    </tr>
+                    <tr>
+                        <td><a href="#floyd-warshall" class="algorithm-link">Floyd-Warshall</a></td>
+                        <td>4.53</td>
+                        <td>10.01</td>
+                        <td>3</td>
+                        <td class="best-group">334870</td>
+                        <td class="best-group">10</td>
+                        <td class="largest-group">50</td>
+                        <td class="largest-group">103526</td>
+                    </tr>
+                    <tr>
+                        <td><a href="#connected-components" class="algorithm-link">Connected Components</a></td>
+                        <td>8.34</td>
+                        <td>12.51</td>
+                        <td>3</td>
+                        <td class="best-group">1471202</td>
+                        <td class="best-group">100</td>
+                        <td class="largest-group">5,000</td>
+                        <td class="largest-group">705114</td>
+                    </tr>
+                    <tr>
+                        <td><a href="#bfs" class="algorithm-link">BFS</a></td>
+                        <td>3.49</td>
+                        <td>12.05</td>
+                        <td>3</td>
+                        <td class="best-group">10384692</td>
+                        <td class="best-group">100</td>
+                        <td class="largest-group">5,000</td>
+                        <td class="largest-group">1534496</td>
+                    </tr>
+                    <tr>
+                        <td><a href="#dfs" class="algorithm-link">DFS</a></td>
+                        <td>5.01</td>
+                        <td>15.64</td>
+                        <td>3</td>
+                        <td class="best-group">4304042</td>
+                        <td class="best-group">100</td>
+                        <td class="largest-group">5,000</td>
+                        <td class="largest-group">1064874</td>
+                    </tr>
+                    <tr>
+                        <td><a href="#pagerank" class="algorithm-link">PageRank</a></td>
+                        <td>6.02</td>
+                        <td>17.14</td>
+                        <td>3</td>
+                        <td class="best-group">287386</td>
+                        <td class="best-group">500</td>
+                        <td class="largest-group">1,000</td>
+                        <td class="largest-group">259502</td>
+                    </tr>
+                    <tr>
+                        <td><a href="#bellman-ford" class="algorithm-link">Bellman-Ford</a></td>
+                        <td>0.60</td>
+                        <td>5.40</td>
+                        <td>3</td>
+                        <td class="best-group">722039</td>
+                        <td class="best-group">50</td>
+                        <td class="largest-group">200</td>
+                        <td class="largest-group">565928</td>
+                    </tr>
+                    <tr>
+                        <td><a href="#common-neighbors" class="algorithm-link">Common Neighbors</a></td>
+                        <td>14.14</td>
+                        <td>15.19</td>
+                        <td>3</td>
+                        <td class="best-group">76988</td>
+                        <td class="best-group">50</td>
+                        <td class="largest-group">200</td>
+                        <td class="largest-group">18126</td>
+                    </tr>
+                    <tr>
+                        <td><a href="#maximum-bipartite-matching" class="algorithm-link">Maximum Bipartite Matching</a></td>
+                        <td>1.61</td>
+                        <td>10.37</td>
+                        <td>3</td>
+                        <td class="best-group">1656130</td>
+                        <td class="best-group">50</td>
+                        <td class="largest-group">200</td>
+                        <td class="largest-group">733878</td>
+                    </tr>
+                    <tr>
+                        <td><a href="#k-core" class="algorithm-link">K-Core</a></td>
+                        <td>1.53</td>
+                        <td>13.07</td>
+                        <td>3</td>
+                        <td class="best-group">1141800</td>
+                        <td class="best-group">500</td>
+                        <td class="largest-group">1,000</td>
+                        <td class="largest-group">1000290</td>
+                    </tr>
+                    <tr>
+                        <td><a href="#closeness-centrality" class="algorithm-link">Closeness Centrality</a></td>
+                        <td>27.22</td>
+                        <td>13.01</td>
+                        <td>3</td>
+                        <td class="best-group">303053</td>
+                        <td class="best-group">50</td>
+                        <td class="largest-group">250</td>
+                        <td class="largest-group">14222</td>
+                    </tr>
+                    <tr>
+                        <td><a href="#kruskal-s-mst" class="algorithm-link">Kruskal's MST</a></td>
+                        <td>2.25</td>
+                        <td>13.01</td>
+                        <td>3</td>
+                        <td class="best-group">1115876</td>
+                        <td class="best-group">100</td>
+                        <td class="largest-group">1,000</td>
+                        <td class="largest-group">629554</td>
+                    </tr>
+                    <tr>
+                        <td><a href="#katz-centrality" class="algorithm-link">Katz Centrality</a></td>
+                        <td>30.88</td>
+                        <td>9.34</td>
+                        <td>3</td>
+                        <td class="best-group">62725</td>
+                        <td class="best-group">100</td>
+                        <td class="largest-group">1,000</td>
+                        <td class="largest-group">51720</td>
+                    </tr>
+                    <tr>
+                        <td><a href="#hits" class="algorithm-link">HITS</a></td>
+                        <td>54.61</td>
+                        <td>21.33</td>
+                        <td>3</td>
+                        <td class="best-group">31423</td>
+                        <td class="best-group">100</td>
+                        <td class="largest-group">1,000</td>
+                        <td class="largest-group">28871</td>
+                    </tr>
+                    <tr>
+                        <td><a href="#dijkstra" class="algorithm-link">Dijkstra</a></td>
+                        <td>104.91</td>
+                        <td>54.66</td>
+                        <td>3</td>
+                        <td class="best-group">77319</td>
+                        <td class="best-group">100</td>
+                        <td class="largest-group">961</td>
+                        <td class="largest-group">7484</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        
+        <div class="algorithm-section" id="eigenvector-centrality">
+            <h2>🔍 Eigenvector Centrality</h2>
+            <p><strong>Average Execution Time:</strong> 5.67ms</p>
+            <p><strong>Average Memory Usage:</strong> 12.04MB</p>
+            
+            <div class="algorithm-charts">
+                <div class="chart-container">
+                    <h4>📈 Performance vs Graph Size</h4>
+                    <canvas id="perf-eigenvector-centrality"></canvas>
+                </div>
+                <div class="chart-container">
+                    <h4>💾 Memory vs Graph Size</h4>
+                    <canvas id="mem-eigenvector-centrality"></canvas>
+                </div>
+            </div>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Graph Size</th>
+                        <th>Graph Type</th>
+                        <th>Edges</th>
+                        <th>Time (ms)</th>
+                        <th>Ops/sec</th>
+                        <th>Memory (MB)</th>
+                        <th>TEPS</th>
+                        <th>Margin</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                    <tr>
+                        <td>50</td>
+                        <td>sparse</td>
+                        <td>150</td>
+                        <td>2.11</td>
+                        <td>474</td>
+                        <td>5.65</td>
+                        <td>71155</td>
+                        <td>±13.7%</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>100</td>
+                        <td>sparse</td>
+                        <td>300</td>
+                        <td>4.81</td>
+                        <td>208</td>
+                        <td>10.26</td>
+                        <td>62425</td>
+                        <td>±8.0%</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>200</td>
+                        <td>sparse</td>
+                        <td>600</td>
+                        <td>10.08</td>
+                        <td>99</td>
+                        <td>20.22</td>
+                        <td>59512</td>
+                        <td>±11.1%</td>
+                    </tr>
+                    
+                </tbody>
+            </table>
+        </div>
+          
+        <div class="algorithm-section" id="betweenness-centrality">
+            <h2>🔍 Betweenness Centrality</h2>
+            <p><strong>Average Execution Time:</strong> 24.08ms</p>
+            <p><strong>Average Memory Usage:</strong> 8.52MB</p>
+            
+            <div class="algorithm-charts">
+                <div class="chart-container">
+                    <h4>📈 Performance vs Graph Size</h4>
+                    <canvas id="perf-betweenness-centrality"></canvas>
+                </div>
+                <div class="chart-container">
+                    <h4>💾 Memory vs Graph Size</h4>
+                    <canvas id="mem-betweenness-centrality"></canvas>
+                </div>
+            </div>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Graph Size</th>
+                        <th>Graph Type</th>
+                        <th>Edges</th>
+                        <th>Time (ms)</th>
+                        <th>Ops/sec</th>
+                        <th>Memory (MB)</th>
+                        <th>TEPS</th>
+                        <th>Margin</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                    <tr>
+                        <td>50</td>
+                        <td>sparse</td>
+                        <td>150</td>
+                        <td>2.79</td>
+                        <td>358</td>
+                        <td>0.55</td>
+                        <td>53769</td>
+                        <td>±6.7%</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>100</td>
+                        <td>sparse</td>
+                        <td>300</td>
+                        <td>13.20</td>
+                        <td>76</td>
+                        <td>17.08</td>
+                        <td>22732</td>
+                        <td>±8.7%</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>200</td>
+                        <td>sparse</td>
+                        <td>600</td>
+                        <td>56.26</td>
+                        <td>18</td>
+                        <td>7.93</td>
+                        <td>10664</td>
+                        <td>±9.6%</td>
+                    </tr>
+                    
+                </tbody>
+            </table>
+        </div>
+          
+        <div class="algorithm-section" id="degree-centrality">
+            <h2>🔍 Degree Centrality</h2>
+            <p><strong>Average Execution Time:</strong> 0.48ms</p>
+            <p><strong>Average Memory Usage:</strong> 14.26MB</p>
+            
+            <div class="algorithm-charts">
+                <div class="chart-container">
+                    <h4>📈 Performance vs Graph Size</h4>
+                    <canvas id="perf-degree-centrality"></canvas>
+                </div>
+                <div class="chart-container">
+                    <h4>💾 Memory vs Graph Size</h4>
+                    <canvas id="mem-degree-centrality"></canvas>
+                </div>
+            </div>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Graph Size</th>
+                        <th>Graph Type</th>
+                        <th>Edges</th>
+                        <th>Time (ms)</th>
+                        <th>Ops/sec</th>
+                        <th>Memory (MB)</th>
+                        <th>TEPS</th>
+                        <th>Margin</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                    <tr>
+                        <td>100</td>
+                        <td>sparse</td>
+                        <td>300</td>
+                        <td>0.01</td>
+                        <td>113708</td>
+                        <td>8.16</td>
+                        <td>34112364</td>
+                        <td>±7.6%</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>1000</td>
+                        <td>sparse</td>
+                        <td>3000</td>
+                        <td>0.09</td>
+                        <td>10843</td>
+                        <td>12.51</td>
+                        <td>32529559</td>
+                        <td>±7.3%</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>5000</td>
+                        <td>sparse</td>
+                        <td>15000</td>
+                        <td>1.33</td>
+                        <td>751</td>
+                        <td>22.11</td>
+                        <td>11265866</td>
+                        <td>±11.0%</td>
+                    </tr>
+                    
+                </tbody>
+            </table>
+        </div>
+          
+        <div class="algorithm-section" id="floyd-warshall">
+            <h2>🔍 Floyd-Warshall</h2>
+            <p><strong>Average Execution Time:</strong> 4.53ms</p>
+            <p><strong>Average Memory Usage:</strong> 10.01MB</p>
+            
+            <div class="algorithm-charts">
+                <div class="chart-container">
+                    <h4>📈 Performance vs Graph Size</h4>
+                    <canvas id="perf-floyd-warshall"></canvas>
+                </div>
+                <div class="chart-container">
+                    <h4>💾 Memory vs Graph Size</h4>
+                    <canvas id="mem-floyd-warshall"></canvas>
+                </div>
+            </div>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Graph Size</th>
+                        <th>Graph Type</th>
+                        <th>Edges</th>
+                        <th>Time (ms)</th>
+                        <th>Ops/sec</th>
+                        <th>Memory (MB)</th>
+                        <th>TEPS</th>
+                        <th>Margin</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                    <tr>
+                        <td>10</td>
+                        <td>complete</td>
+                        <td>45</td>
+                        <td>0.13</td>
+                        <td>7442</td>
+                        <td>8.14</td>
+                        <td>334870</td>
+                        <td>±6.2%</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>25</td>
+                        <td>complete</td>
+                        <td>300</td>
+                        <td>1.61</td>
+                        <td>621</td>
+                        <td>13.63</td>
+                        <td>186387</td>
+                        <td>±6.9%</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>50</td>
+                        <td>complete</td>
+                        <td>1225</td>
+                        <td>11.83</td>
+                        <td>85</td>
+                        <td>8.27</td>
+                        <td>103526</td>
+                        <td>±7.4%</td>
+                    </tr>
+                    
+                </tbody>
+            </table>
+        </div>
+          
+        <div class="algorithm-section" id="connected-components">
+            <h2>🔍 Connected Components</h2>
+            <p><strong>Average Execution Time:</strong> 8.34ms</p>
+            <p><strong>Average Memory Usage:</strong> 12.51MB</p>
+            
+            <div class="algorithm-charts">
+                <div class="chart-container">
+                    <h4>📈 Performance vs Graph Size</h4>
+                    <canvas id="perf-connected-components"></canvas>
+                </div>
+                <div class="chart-container">
+                    <h4>💾 Memory vs Graph Size</h4>
+                    <canvas id="mem-connected-components"></canvas>
+                </div>
+            </div>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Graph Size</th>
+                        <th>Graph Type</th>
+                        <th>Edges</th>
+                        <th>Time (ms)</th>
+                        <th>Ops/sec</th>
+                        <th>Memory (MB)</th>
+                        <th>TEPS</th>
+                        <th>Margin</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                    <tr>
+                        <td>100</td>
+                        <td>sparse</td>
+                        <td>300</td>
+                        <td>0.20</td>
+                        <td>4904</td>
+                        <td>17.22</td>
+                        <td>1471202</td>
+                        <td>±7.1%</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>1000</td>
+                        <td>sparse</td>
+                        <td>3000</td>
+                        <td>3.55</td>
+                        <td>282</td>
+                        <td>5.44</td>
+                        <td>844941</td>
+                        <td>±9.7%</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>5000</td>
+                        <td>sparse</td>
+                        <td>15000</td>
+                        <td>21.27</td>
+                        <td>47</td>
+                        <td>14.87</td>
+                        <td>705114</td>
+                        <td>±6.4%</td>
+                    </tr>
+                    
+                </tbody>
+            </table>
+        </div>
+          
+        <div class="algorithm-section" id="bfs">
+            <h2>🔍 BFS</h2>
+            <p><strong>Average Execution Time:</strong> 3.49ms</p>
+            <p><strong>Average Memory Usage:</strong> 12.05MB</p>
+            
+            <div class="algorithm-charts">
+                <div class="chart-container">
+                    <h4>📈 Performance vs Graph Size</h4>
+                    <canvas id="perf-bfs"></canvas>
+                </div>
+                <div class="chart-container">
+                    <h4>💾 Memory vs Graph Size</h4>
+                    <canvas id="mem-bfs"></canvas>
+                </div>
+            </div>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Graph Size</th>
+                        <th>Graph Type</th>
+                        <th>Edges</th>
+                        <th>Time (ms)</th>
+                        <th>Ops/sec</th>
+                        <th>Memory (MB)</th>
+                        <th>TEPS</th>
+                        <th>Margin</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                    <tr>
+                        <td>100</td>
+                        <td>sparse</td>
+                        <td>300</td>
+                        <td>0.03</td>
+                        <td>34616</td>
+                        <td>4.03</td>
+                        <td>10384692</td>
+                        <td>±6.7%</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>1000</td>
+                        <td>sparse</td>
+                        <td>3000</td>
+                        <td>0.67</td>
+                        <td>1500</td>
+                        <td>14.96</td>
+                        <td>4501445</td>
+                        <td>±8.7%</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>5000</td>
+                        <td>sparse</td>
+                        <td>15000</td>
+                        <td>9.78</td>
+                        <td>102</td>
+                        <td>17.14</td>
+                        <td>1534496</td>
+                        <td>±12.6%</td>
+                    </tr>
+                    
+                </tbody>
+            </table>
+        </div>
+          
+        <div class="algorithm-section" id="dfs">
+            <h2>🔍 DFS</h2>
+            <p><strong>Average Execution Time:</strong> 5.01ms</p>
+            <p><strong>Average Memory Usage:</strong> 15.64MB</p>
+            
+            <div class="algorithm-charts">
+                <div class="chart-container">
+                    <h4>📈 Performance vs Graph Size</h4>
+                    <canvas id="perf-dfs"></canvas>
+                </div>
+                <div class="chart-container">
+                    <h4>💾 Memory vs Graph Size</h4>
+                    <canvas id="mem-dfs"></canvas>
+                </div>
+            </div>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Graph Size</th>
+                        <th>Graph Type</th>
+                        <th>Edges</th>
+                        <th>Time (ms)</th>
+                        <th>Ops/sec</th>
+                        <th>Memory (MB)</th>
+                        <th>TEPS</th>
+                        <th>Margin</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                    <tr>
+                        <td>100</td>
+                        <td>sparse</td>
+                        <td>300</td>
+                        <td>0.07</td>
+                        <td>14347</td>
+                        <td>9.10</td>
+                        <td>4304042</td>
+                        <td>±8.0%</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>1000</td>
+                        <td>sparse</td>
+                        <td>3000</td>
+                        <td>0.87</td>
+                        <td>1143</td>
+                        <td>11.22</td>
+                        <td>3429191</td>
+                        <td>±6.1%</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>5000</td>
+                        <td>sparse</td>
+                        <td>15000</td>
+                        <td>14.09</td>
+                        <td>71</td>
+                        <td>26.59</td>
+                        <td>1064874</td>
+                        <td>±9.5%</td>
+                    </tr>
+                    
+                </tbody>
+            </table>
+        </div>
+          
+        <div class="algorithm-section" id="pagerank">
+            <h2>🔍 PageRank</h2>
+            <p><strong>Average Execution Time:</strong> 6.02ms</p>
+            <p><strong>Average Memory Usage:</strong> 17.14MB</p>
+            
+            <div class="algorithm-charts">
+                <div class="chart-container">
+                    <h4>📈 Performance vs Graph Size</h4>
+                    <canvas id="perf-pagerank"></canvas>
+                </div>
+                <div class="chart-container">
+                    <h4>💾 Memory vs Graph Size</h4>
+                    <canvas id="mem-pagerank"></canvas>
+                </div>
+            </div>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Graph Size</th>
+                        <th>Graph Type</th>
+                        <th>Edges</th>
+                        <th>Time (ms)</th>
+                        <th>Ops/sec</th>
+                        <th>Memory (MB)</th>
+                        <th>TEPS</th>
+                        <th>Margin</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                    <tr>
+                        <td>100</td>
+                        <td>sparse</td>
+                        <td>300</td>
+                        <td>1.29</td>
+                        <td>776</td>
+                        <td>15.31</td>
+                        <td>232891</td>
+                        <td>±10.0%</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>500</td>
+                        <td>sparse</td>
+                        <td>1500</td>
+                        <td>5.22</td>
+                        <td>192</td>
+                        <td>18.81</td>
+                        <td>287386</td>
+                        <td>±8.4%</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>1000</td>
+                        <td>sparse</td>
+                        <td>3000</td>
+                        <td>11.56</td>
+                        <td>87</td>
+                        <td>17.31</td>
+                        <td>259502</td>
+                        <td>±8.2%</td>
+                    </tr>
+                    
+                </tbody>
+            </table>
+        </div>
+          
+        <div class="algorithm-section" id="bellman-ford">
+            <h2>🔍 Bellman-Ford</h2>
+            <p><strong>Average Execution Time:</strong> 0.60ms</p>
+            <p><strong>Average Memory Usage:</strong> 5.40MB</p>
+            
+            <div class="algorithm-charts">
+                <div class="chart-container">
+                    <h4>📈 Performance vs Graph Size</h4>
+                    <canvas id="perf-bellman-ford"></canvas>
+                </div>
+                <div class="chart-container">
+                    <h4>💾 Memory vs Graph Size</h4>
+                    <canvas id="mem-bellman-ford"></canvas>
+                </div>
+            </div>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Graph Size</th>
+                        <th>Graph Type</th>
+                        <th>Edges</th>
+                        <th>Time (ms)</th>
+                        <th>Ops/sec</th>
+                        <th>Memory (MB)</th>
+                        <th>TEPS</th>
+                        <th>Margin</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                    <tr>
+                        <td>50</td>
+                        <td>sparse</td>
+                        <td>150</td>
+                        <td>0.21</td>
+                        <td>4814</td>
+                        <td>4.75</td>
+                        <td>722039</td>
+                        <td>±7.6%</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>100</td>
+                        <td>sparse</td>
+                        <td>300</td>
+                        <td>0.53</td>
+                        <td>1901</td>
+                        <td>4.45</td>
+                        <td>570283</td>
+                        <td>±6.3%</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>200</td>
+                        <td>sparse</td>
+                        <td>600</td>
+                        <td>1.06</td>
+                        <td>943</td>
+                        <td>7.00</td>
+                        <td>565928</td>
+                        <td>±9.2%</td>
+                    </tr>
+                    
+                </tbody>
+            </table>
+        </div>
+          
+        <div class="algorithm-section" id="common-neighbors">
+            <h2>🔍 Common Neighbors</h2>
+            <p><strong>Average Execution Time:</strong> 14.14ms</p>
+            <p><strong>Average Memory Usage:</strong> 15.19MB</p>
+            
+            <div class="algorithm-charts">
+                <div class="chart-container">
+                    <h4>📈 Performance vs Graph Size</h4>
+                    <canvas id="perf-common-neighbors"></canvas>
+                </div>
+                <div class="chart-container">
+                    <h4>💾 Memory vs Graph Size</h4>
+                    <canvas id="mem-common-neighbors"></canvas>
+                </div>
+            </div>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Graph Size</th>
+                        <th>Graph Type</th>
+                        <th>Edges</th>
+                        <th>Time (ms)</th>
+                        <th>Ops/sec</th>
+                        <th>Memory (MB)</th>
+                        <th>TEPS</th>
+                        <th>Margin</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                    <tr>
+                        <td>50</td>
+                        <td>sparse</td>
+                        <td>150</td>
+                        <td>1.95</td>
+                        <td>513</td>
+                        <td>7.46</td>
+                        <td>76988</td>
+                        <td>±7.5%</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>100</td>
+                        <td>sparse</td>
+                        <td>300</td>
+                        <td>7.37</td>
+                        <td>136</td>
+                        <td>18.22</td>
+                        <td>40701</td>
+                        <td>±4.6%</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>200</td>
+                        <td>sparse</td>
+                        <td>600</td>
+                        <td>33.10</td>
+                        <td>30</td>
+                        <td>19.89</td>
+                        <td>18126</td>
+                        <td>±11.0%</td>
+                    </tr>
+                    
+                </tbody>
+            </table>
+        </div>
+          
+        <div class="algorithm-section" id="maximum-bipartite-matching">
+            <h2>🔍 Maximum Bipartite Matching</h2>
+            <p><strong>Average Execution Time:</strong> 1.61ms</p>
+            <p><strong>Average Memory Usage:</strong> 10.37MB</p>
+            
+            <div class="algorithm-charts">
+                <div class="chart-container">
+                    <h4>📈 Performance vs Graph Size</h4>
+                    <canvas id="perf-maximum-bipartite-matching"></canvas>
+                </div>
+                <div class="chart-container">
+                    <h4>💾 Memory vs Graph Size</h4>
+                    <canvas id="mem-maximum-bipartite-matching"></canvas>
+                </div>
+            </div>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Graph Size</th>
+                        <th>Graph Type</th>
+                        <th>Edges</th>
+                        <th>Time (ms)</th>
+                        <th>Ops/sec</th>
+                        <th>Memory (MB)</th>
+                        <th>TEPS</th>
+                        <th>Margin</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                    <tr>
+                        <td>50</td>
+                        <td>bipartite</td>
+                        <td>185</td>
+                        <td>0.11</td>
+                        <td>8952</td>
+                        <td>4.20</td>
+                        <td>1656130</td>
+                        <td>±9.2%</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>100</td>
+                        <td>bipartite</td>
+                        <td>777</td>
+                        <td>0.63</td>
+                        <td>1588</td>
+                        <td>9.55</td>
+                        <td>1233742</td>
+                        <td>±3.7%</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>200</td>
+                        <td>bipartite</td>
+                        <td>2994</td>
+                        <td>4.08</td>
+                        <td>245</td>
+                        <td>17.35</td>
+                        <td>733878</td>
+                        <td>±6.4%</td>
+                    </tr>
+                    
+                </tbody>
+            </table>
+        </div>
+          
+        <div class="algorithm-section" id="k-core">
+            <h2>🔍 K-Core</h2>
+            <p><strong>Average Execution Time:</strong> 1.53ms</p>
+            <p><strong>Average Memory Usage:</strong> 13.07MB</p>
+            
+            <div class="algorithm-charts">
+                <div class="chart-container">
+                    <h4>📈 Performance vs Graph Size</h4>
+                    <canvas id="perf-k-core"></canvas>
+                </div>
+                <div class="chart-container">
+                    <h4>💾 Memory vs Graph Size</h4>
+                    <canvas id="mem-k-core"></canvas>
+                </div>
+            </div>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Graph Size</th>
+                        <th>Graph Type</th>
+                        <th>Edges</th>
+                        <th>Time (ms)</th>
+                        <th>Ops/sec</th>
+                        <th>Memory (MB)</th>
+                        <th>TEPS</th>
+                        <th>Margin</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                    <tr>
+                        <td>100</td>
+                        <td>sparse</td>
+                        <td>300</td>
+                        <td>0.26</td>
+                        <td>3774</td>
+                        <td>17.92</td>
+                        <td>1132191</td>
+                        <td>±13.1%</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>500</td>
+                        <td>sparse</td>
+                        <td>1500</td>
+                        <td>1.31</td>
+                        <td>761</td>
+                        <td>7.08</td>
+                        <td>1141800</td>
+                        <td>±7.6%</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>1000</td>
+                        <td>sparse</td>
+                        <td>3000</td>
+                        <td>3.00</td>
+                        <td>333</td>
+                        <td>14.22</td>
+                        <td>1000290</td>
+                        <td>±8.7%</td>
+                    </tr>
+                    
+                </tbody>
+            </table>
+        </div>
+          
+        <div class="algorithm-section" id="closeness-centrality">
+            <h2>🔍 Closeness Centrality</h2>
+            <p><strong>Average Execution Time:</strong> 27.22ms</p>
+            <p><strong>Average Memory Usage:</strong> 13.01MB</p>
+            
+            <div class="algorithm-charts">
+                <div class="chart-container">
+                    <h4>📈 Performance vs Graph Size</h4>
+                    <canvas id="perf-closeness-centrality"></canvas>
+                </div>
+                <div class="chart-container">
+                    <h4>💾 Memory vs Graph Size</h4>
+                    <canvas id="mem-closeness-centrality"></canvas>
+                </div>
+            </div>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Graph Size</th>
+                        <th>Graph Type</th>
+                        <th>Edges</th>
+                        <th>Time (ms)</th>
+                        <th>Ops/sec</th>
+                        <th>Memory (MB)</th>
+                        <th>TEPS</th>
+                        <th>Margin</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                    <tr>
+                        <td>50</td>
+                        <td>complete</td>
+                        <td>1225</td>
+                        <td>4.04</td>
+                        <td>247</td>
+                        <td>4.31</td>
+                        <td>303053</td>
+                        <td>±5.6%</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>100</td>
+                        <td>complete</td>
+                        <td>4950</td>
+                        <td>24.88</td>
+                        <td>40</td>
+                        <td>16.59</td>
+                        <td>198924</td>
+                        <td>±6.4%</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>250</td>
+                        <td>sparse</td>
+                        <td>750</td>
+                        <td>52.73</td>
+                        <td>19</td>
+                        <td>18.12</td>
+                        <td>14222</td>
+                        <td>±6.9%</td>
+                    </tr>
+                    
+                </tbody>
+            </table>
+        </div>
+          
+        <div class="algorithm-section" id="kruskal-s-mst">
+            <h2>🔍 Kruskal's MST</h2>
+            <p><strong>Average Execution Time:</strong> 2.25ms</p>
+            <p><strong>Average Memory Usage:</strong> 13.01MB</p>
+            
+            <div class="algorithm-charts">
+                <div class="chart-container">
+                    <h4>📈 Performance vs Graph Size</h4>
+                    <canvas id="perf-kruskal-s-mst"></canvas>
+                </div>
+                <div class="chart-container">
+                    <h4>💾 Memory vs Graph Size</h4>
+                    <canvas id="mem-kruskal-s-mst"></canvas>
+                </div>
+            </div>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Graph Size</th>
+                        <th>Graph Type</th>
+                        <th>Edges</th>
+                        <th>Time (ms)</th>
+                        <th>Ops/sec</th>
+                        <th>Memory (MB)</th>
+                        <th>TEPS</th>
+                        <th>Margin</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                    <tr>
+                        <td>100</td>
+                        <td>sparse</td>
+                        <td>300</td>
+                        <td>0.27</td>
+                        <td>3720</td>
+                        <td>7.05</td>
+                        <td>1115876</td>
+                        <td>±4.5%</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>500</td>
+                        <td>sparse</td>
+                        <td>1500</td>
+                        <td>1.72</td>
+                        <td>582</td>
+                        <td>20.84</td>
+                        <td>873542</td>
+                        <td>±7.6%</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>1000</td>
+                        <td>sparse</td>
+                        <td>3000</td>
+                        <td>4.77</td>
+                        <td>210</td>
+                        <td>11.15</td>
+                        <td>629554</td>
+                        <td>±8.4%</td>
+                    </tr>
+                    
+                </tbody>
+            </table>
+        </div>
+          
+        <div class="algorithm-section" id="katz-centrality">
+            <h2>🔍 Katz Centrality</h2>
+            <p><strong>Average Execution Time:</strong> 30.88ms</p>
+            <p><strong>Average Memory Usage:</strong> 9.34MB</p>
+            
+            <div class="algorithm-charts">
+                <div class="chart-container">
+                    <h4>📈 Performance vs Graph Size</h4>
+                    <canvas id="perf-katz-centrality"></canvas>
+                </div>
+                <div class="chart-container">
+                    <h4>💾 Memory vs Graph Size</h4>
+                    <canvas id="mem-katz-centrality"></canvas>
+                </div>
+            </div>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Graph Size</th>
+                        <th>Graph Type</th>
+                        <th>Edges</th>
+                        <th>Time (ms)</th>
+                        <th>Ops/sec</th>
+                        <th>Memory (MB)</th>
+                        <th>TEPS</th>
+                        <th>Margin</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                    <tr>
+                        <td>100</td>
+                        <td>sparse</td>
+                        <td>300</td>
+                        <td>4.78</td>
+                        <td>209</td>
+                        <td>3.79</td>
+                        <td>62725</td>
+                        <td>±7.4%</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>500</td>
+                        <td>sparse</td>
+                        <td>1500</td>
+                        <td>29.84</td>
+                        <td>34</td>
+                        <td>12.40</td>
+                        <td>50260</td>
+                        <td>±7.0%</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>1000</td>
+                        <td>sparse</td>
+                        <td>3000</td>
+                        <td>58.01</td>
+                        <td>17</td>
+                        <td>11.85</td>
+                        <td>51720</td>
+                        <td>±9.9%</td>
+                    </tr>
+                    
+                </tbody>
+            </table>
+        </div>
+          
+        <div class="algorithm-section" id="hits">
+            <h2>🔍 HITS</h2>
+            <p><strong>Average Execution Time:</strong> 54.61ms</p>
+            <p><strong>Average Memory Usage:</strong> 21.33MB</p>
+            
+            <div class="algorithm-charts">
+                <div class="chart-container">
+                    <h4>📈 Performance vs Graph Size</h4>
+                    <canvas id="perf-hits"></canvas>
+                </div>
+                <div class="chart-container">
+                    <h4>💾 Memory vs Graph Size</h4>
+                    <canvas id="mem-hits"></canvas>
+                </div>
+            </div>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Graph Size</th>
+                        <th>Graph Type</th>
+                        <th>Edges</th>
+                        <th>Time (ms)</th>
+                        <th>Ops/sec</th>
+                        <th>Memory (MB)</th>
+                        <th>TEPS</th>
+                        <th>Margin</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                    <tr>
+                        <td>100</td>
+                        <td>sparse</td>
+                        <td>300</td>
+                        <td>9.55</td>
+                        <td>105</td>
+                        <td>14.80</td>
+                        <td>31423</td>
+                        <td>±11.3%</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>500</td>
+                        <td>sparse</td>
+                        <td>1500</td>
+                        <td>50.37</td>
+                        <td>20</td>
+                        <td>17.32</td>
+                        <td>29782</td>
+                        <td>±7.6%</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>1000</td>
+                        <td>sparse</td>
+                        <td>3000</td>
+                        <td>103.91</td>
+                        <td>10</td>
+                        <td>31.87</td>
+                        <td>28871</td>
+                        <td>±5.7%</td>
+                    </tr>
+                    
+                </tbody>
+            </table>
+        </div>
+          
+        <div class="algorithm-section" id="dijkstra">
+            <h2>🔍 Dijkstra</h2>
+            <p><strong>Average Execution Time:</strong> 104.91ms</p>
+            <p><strong>Average Memory Usage:</strong> 54.66MB</p>
+            
+            <div class="algorithm-charts">
+                <div class="chart-container">
+                    <h4>📈 Performance vs Graph Size</h4>
+                    <canvas id="perf-dijkstra"></canvas>
+                </div>
+                <div class="chart-container">
+                    <h4>💾 Memory vs Graph Size</h4>
+                    <canvas id="mem-dijkstra"></canvas>
+                </div>
+            </div>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Graph Size</th>
+                        <th>Graph Type</th>
+                        <th>Edges</th>
+                        <th>Time (ms)</th>
+                        <th>Ops/sec</th>
+                        <th>Memory (MB)</th>
+                        <th>TEPS</th>
+                        <th>Margin</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                    <tr>
+                        <td>100</td>
+                        <td>grid</td>
+                        <td>180</td>
+                        <td>2.33</td>
+                        <td>430</td>
+                        <td>15.28</td>
+                        <td>77319</td>
+                        <td>±7.0%</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>484</td>
+                        <td>grid</td>
+                        <td>924</td>
+                        <td>63.87</td>
+                        <td>16</td>
+                        <td>67.13</td>
+                        <td>14467</td>
+                        <td>±8.8%</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>961</td>
+                        <td>grid</td>
+                        <td>1860</td>
+                        <td>248.53</td>
+                        <td>4</td>
+                        <td>81.57</td>
+                        <td>7484</td>
+                        <td>±8.1%</td>
+                    </tr>
+                    
+                </tbody>
+            </table>
+        </div>
+          
+
+        <div class="footer">
+            <p>Generated with ❤️ by @graphty/algorithms performance benchmarking suite</p>
+            <p>Using Benchmark.js for accurate performance measurements</p>
+        </div>
+    </div>
+
+    <script>
+
+        // Create individual charts for each algorithm
+        
+        // Eigenvector Centrality Performance Chart
+        const perfCtx_eigenvector_centrality = document.getElementById('perf-eigenvector-centrality').getContext('2d');
+        new Chart(perfCtx_eigenvector_centrality, {
+            type: 'line',
+            data: {
+                labels: [50,100,200],
+                datasets: [{
+                    label: 'Execution Time (ms)',
+                    data: [2.108076518193183,4.805776530801972,10.081988015281258],
+                    borderColor: '#007bff',
+                    backgroundColor: '#007bff20',
+                    borderWidth: 2,
+                    tension: 0.1,
+                    fill: false
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Graph Size (vertices)'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Execution Time (ms)'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Eigenvector Centrality Memory Chart
+        const memCtx_eigenvector_centrality = document.getElementById('mem-eigenvector-centrality').getContext('2d');
+        new Chart(memCtx_eigenvector_centrality, {
+            type: 'bar',
+            data: {
+                labels: [50,100,200],
+                datasets: [{
+                    label: 'Memory Usage (MB)',
+                    data: [5.651405334472656,10.2581787109375,20.216110229492188],
+                    backgroundColor: '#28a745',
+                    borderColor: '#28a745',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Graph Size (vertices)'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Memory Usage (MB)'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Betweenness Centrality Performance Chart
+        const perfCtx_betweenness_centrality = document.getElementById('perf-betweenness-centrality').getContext('2d');
+        new Chart(perfCtx_betweenness_centrality, {
+            type: 'line',
+            data: {
+                labels: [50,100,200],
+                datasets: [{
+                    label: 'Execution Time (ms)',
+                    data: [2.789707928325453,13.197076809909914,56.26331999358974],
+                    borderColor: '#007bff',
+                    backgroundColor: '#007bff20',
+                    borderWidth: 2,
+                    tension: 0.1,
+                    fill: false
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Graph Size (vertices)'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Execution Time (ms)'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Betweenness Centrality Memory Chart
+        const memCtx_betweenness_centrality = document.getElementById('mem-betweenness-centrality').getContext('2d');
+        new Chart(memCtx_betweenness_centrality, {
+            type: 'bar',
+            data: {
+                labels: [50,100,200],
+                datasets: [{
+                    label: 'Memory Usage (MB)',
+                    data: [0.5462493896484375,17.08447265625,7.927848815917969],
+                    backgroundColor: '#28a745',
+                    borderColor: '#28a745',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Graph Size (vertices)'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Memory Usage (MB)'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Degree Centrality Performance Chart
+        const perfCtx_degree_centrality = document.getElementById('perf-degree-centrality').getContext('2d');
+        new Chart(perfCtx_degree_centrality, {
+            type: 'line',
+            data: {
+                labels: [100,1000,5000],
+                datasets: [{
+                    label: 'Execution Time (ms)',
+                    data: [0.008794465285521915,0.09222381393902677,1.3314555678795004],
+                    borderColor: '#007bff',
+                    backgroundColor: '#007bff20',
+                    borderWidth: 2,
+                    tension: 0.1,
+                    fill: false
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Graph Size (vertices)'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Execution Time (ms)'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Degree Centrality Memory Chart
+        const memCtx_degree_centrality = document.getElementById('mem-degree-centrality').getContext('2d');
+        new Chart(memCtx_degree_centrality, {
+            type: 'bar',
+            data: {
+                labels: [100,1000,5000],
+                datasets: [{
+                    label: 'Memory Usage (MB)',
+                    data: [8.159439086914062,12.505683898925781,22.110382080078125],
+                    backgroundColor: '#28a745',
+                    borderColor: '#28a745',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Graph Size (vertices)'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Memory Usage (MB)'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Floyd-Warshall Performance Chart
+        const perfCtx_floyd_warshall = document.getElementById('perf-floyd-warshall').getContext('2d');
+        new Chart(perfCtx_floyd_warshall, {
+            type: 'line',
+            data: {
+                labels: [10,25,50],
+                datasets: [{
+                    label: 'Execution Time (ms)',
+                    data: [0.13438051976925905,1.609550134876205,11.832807114462806],
+                    borderColor: '#007bff',
+                    backgroundColor: '#007bff20',
+                    borderWidth: 2,
+                    tension: 0.1,
+                    fill: false
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Graph Size (vertices)'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Execution Time (ms)'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Floyd-Warshall Memory Chart
+        const memCtx_floyd_warshall = document.getElementById('mem-floyd-warshall').getContext('2d');
+        new Chart(memCtx_floyd_warshall, {
+            type: 'bar',
+            data: {
+                labels: [10,25,50],
+                datasets: [{
+                    label: 'Memory Usage (MB)',
+                    data: [8.139389038085938,13.627052307128906,8.266708374023438],
+                    backgroundColor: '#28a745',
+                    borderColor: '#28a745',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Graph Size (vertices)'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Memory Usage (MB)'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Connected Components Performance Chart
+        const perfCtx_connected_components = document.getElementById('perf-connected-components').getContext('2d');
+        new Chart(perfCtx_connected_components, {
+            type: 'line',
+            data: {
+                labels: [100,1000,5000],
+                datasets: [{
+                    label: 'Execution Time (ms)',
+                    data: [0.20391492976818462,3.5505434249680117,21.273151119696976],
+                    borderColor: '#007bff',
+                    backgroundColor: '#007bff20',
+                    borderWidth: 2,
+                    tension: 0.1,
+                    fill: false
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Graph Size (vertices)'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Execution Time (ms)'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Connected Components Memory Chart
+        const memCtx_connected_components = document.getElementById('mem-connected-components').getContext('2d');
+        new Chart(memCtx_connected_components, {
+            type: 'bar',
+            data: {
+                labels: [100,1000,5000],
+                datasets: [{
+                    label: 'Memory Usage (MB)',
+                    data: [17.217208862304688,5.44183349609375,14.869888305664062],
+                    backgroundColor: '#28a745',
+                    borderColor: '#28a745',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Graph Size (vertices)'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Memory Usage (MB)'
+                        }
+                    }
+                }
+            }
+        });
+
+        // BFS Performance Chart
+        const perfCtx_bfs = document.getElementById('perf-bfs').getContext('2d');
+        new Chart(perfCtx_bfs, {
+            type: 'line',
+            data: {
+                labels: [100,1000,5000],
+                datasets: [{
+                    label: 'Execution Time (ms)',
+                    data: [0.028888675837451076,0.6664526290363055,9.775199577704393],
+                    borderColor: '#007bff',
+                    backgroundColor: '#007bff20',
+                    borderWidth: 2,
+                    tension: 0.1,
+                    fill: false
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Graph Size (vertices)'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Execution Time (ms)'
+                        }
+                    }
+                }
+            }
+        });
+
+        // BFS Memory Chart
+        const memCtx_bfs = document.getElementById('mem-bfs').getContext('2d');
+        new Chart(memCtx_bfs, {
+            type: 'bar',
+            data: {
+                labels: [100,1000,5000],
+                datasets: [{
+                    label: 'Memory Usage (MB)',
+                    data: [4.033271789550781,14.960052490234375,17.14348602294922],
+                    backgroundColor: '#28a745',
+                    borderColor: '#28a745',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Graph Size (vertices)'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Memory Usage (MB)'
+                        }
+                    }
+                }
+            }
+        });
+
+        // DFS Performance Chart
+        const perfCtx_dfs = document.getElementById('perf-dfs').getContext('2d');
+        new Chart(perfCtx_dfs, {
+            type: 'line',
+            data: {
+                labels: [100,1000,5000],
+                datasets: [{
+                    label: 'Execution Time (ms)',
+                    data: [0.0697019254694998,0.8748418412806295,14.086172149217452],
+                    borderColor: '#007bff',
+                    backgroundColor: '#007bff20',
+                    borderWidth: 2,
+                    tension: 0.1,
+                    fill: false
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Graph Size (vertices)'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Execution Time (ms)'
+                        }
+                    }
+                }
+            }
+        });
+
+        // DFS Memory Chart
+        const memCtx_dfs = document.getElementById('mem-dfs').getContext('2d');
+        new Chart(memCtx_dfs, {
+            type: 'bar',
+            data: {
+                labels: [100,1000,5000],
+                datasets: [{
+                    label: 'Memory Usage (MB)',
+                    data: [9.104469299316406,11.215606689453125,26.594871520996094],
+                    backgroundColor: '#28a745',
+                    borderColor: '#28a745',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Graph Size (vertices)'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Memory Usage (MB)'
+                        }
+                    }
+                }
+            }
+        });
+
+        // PageRank Performance Chart
+        const perfCtx_pagerank = document.getElementById('perf-pagerank').getContext('2d');
+        new Chart(perfCtx_pagerank, {
+            type: 'line',
+            data: {
+                labels: [100,500,1000],
+                datasets: [{
+                    label: 'Execution Time (ms)',
+                    data: [1.2881564560110874,5.219455311382114,11.560587292025804],
+                    borderColor: '#007bff',
+                    backgroundColor: '#007bff20',
+                    borderWidth: 2,
+                    tension: 0.1,
+                    fill: false
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Graph Size (vertices)'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Execution Time (ms)'
+                        }
+                    }
+                }
+            }
+        });
+
+        // PageRank Memory Chart
+        const memCtx_pagerank = document.getElementById('mem-pagerank').getContext('2d');
+        new Chart(memCtx_pagerank, {
+            type: 'bar',
+            data: {
+                labels: [100,500,1000],
+                datasets: [{
+                    label: 'Memory Usage (MB)',
+                    data: [15.312141418457031,18.812820434570312,17.306869506835938],
+                    backgroundColor: '#28a745',
+                    borderColor: '#28a745',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Graph Size (vertices)'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Memory Usage (MB)'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Bellman-Ford Performance Chart
+        const perfCtx_bellman_ford = document.getElementById('perf-bellman-ford').getContext('2d');
+        new Chart(perfCtx_bellman_ford, {
+            type: 'line',
+            data: {
+                labels: [50,100,200],
+                datasets: [{
+                    label: 'Execution Time (ms)',
+                    data: [0.20774514364337174,0.5260544448017367,1.0602058666974388],
+                    borderColor: '#007bff',
+                    backgroundColor: '#007bff20',
+                    borderWidth: 2,
+                    tension: 0.1,
+                    fill: false
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Graph Size (vertices)'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Execution Time (ms)'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Bellman-Ford Memory Chart
+        const memCtx_bellman_ford = document.getElementById('mem-bellman-ford').getContext('2d');
+        new Chart(memCtx_bellman_ford, {
+            type: 'bar',
+            data: {
+                labels: [50,100,200],
+                datasets: [{
+                    label: 'Memory Usage (MB)',
+                    data: [4.7545013427734375,4.453239440917969,7.0035247802734375],
+                    backgroundColor: '#28a745',
+                    borderColor: '#28a745',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Graph Size (vertices)'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Memory Usage (MB)'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Common Neighbors Performance Chart
+        const perfCtx_common_neighbors = document.getElementById('perf-common-neighbors').getContext('2d');
+        new Chart(perfCtx_common_neighbors, {
+            type: 'line',
+            data: {
+                labels: [50,100,200],
+                datasets: [{
+                    label: 'Execution Time (ms)',
+                    data: [1.94834495183769,7.370796236583521,33.102422183823535],
+                    borderColor: '#007bff',
+                    backgroundColor: '#007bff20',
+                    borderWidth: 2,
+                    tension: 0.1,
+                    fill: false
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Graph Size (vertices)'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Execution Time (ms)'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Common Neighbors Memory Chart
+        const memCtx_common_neighbors = document.getElementById('mem-common-neighbors').getContext('2d');
+        new Chart(memCtx_common_neighbors, {
+            type: 'bar',
+            data: {
+                labels: [50,100,200],
+                datasets: [{
+                    label: 'Memory Usage (MB)',
+                    data: [7.463447570800781,18.220069885253906,19.89209747314453],
+                    backgroundColor: '#28a745',
+                    borderColor: '#28a745',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Graph Size (vertices)'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Memory Usage (MB)'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Maximum Bipartite Matching Performance Chart
+        const perfCtx_maximum_bipartite_matching = document.getElementById('perf-maximum-bipartite-matching').getContext('2d');
+        new Chart(perfCtx_maximum_bipartite_matching, {
+            type: 'line',
+            data: {
+                labels: [50,100,200],
+                datasets: [{
+                    label: 'Execution Time (ms)',
+                    data: [0.11170621584777067,0.6297914002712304,4.0796972456087754],
+                    borderColor: '#007bff',
+                    backgroundColor: '#007bff20',
+                    borderWidth: 2,
+                    tension: 0.1,
+                    fill: false
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Graph Size (vertices)'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Execution Time (ms)'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Maximum Bipartite Matching Memory Chart
+        const memCtx_maximum_bipartite_matching = document.getElementById('mem-maximum-bipartite-matching').getContext('2d');
+        new Chart(memCtx_maximum_bipartite_matching, {
+            type: 'bar',
+            data: {
+                labels: [50,100,200],
+                datasets: [{
+                    label: 'Memory Usage (MB)',
+                    data: [4.198081970214844,9.552688598632812,17.35309600830078],
+                    backgroundColor: '#28a745',
+                    borderColor: '#28a745',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Graph Size (vertices)'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Memory Usage (MB)'
+                        }
+                    }
+                }
+            }
+        });
+
+        // K-Core Performance Chart
+        const perfCtx_k_core = document.getElementById('perf-k-core').getContext('2d');
+        new Chart(perfCtx_k_core, {
+            type: 'line',
+            data: {
+                labels: [100,500,1000],
+                datasets: [{
+                    label: 'Execution Time (ms)',
+                    data: [0.26497304151155315,1.313715081572293,2.9991298522346215],
+                    borderColor: '#007bff',
+                    backgroundColor: '#007bff20',
+                    borderWidth: 2,
+                    tension: 0.1,
+                    fill: false
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Graph Size (vertices)'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Execution Time (ms)'
+                        }
+                    }
+                }
+            }
+        });
+
+        // K-Core Memory Chart
+        const memCtx_k_core = document.getElementById('mem-k-core').getContext('2d');
+        new Chart(memCtx_k_core, {
+            type: 'bar',
+            data: {
+                labels: [100,500,1000],
+                datasets: [{
+                    label: 'Memory Usage (MB)',
+                    data: [17.92426300048828,7.077079772949219,14.223304748535156],
+                    backgroundColor: '#28a745',
+                    borderColor: '#28a745',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Graph Size (vertices)'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Memory Usage (MB)'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Closeness Centrality Performance Chart
+        const perfCtx_closeness_centrality = document.getElementById('perf-closeness-centrality').getContext('2d');
+        new Chart(perfCtx_closeness_centrality, {
+            type: 'line',
+            data: {
+                labels: [50,100,250],
+                datasets: [{
+                    label: 'Execution Time (ms)',
+                    data: [4.042201516047778,24.88392919122807,52.734431588709676],
+                    borderColor: '#007bff',
+                    backgroundColor: '#007bff20',
+                    borderWidth: 2,
+                    tension: 0.1,
+                    fill: false
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Graph Size (vertices)'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Execution Time (ms)'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Closeness Centrality Memory Chart
+        const memCtx_closeness_centrality = document.getElementById('mem-closeness-centrality').getContext('2d');
+        new Chart(memCtx_closeness_centrality, {
+            type: 'bar',
+            data: {
+                labels: [50,100,250],
+                datasets: [{
+                    label: 'Memory Usage (MB)',
+                    data: [4.3083038330078125,16.589553833007812,18.120018005371094],
+                    backgroundColor: '#28a745',
+                    borderColor: '#28a745',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Graph Size (vertices)'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Memory Usage (MB)'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Kruskal's MST Performance Chart
+        const perfCtx_kruskal_s_mst = document.getElementById('perf-kruskal-s-mst').getContext('2d');
+        new Chart(perfCtx_kruskal_s_mst, {
+            type: 'line',
+            data: {
+                labels: [100,500,1000],
+                datasets: [{
+                    label: 'Execution Time (ms)',
+                    data: [0.2688470890611023,1.7171478314367805,4.765281036086843],
+                    borderColor: '#007bff',
+                    backgroundColor: '#007bff20',
+                    borderWidth: 2,
+                    tension: 0.1,
+                    fill: false
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Graph Size (vertices)'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Execution Time (ms)'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Kruskal's MST Memory Chart
+        const memCtx_kruskal_s_mst = document.getElementById('mem-kruskal-s-mst').getContext('2d');
+        new Chart(memCtx_kruskal_s_mst, {
+            type: 'bar',
+            data: {
+                labels: [100,500,1000],
+                datasets: [{
+                    label: 'Memory Usage (MB)',
+                    data: [7.053504943847656,20.840660095214844,11.150016784667969],
+                    backgroundColor: '#28a745',
+                    borderColor: '#28a745',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Graph Size (vertices)'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Memory Usage (MB)'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Katz Centrality Performance Chart
+        const perfCtx_katz_centrality = document.getElementById('perf-katz-centrality').getContext('2d');
+        new Chart(perfCtx_katz_centrality, {
+            type: 'line',
+            data: {
+                labels: [100,500,1000],
+                datasets: [{
+                    label: 'Execution Time (ms)',
+                    data: [4.782764313739905,29.84483599047619,58.005191008928584],
+                    borderColor: '#007bff',
+                    backgroundColor: '#007bff20',
+                    borderWidth: 2,
+                    tension: 0.1,
+                    fill: false
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Graph Size (vertices)'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Execution Time (ms)'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Katz Centrality Memory Chart
+        const memCtx_katz_centrality = document.getElementById('mem-katz-centrality').getContext('2d');
+        new Chart(memCtx_katz_centrality, {
+            type: 'bar',
+            data: {
+                labels: [100,500,1000],
+                datasets: [{
+                    label: 'Memory Usage (MB)',
+                    data: [3.787353515625,12.396675109863281,11.849700927734375],
+                    backgroundColor: '#28a745',
+                    borderColor: '#28a745',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Graph Size (vertices)'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Memory Usage (MB)'
+                        }
+                    }
+                }
+            }
+        });
+
+        // HITS Performance Chart
+        const perfCtx_hits = document.getElementById('perf-hits').getContext('2d');
+        new Chart(perfCtx_hits, {
+            type: 'line',
+            data: {
+                labels: [100,500,1000],
+                datasets: [{
+                    label: 'Execution Time (ms)',
+                    data: [9.54716955651051,50.366196499999994,103.91046034615384],
+                    borderColor: '#007bff',
+                    backgroundColor: '#007bff20',
+                    borderWidth: 2,
+                    tension: 0.1,
+                    fill: false
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Graph Size (vertices)'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Execution Time (ms)'
+                        }
+                    }
+                }
+            }
+        });
+
+        // HITS Memory Chart
+        const memCtx_hits = document.getElementById('mem-hits').getContext('2d');
+        new Chart(memCtx_hits, {
+            type: 'bar',
+            data: {
+                labels: [100,500,1000],
+                datasets: [{
+                    label: 'Memory Usage (MB)',
+                    data: [14.8031005859375,17.319496154785156,31.870315551757812],
+                    backgroundColor: '#28a745',
+                    borderColor: '#28a745',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Graph Size (vertices)'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Memory Usage (MB)'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Dijkstra Performance Chart
+        const perfCtx_dijkstra = document.getElementById('perf-dijkstra').getContext('2d');
+        new Chart(perfCtx_dijkstra, {
+            type: 'line',
+            data: {
+                labels: [100,484,961],
+                datasets: [{
+                    label: 'Execution Time (ms)',
+                    data: [2.3280144943574808,63.87022386206896,248.5342224285714],
+                    borderColor: '#007bff',
+                    backgroundColor: '#007bff20',
+                    borderWidth: 2,
+                    tension: 0.1,
+                    fill: false
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Graph Size (vertices)'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Execution Time (ms)'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Dijkstra Memory Chart
+        const memCtx_dijkstra = document.getElementById('mem-dijkstra').getContext('2d');
+        new Chart(memCtx_dijkstra, {
+            type: 'bar',
+            data: {
+                labels: [100,484,961],
+                datasets: [{
+                    label: 'Memory Usage (MB)',
+                    data: [15.28070068359375,67.12798309326172,81.56901550292969],
+                    backgroundColor: '#28a745',
+                    borderColor: '#28a745',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Graph Size (vertices)'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Memory Usage (MB)'
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

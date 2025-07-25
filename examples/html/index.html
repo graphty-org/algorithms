@@ -44,34 +44,6 @@
             margin-bottom: 3rem;
         }
         
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin: 2rem 0;
-        }
-        
-        .stat-card {
-            background: white;
-            padding: 1.5rem;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            text-align: center;
-            border-top: 4px solid var(--primary-green);
-        }
-        
-        .stat-number {
-            font-size: 2rem;
-            font-weight: bold;
-            color: var(--primary-blue);
-            display: block;
-        }
-        
-        .stat-label {
-            color: #666;
-            font-size: 0.9rem;
-            margin-top: 0.5rem;
-        }
     </style>
 </head>
 <body>
@@ -82,20 +54,6 @@
     </div>
 
     <main>
-        <div class="stats-grid">
-            <div class="stat-card">
-                <span class="stat-number">4</span>
-                <div class="stat-label">Algorithms</div>
-            </div>
-            <div class="stat-card">
-                <span class="stat-number">3</span>
-                <div class="stat-label">Categories</div>
-            </div>
-            <div class="stat-card">
-                <span class="stat-number">∞</span>
-                <div class="stat-label">Possibilities</div>
-            </div>
-        </div>
 
         <div class="algorithms-grid">
             <!-- Traversal Algorithms -->
@@ -123,6 +81,14 @@
                         <strong>Dijkstra's Algorithm</strong><br>
                         <small>Single-source shortest paths</small>
                     </a>
+                    <a href="algorithms/shortest-path/bellman-ford.html" class="algorithm-link">
+                        <strong>Bellman-Ford Algorithm</strong><br>
+                        <small>Handles negative weights and cycles</small>
+                    </a>
+                    <a href="algorithms/shortest-path/floyd-warshall.html" class="algorithm-link">
+                        <strong>Floyd-Warshall Algorithm</strong><br>
+                        <small>All-pairs shortest paths</small>
+                    </a>
                 </div>
             </div>
 
@@ -135,6 +101,166 @@
                         <strong>Degree Centrality</strong><br>
                         <small>Node importance by connection count</small>
                     </a>
+                    <a href="algorithms/centrality/pagerank.html" class="algorithm-link">
+                        <strong>PageRank</strong><br>
+                        <small>Link-based importance ranking</small>
+                    </a>
+                    <a href="algorithms/centrality/betweenness.html" class="algorithm-link">
+                        <strong>Betweenness Centrality</strong><br>
+                        <small>Nodes that bridge network parts</small>
+                    </a>
+                    <a href="algorithms/centrality/closeness.html" class="algorithm-link">
+                        <strong>Closeness Centrality</strong><br>
+                        <small>Nodes with shortest paths to all others</small>
+                    </a>
+                    <a href="algorithms/centrality/eigenvector.html" class="algorithm-link">
+                        <strong>Eigenvector Centrality</strong><br>
+                        <small>Influence based on neighbor importance</small>
+                    </a>
+                    <a href="algorithms/centrality/katz.html" class="algorithm-link">
+                        <strong>Katz Centrality</strong><br>
+                        <small>Eigenvector with base influence guarantee</small>
+                    </a>
+                    <a href="algorithms/centrality/hits.html" class="algorithm-link">
+                        <strong>HITS Algorithm</strong><br>
+                        <small>Hub and authority scores for directed graphs</small>
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Components Algorithms -->
+            <div class="card category-section">
+                <h2>🔗 Graph Components</h2>
+                <p>Analyze the connectivity and structure of graphs.</p>
+                <div class="algorithm-list">
+                    <a href="algorithms/components/connected-components.html" class="algorithm-link">
+                        <strong>Connected Components</strong><br>
+                        <small>Find isolated subgraphs</small>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Minimum Spanning Tree Algorithms -->
+            <div class="card category-section">
+                <h2>🌳 Minimum Spanning Tree</h2>
+                <p>Find the minimum weight tree that connects all vertices.</p>
+                <div class="algorithm-list">
+                    <a href="algorithms/mst/kruskal.html" class="algorithm-link">
+                        <strong>Kruskal's Algorithm</strong><br>
+                        <small>Build MST by sorting edges</small>
+                    </a>
+                    <a href="algorithms/mst/prim.html" class="algorithm-link">
+                        <strong>Prim's Algorithm</strong><br>
+                        <small>Grow MST from a starting vertex</small>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Pathfinding Algorithms -->
+            <div class="card category-section">
+                <h2>🗺️ Pathfinding</h2>
+                <p>Intelligent algorithms for finding optimal paths in graphs.</p>
+                <div class="algorithm-list">
+                    <a href="algorithms/pathfinding/astar.html" class="algorithm-link">
+                        <strong>A* Algorithm</strong><br>
+                        <small>Smart pathfinding with heuristics</small>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Community Detection Algorithms -->
+            <div class="card category-section">
+                <h2>👥 Community Detection</h2>
+                <p>Discover groups and clusters within networks.</p>
+                <div class="algorithm-list">
+                    <a href="algorithms/community/louvain.html" class="algorithm-link">
+                        <strong>Louvain Method</strong><br>
+                        <small>Fast community detection via modularity</small>
+                    </a>
+                    <a href="algorithms/community/label-propagation.html" class="algorithm-link">
+                        <strong>Label Propagation</strong><br>
+                        <small>Nodes adopt neighbors' most common label</small>
+                    </a>
+                    <a href="algorithms/community/girvan-newman.html" class="algorithm-link">
+                        <strong>Girvan-Newman Algorithm</strong><br>
+                        <small>Hierarchical community detection via edge betweenness</small>
+                    </a>
+                    <a href="algorithms/community/leiden.html" class="algorithm-link">
+                        <strong>Leiden Algorithm</strong><br>
+                        <small>Improved Louvain with well-connected communities</small>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Clustering Algorithms -->
+            <div class="card category-section">
+                <h2>🔬 Clustering</h2>
+                <p>Decompose and analyze graph structure through clustering techniques.</p>
+                <div class="algorithm-list">
+                    <a href="algorithms/clustering/k-core.html" class="algorithm-link">
+                        <strong>K-Core Decomposition</strong><br>
+                        <small>Find densely connected cores</small>
+                    </a>
+                    <a href="algorithms/clustering/hierarchical.html" class="algorithm-link">
+                        <strong>Hierarchical Clustering</strong><br>
+                        <small>Build tree of clusters by merging closest pairs</small>
+                    </a>
+                    <a href="algorithms/clustering/spectral.html" class="algorithm-link">
+                        <strong>Spectral Clustering</strong><br>
+                        <small>Use eigenvectors to find non-convex clusters</small>
+                    </a>
+                    <a href="algorithms/clustering/mcl.html" class="algorithm-link">
+                        <strong>MCL (Markov Clustering)</strong><br>
+                        <small>Flow-based clustering via random walks</small>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Flow Algorithms -->
+            <div class="card category-section">
+                <h2>💧 Network Flow</h2>
+                <p>Analyze flow capacity and optimization in networks.</p>
+                <div class="algorithm-list">
+                    <a href="algorithms/flow/ford-fulkerson.html" class="algorithm-link">
+                        <strong>Ford-Fulkerson</strong><br>
+                        <small>Maximum flow through a network</small>
+                    </a>
+                    <a href="algorithms/flow/min-cut.html" class="algorithm-link">
+                        <strong>Min-Cut Algorithms</strong><br>
+                        <small>Find minimum cuts using S-T, Stoer-Wagner, and Karger</small>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Link Prediction Algorithms -->
+            <div class="card category-section">
+                <h2>🔮 Link Prediction</h2>
+                <p>Predict future connections based on network structure and similarity measures.</p>
+                <div class="algorithm-list">
+                    <a href="algorithms/link-prediction/common-neighbors.html" class="algorithm-link">
+                        <strong>Common Neighbors</strong><br>
+                        <small>Predict links based on mutual connections</small>
+                    </a>
+                    <a href="algorithms/link-prediction/adamic-adar.html" class="algorithm-link">
+                        <strong>Adamic-Adar Index</strong><br>
+                        <small>Weighted similarity emphasizing rare connections</small>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Matching Algorithms -->
+            <div class="card category-section">
+                <h2>🔄 Graph Matching</h2>
+                <p>Find optimal assignments and structural equivalences in graphs.</p>
+                <div class="algorithm-list">
+                    <a href="algorithms/matching/bipartite.html" class="algorithm-link">
+                        <strong>Bipartite Matching</strong><br>
+                        <small>Maximum matching between two disjoint sets</small>
+                    </a>
+                    <a href="algorithms/matching/isomorphism.html" class="algorithm-link">
+                        <strong>Graph Isomorphism</strong><br>
+                        <small>Test if two graphs have identical structure</small>
+                    </a>
                 </div>
             </div>
 
@@ -146,12 +272,9 @@
                     <div style="padding: 1rem; background: #f0f8ff; border-radius: 8px; border-left: 4px solid #2c5aa0;">
                         <strong>Planned Algorithms:</strong><br>
                         <small>
-                            • More Centrality Measures (PageRank, Betweenness, Closeness)<br>
-                            • Community Detection (Louvain, Leiden)<br>
-                            • Connected Components<br>
-                            • Minimum Spanning Tree (Kruskal, Prim)<br>
-                            • Network Flow (Ford-Fulkerson)<br>
-                            • Advanced Research Algorithms<br>
+                            • More Flow Algorithms (Max Bipartite Matching)<br>
+                            • More Link Prediction (Resource Allocation, Jaccard Coefficient)<br>
+                            • Advanced Research Algorithms (GRSBM, Sync, TeraHAC)<br>
                             • And many more...
                         </small>
                     </div>
@@ -205,48 +328,6 @@
                 });
             });
             
-            // Simple search functionality
-            const searchInput = document.createElement('input');
-            searchInput.type = 'text';
-            searchInput.placeholder = 'Search algorithms...';
-            searchInput.style.cssText = `
-                width: 100%;
-                max-width: 400px;
-                padding: 1rem;
-                font-size: 1rem;
-                border: 2px solid #ddd;
-                border-radius: 8px;
-                margin: 2rem auto;
-                display: block;
-            `;
-            
-            const main = document.querySelector('main');
-            main.insertBefore(searchInput, main.querySelector('.algorithms-grid'));
-            
-            searchInput.addEventListener('input', (e) => {
-                const query = e.target.value.toLowerCase();
-                
-                algorithmLinks.forEach(link => {
-                    const text = link.textContent.toLowerCase();
-                    const parent = link.closest('.category-section');
-                    
-                    if (text.includes(query)) {
-                        link.style.display = 'block';
-                    } else {
-                        link.style.display = 'none';
-                    }
-                });
-                
-                // Hide empty categories
-                categoryCards.forEach(card => {
-                    const visibleLinks = card.querySelectorAll('.algorithm-link[style*="block"], .algorithm-link:not([style*="none"])');
-                    const hasVisibleLinks = Array.from(card.querySelectorAll('.algorithm-link')).some(link => 
-                        !link.style.display || link.style.display !== 'none'
-                    );
-                    
-                    card.style.display = hasVisibleLinks ? 'block' : 'none';
-                });
-            });
         });
     </script>
 </body>

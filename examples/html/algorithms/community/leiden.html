@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- MANDATORY: Eruda Mobile Console (exact code) -->
+    <script src="https://cdn.jsdelivr.net/npm/eruda@3/eruda.min.js"></script>
+    <script>
+      if (typeof eruda !== "undefined") {
+        eruda.init();
+        if (/mobile|android|ios|iphone|ipad|ipod/i.test(navigator.userAgent.toLowerCase())) {
+          eruda.show();
+        }
+      }
+    </script>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leiden Algorithm - Simple Visual Explanation</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
+    <style>
+        /* MANDATORY STYLES - DO NOT MODIFY */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5; /* Light gray background */
+        }
+        
+        h1 {
+            color: #2c5aa0; /* Blue header */
+            text-align: center;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        #graph {
+            width: 100%;
+            height: 400px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        button {
+            background: #4CAF50; /* Green button */
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        
+        .explanation {
+            background: #e8f0fe;
+            border-left: 4px solid #2c5aa0;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        
+        /* Additional algorithm-specific styles */
+        .back-link {
+            text-decoration: none;
+            color: #2c5aa0;
+            display: inline-block;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        
+        .intro {
+            margin-bottom: 20px;
+        }
+        
+        .intro p {
+            margin: 10px 0;
+            line-height: 1.6;
+        }
+        
+        .intro strong {
+            color: #333;
+        }
+        
+        .scenario-selector {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        
+        .scenario-btn {
+            background: #e0e0e0;
+            color: #333;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .scenario-btn.active {
+            background: #2c5aa0;
+            color: white;
+        }
+        
+        .scenario-btn:hover {
+            background: #2196F3;
+            color: white;
+        }
+        
+        .algorithm-info {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            flex-wrap: wrap;
+        }
+        
+        .info-item {
+            text-align: center;
+            min-width: 120px;
+        }
+        
+        .info-label {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        
+        .info-value {
+            font-size: 18px;
+            font-weight: bold;
+            color: #2c5aa0;
+        }
+        
+        .step-info {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 15px 0;
+            font-size: 16px;
+            text-align: center;
+        }
+        
+        .legend {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin: 15px 0;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 6px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid #333;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+        
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .parameter-controls {
+            margin: 20px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 6px;
+        }
+        
+        .parameter-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 10px 0;
+            flex-wrap: wrap;
+        }
+        
+        .parameter-group label {
+            font-weight: 500;
+            min-width: 80px;
+        }
+        
+        .parameter-group input[type="range"] {
+            flex: 1;
+            min-width: 100px;
+        }
+        
+        .parameter-group .value-display {
+            min-width: 50px;
+            text-align: center;
+            font-weight: bold;
+            color: #2c5aa0;
+        }
+        
+        .iteration-display {
+            margin: 15px 0;
+            padding: 10px;
+            background: #e8f0fe;
+            border-radius: 6px;
+            border-left: 4px solid #2c5aa0;
+        }
+        
+        .iteration-step {
+            margin: 5px 0;
+            padding: 8px;
+            background: white;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        .code-section {
+            margin: 30px 0;
+        }
+        
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .code-toggle {
+            background: #666;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .code-content {
+            background: #f8f8f8;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        #code-display {
+            margin: 0;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <a href="../../index.html" class="back-link">← Back to Examples</a>
+    
+    <h1>Leiden Algorithm Explained</h1>
+    
+    <div class="container">
+        <div class="intro">
+            <p><strong>Like a smart chef separating ingredients into the perfect groups!</strong></p>
+            <p>The Leiden algorithm is an improved version of the Louvain method that finds well-connected communities in networks. It guarantees high-quality partitions by refining communities to ensure they're truly well-connected.</p>
+        </div>
+        
+        <div class="scenario-selector">
+            <button class="scenario-btn active" onclick="selectScenario('social')">Social Network</button>
+            <button class="scenario-btn" onclick="selectScenario('research')">Research Groups</button>
+            <button class="scenario-btn" onclick="selectScenario('ecommerce')">Product Categories</button>
+            <button class="scenario-btn" onclick="selectScenario('protein')">Protein Modules</button>
+        </div>
+        
+        <div class="parameter-controls">
+            <h4>Algorithm Parameters</h4>
+            <div class="parameter-group">
+                <label>Resolution:</label>
+                <input type="range" id="resolution-slider" min="0.1" max="2.0" step="0.1" value="1.0">
+                <span class="value-display" id="resolution-display">1.0</span>
+            </div>
+            <div class="parameter-group">
+                <label>Max Iterations:</label>
+                <input type="range" id="iterations-slider" min="10" max="100" step="10" value="50">
+                <span class="value-display" id="iterations-display">50</span>
+            </div>
+            <div class="parameter-group">
+                <label>Random Seed:</label>
+                <input type="range" id="seed-slider" min="1" max="100" step="1" value="42">
+                <span class="value-display" id="seed-display">42</span>
+            </div>
+        </div>
+        
+        <svg id="graph"></svg>
+        
+        <div class="algorithm-info" id="algorithm-info">
+            <div class="info-item">
+                <div class="info-label">Communities</div>
+                <div class="info-value" id="community-count">-</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Modularity</div>
+                <div class="info-value" id="modularity-score">-</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Iterations</div>
+                <div class="info-value" id="iteration-count">-</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Quality</div>
+                <div class="info-value" id="quality-rating">-</div>
+            </div>
+        </div>
+        
+        <div class="step-info" id="step-info">Choose a scenario and click "Start Algorithm" to see how Leiden finds optimal communities</div>
+        
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-color" style="background: #e0e0e0;"></div>
+                <span>Original Network</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #ff6b6b;"></div>
+                <span>Community 1</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #4ecdc4;"></div>
+                <span>Community 2</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #45b7d1;"></div>
+                <span>Community 3</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #96ceb4;"></div>
+                <span>Community 4</span>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <button id="start-btn" onclick="startAlgorithm()">Start Algorithm</button>
+            <button id="animate-btn" onclick="animateConvergence()" disabled>Animate Convergence</button>
+            <button id="compare-btn" onclick="compareResolutions()" disabled>Compare Resolutions</button>
+            <button id="reset-btn" onclick="resetVisualization()">Reset</button>
+        </div>
+        
+        <div class="iteration-display" id="iteration-display" style="display: none;">
+            <h4>Algorithm Convergence</h4>
+            <div id="iteration-steps"></div>
+        </div>
+        
+        <div class="explanation">
+            <h3>Key Concept:</h3>
+            <p>The Leiden algorithm improves upon the Louvain method by ensuring <strong>well-connected communities</strong>. It does this through a refinement phase that subdivides poorly connected communities, guaranteeing that each community is internally well-connected. This results in higher quality partitions with better modularity scores.</p>
+        </div>
+        
+        <div class="code-section">
+            <div class="code-header">
+                <h3>Code Example</h3>
+                <button class="code-toggle" id="code-toggle">Hide Code ▲</button>
+            </div>
+            <div class="code-content" id="code-content">
+                <pre><code class="language-javascript" id="code-display">Loading code...</code></pre>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    
+    <script type="module">
+        // Import the algorithm function
+        import { leiden } from './algorithms.js';
+
+        // Load and display the actual code
+        async function loadCodeExample() {
+            try {
+                const response = await fetch('./leiden.js');
+                const code = await response.text();
+                document.getElementById('code-display').textContent = code;
+                if (window.Prism) {
+                    window.Prism.highlightAll();
+                }
+            } catch (error) {
+                document.getElementById('code-display').textContent = 'Error loading code example';
+            }
+        }
+
+        // Community colors for visualization
+        const communityColors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#feca57', '#ff9ff3', '#54a0ff', '#5f27cd'];
+        
+        // Current scenario data
+        let currentScenario = 'social';
+        let currentGraph = null;
+        let currentResult = null;
+        let isAnimating = false;
+        
+        // Scenario definitions
+        const scenarios = {
+            social: {
+                name: "Social Network",
+                description: "Friend connections showing distinct social groups",
+                nodes: [
+                    {id: 'Alice', x: 100, y: 100, group: 'highschool'},
+                    {id: 'Bob', x: 150, y: 80, group: 'highschool'},
+                    {id: 'Carol', x: 120, y: 150, group: 'highschool'},
+                    {id: 'Diana', x: 180, y: 120, group: 'highschool'},
+                    {id: 'Eve', x: 250, y: 150, group: 'bridge'},
+                    {id: 'Frank', x: 350, y: 100, group: 'work'},
+                    {id: 'Grace', x: 400, y: 80, group: 'work'},
+                    {id: 'Henry', x: 370, y: 150, group: 'work'},
+                    {id: 'Ivy', x: 320, y: 180, group: 'work'},
+                    {id: 'Jack', x: 480, y: 200, group: 'hobby'},
+                    {id: 'Kate', x: 520, y: 150, group: 'hobby'},
+                    {id: 'Leo', x: 500, y: 250, group: 'hobby'}
+                ],
+                edges: [
+                    // High school friends
+                    ['Alice', 'Bob'], ['Alice', 'Carol'], ['Bob', 'Carol'], ['Bob', 'Diana'], ['Carol', 'Diana'],
+                    // Bridge connections
+                    ['Diana', 'Eve'], ['Eve', 'Frank'],
+                    // Work colleagues
+                    ['Frank', 'Grace'], ['Frank', 'Henry'], ['Grace', 'Henry'], ['Henry', 'Ivy'], ['Frank', 'Ivy'],
+                    // Hobby group
+                    ['Ivy', 'Jack'], ['Jack', 'Kate'], ['Kate', 'Leo'], ['Jack', 'Leo']
+                ]
+            },
+            research: {
+                name: "Research Groups",
+                description: "Scientific collaboration network between research groups",
+                nodes: [
+                    {id: 'Prof_ML1', x: 120, y: 100, group: 'ml'},
+                    {id: 'PhD_ML1', x: 80, y: 150, group: 'ml'},
+                    {id: 'PhD_ML2', x: 160, y: 150, group: 'ml'},
+                    {id: 'PostDoc_ML', x: 120, y: 200, group: 'ml'},
+                    {id: 'Prof_Bio1', x: 300, y: 100, group: 'bio'},
+                    {id: 'PhD_Bio1', x: 260, y: 150, group: 'bio'},
+                    {id: 'PhD_Bio2', x: 340, y: 150, group: 'bio'},
+                    {id: 'PostDoc_Bio', x: 300, y: 200, group: 'bio'},
+                    {id: 'Prof_Theory', x: 480, y: 100, group: 'theory'},
+                    {id: 'PhD_Theory1', x: 440, y: 150, group: 'theory'},
+                    {id: 'PhD_Theory2', x: 520, y: 150, group: 'theory'}
+                ],
+                edges: [
+                    // ML group
+                    ['Prof_ML1', 'PhD_ML1'], ['Prof_ML1', 'PhD_ML2'], ['PhD_ML1', 'PhD_ML2'], ['PhD_ML2', 'PostDoc_ML'],
+                    // Bio group
+                    ['Prof_Bio1', 'PhD_Bio1'], ['Prof_Bio1', 'PhD_Bio2'], ['PhD_Bio1', 'PhD_Bio2'], ['PhD_Bio2', 'PostDoc_Bio'],
+                    // Theory group
+                    ['Prof_Theory', 'PhD_Theory1'], ['Prof_Theory', 'PhD_Theory2'], ['PhD_Theory1', 'PhD_Theory2'],
+                    // Interdisciplinary collaboration
+                    ['PostDoc_ML', 'Prof_Bio1'], ['PostDoc_Bio', 'PhD_Theory1']
+                ]
+            },
+            ecommerce: {
+                name: "Product Categories",
+                description: "E-commerce product co-purchase network",
+                nodes: [
+                    {id: 'Laptop', x: 100, y: 100, group: 'electronics'},
+                    {id: 'Mouse', x: 150, y: 80, group: 'electronics'},
+                    {id: 'Keyboard', x: 120, y: 150, group: 'electronics'},
+                    {id: 'Monitor', x: 180, y: 120, group: 'electronics'},
+                    {id: 'USB_Hub', x: 150, y: 180, group: 'electronics'},
+                    {id: 'Notebook', x: 350, y: 100, group: 'office'},
+                    {id: 'Pens', x: 400, y: 80, group: 'office'},
+                    {id: 'Stapler', x: 370, y: 150, group: 'office'},
+                    {id: 'Desk_Lamp', x: 320, y: 180, group: 'office'},
+                    {id: 'Yoga_Mat', x: 480, y: 200, group: 'fitness'},
+                    {id: 'Dumbbells', x: 520, y: 150, group: 'fitness'},
+                    {id: 'Water_Bottle', x: 500, y: 250, group: 'fitness'}
+                ],
+                edges: [
+                    // Electronics
+                    ['Laptop', 'Mouse'], ['Laptop', 'Keyboard'], ['Mouse', 'Keyboard'], ['Laptop', 'Monitor'], ['Laptop', 'USB_Hub'],
+                    // Office supplies
+                    ['Notebook', 'Pens'], ['Pens', 'Stapler'], ['Desk_Lamp', 'Notebook'], ['Desk_Lamp', 'Stapler'],
+                    // Fitness
+                    ['Yoga_Mat', 'Dumbbells'], ['Dumbbells', 'Water_Bottle'], ['Yoga_Mat', 'Water_Bottle'],
+                    // Cross-category
+                    ['Desk_Lamp', 'Monitor'], ['Water_Bottle', 'Notebook']
+                ]
+            },
+            protein: {
+                name: "Protein Modules",
+                description: "Protein interaction network showing functional modules",
+                nodes: [
+                    {id: 'BRCA1', x: 120, y: 100, group: 'dna_repair'},
+                    {id: 'BRCA2', x: 80, y: 150, group: 'dna_repair'},
+                    {id: 'RAD51', x: 160, y: 150, group: 'dna_repair'},
+                    {id: 'PALB2', x: 120, y: 200, group: 'dna_repair'},
+                    {id: 'CDK1', x: 350, y: 100, group: 'cell_cycle'},
+                    {id: 'CCNB1', x: 300, y: 150, group: 'cell_cycle'},
+                    {id: 'CDK2', x: 400, y: 150, group: 'cell_cycle'},
+                    {id: 'CCNA2', x: 350, y: 200, group: 'cell_cycle'},
+                    {id: 'p53', x: 250, y: 125, group: 'bridge'},
+                    {id: 'ATR', x: 250, y: 175, group: 'bridge'}
+                ],
+                edges: [
+                    // DNA repair module
+                    ['BRCA1', 'BRCA2'], ['BRCA1', 'RAD51'], ['BRCA2', 'RAD51'], ['RAD51', 'PALB2'], ['BRCA1', 'PALB2'],
+                    // Cell cycle module
+                    ['CDK1', 'CCNB1'], ['CDK1', 'CDK2'], ['CCNB1', 'CCNA2'], ['CDK2', 'CCNA2'],
+                    // Cross-talk between modules
+                    ['p53', 'BRCA1'], ['p53', 'CDK2'], ['ATR', 'BRCA1'], ['ATR', 'CDK1']
+                ]
+            }
+        };
+
+        // Parameter control setup
+        function setupParameterControls() {
+            const resolutionSlider = document.getElementById('resolution-slider');
+            const iterationsSlider = document.getElementById('iterations-slider');
+            const seedSlider = document.getElementById('seed-slider');
+            
+            resolutionSlider.addEventListener('input', () => {
+                document.getElementById('resolution-display').textContent = resolutionSlider.value;
+            });
+            
+            iterationsSlider.addEventListener('input', () => {
+                document.getElementById('iterations-display').textContent = iterationsSlider.value;
+            });
+            
+            seedSlider.addEventListener('input', () => {
+                document.getElementById('seed-display').textContent = seedSlider.value;
+            });
+        }
+
+        function getParameters() {
+            return {
+                resolution: parseFloat(document.getElementById('resolution-slider').value),
+                maxIterations: parseInt(document.getElementById('iterations-slider').value),
+                randomSeed: parseInt(document.getElementById('seed-slider').value)
+            };
+        }
+
+        // Graph setup and visualization
+        function initGraph() {
+            setupParameterControls();
+            selectScenario(currentScenario);
+            loadCodeExample();
+            setupCodeToggle();
+        }
+
+        function setupCodeToggle() {
+            const toggle = document.getElementById('code-toggle');
+            const content = document.getElementById('code-content');
+            
+            toggle.addEventListener('click', () => {
+                if (content.style.display === 'none') {
+                    content.style.display = 'block';
+                    toggle.textContent = 'Hide Code ▲';
+                } else {
+                    content.style.display = 'none';
+                    toggle.textContent = 'Show Code ▼';
+                }
+            });
+        }
+
+        // Convert scenario to Leiden graph format
+        function createLeidenGraph(scenario) {
+            const graph = new Map();
+            
+            // Initialize all nodes
+            scenario.nodes.forEach(node => {
+                graph.set(node.id, new Map());
+            });
+            
+            // Add edges
+            scenario.edges.forEach(([source, target]) => {
+                if (graph.has(source) && graph.has(target)) {
+                    graph.get(source).set(target, 1);
+                    graph.get(target).set(source, 1); // Undirected graph
+                }
+            });
+            
+            return graph;
+        }
+
+        window.selectScenario = function(scenarioKey) {
+            currentScenario = scenarioKey;
+            const scenario = scenarios[scenarioKey];
+            
+            // Update active button
+            document.querySelectorAll('.scenario-btn').forEach(btn => btn.classList.remove('active'));
+            event?.target?.classList.add('active') || document.querySelector(`[onclick="selectScenario('${scenarioKey}')"]`).classList.add('active');
+            
+            // Create new graph
+            currentGraph = createLeidenGraph(scenario);
+            currentResult = null;
+            
+            // Update UI
+            document.getElementById('step-info').textContent = `Scenario: ${scenario.name} - ${scenario.description}`;
+            updateInfo('-', '-', '-', '-');
+            
+            // Render initial graph
+            drawGraph(scenario.nodes, scenario.edges, []);
+            
+            // Enable start button
+            document.getElementById('start-btn').disabled = false;
+            document.getElementById('animate-btn').disabled = true;
+            document.getElementById('compare-btn').disabled = true;
+            document.getElementById('iteration-display').style.display = 'none';
+        };
+
+        function drawGraph(nodes, edges, communities = []) {
+            const svg = document.getElementById('graph');
+            svg.innerHTML = '';
+            
+            const width = 600;
+            const height = 400;
+            svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
+            
+            // Create community color mapping
+            const nodeToColor = new Map();
+            if (communities.length > 0) {
+                communities.forEach((community, index) => {
+                    const color = communityColors[index % communityColors.length];
+                    community.forEach(nodeId => nodeToColor.set(nodeId, color));
+                });
+            }
+            
+            // Draw edges
+            edges.forEach(([source, target]) => {
+                const sourceNode = nodes.find(n => n.id === source);
+                const targetNode = nodes.find(n => n.id === target);
+                if (sourceNode && targetNode) {
+                    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                    line.setAttribute('x1', sourceNode.x);
+                    line.setAttribute('y1', sourceNode.y);
+                    line.setAttribute('x2', targetNode.x);
+                    line.setAttribute('y2', targetNode.y);
+                    line.setAttribute('stroke', '#999');
+                    line.setAttribute('stroke-width', '2');
+                    svg.appendChild(line);
+                }
+            });
+            
+            // Draw nodes
+            nodes.forEach(node => {
+                const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                circle.setAttribute('cx', node.x);
+                circle.setAttribute('cy', node.y);
+                circle.setAttribute('r', '15');
+                circle.setAttribute('fill', nodeToColor.get(node.id) || '#e0e0e0');
+                circle.setAttribute('stroke', '#333');
+                circle.setAttribute('stroke-width', '2');
+                svg.appendChild(circle);
+                
+                // Node label
+                const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                text.setAttribute('x', node.x);
+                text.setAttribute('y', node.y + 5);
+                text.setAttribute('text-anchor', 'middle');
+                text.setAttribute('font-size', '10');
+                text.setAttribute('font-weight', 'bold');
+                text.setAttribute('fill', nodeToColor.get(node.id) ? 'white' : '#333');
+                text.textContent = node.id.substring(0, 4);
+                svg.appendChild(text);
+            });
+        }
+
+        function updateInfo(communities, modularity, iterations, quality) {
+            document.getElementById('community-count').textContent = communities;
+            document.getElementById('modularity-score').textContent = modularity;
+            document.getElementById('iteration-count').textContent = iterations;
+            document.getElementById('quality-rating').textContent = quality;
+        }
+
+        function getQualityRating(modularity) {
+            if (modularity > 0.4) return 'Excellent';
+            if (modularity > 0.3) return 'Good';
+            if (modularity > 0.2) return 'Fair';
+            return 'Poor';
+        }
+
+        window.startAlgorithm = function() {
+            if (!currentGraph) return;
+            
+            const params = getParameters();
+            
+            // Run Leiden algorithm
+            console.log('Leiden Algorithm Result:');
+            currentResult = leiden(currentGraph, params);
+            console.log('Result:', currentResult);
+            
+            // Convert communities map to arrays
+            const communityArrays = new Map();
+            for (const [nodeId, communityId] of currentResult.communities) {
+                if (!communityArrays.has(communityId)) {
+                    communityArrays.set(communityId, []);
+                }
+                communityArrays.get(communityId).push(nodeId);
+            }
+            const communities = Array.from(communityArrays.values());
+            
+            // Update visualization
+            const scenario = scenarios[currentScenario];
+            drawGraph(scenario.nodes, scenario.edges, communities);
+            
+            // Update info
+            updateInfo(
+                communities.length,
+                currentResult.modularity.toFixed(4),
+                currentResult.iterations,
+                getQualityRating(currentResult.modularity)
+            );
+            
+            // Update UI
+            document.getElementById('start-btn').disabled = true;
+            document.getElementById('animate-btn').disabled = false;
+            document.getElementById('compare-btn').disabled = false;
+            
+            document.getElementById('step-info').textContent = 
+                `Algorithm complete! Found ${communities.length} well-connected communities with modularity ${currentResult.modularity.toFixed(4)}`;
+        };
+
+        window.animateConvergence = function() {
+            if (!currentGraph || isAnimating) return;
+            
+            isAnimating = true;
+            const params = getParameters();
+            const scenario = scenarios[currentScenario];
+            
+            document.getElementById('iteration-display').style.display = 'block';
+            document.getElementById('animate-btn').disabled = true;
+            
+            // Simulate algorithm steps (for visualization purposes)
+            const steps = [];
+            for (let i = 1; i <= params.maxIterations; i++) {
+                const tempResult = leiden(currentGraph, {...params, maxIterations: i});
+                steps.push(tempResult);
+                if (tempResult.iterations < i) break; // Converged early
+            }
+            
+            let currentStep = 0;
+            const stepContainer = document.getElementById('iteration-steps');
+            stepContainer.innerHTML = '';
+            
+            function animateStep() {
+                if (currentStep >= steps.length) {
+                    isAnimating = false;
+                    document.getElementById('animate-btn').disabled = false;
+                    return;
+                }
+                
+                const result = steps[currentStep];
+                
+                // Update visualization
+                const communityArrays = new Map();
+                for (const [nodeId, communityId] of result.communities) {
+                    if (!communityArrays.has(communityId)) {
+                        communityArrays.set(communityId, []);
+                    }
+                    communityArrays.get(communityId).push(nodeId);
+                }
+                const communities = Array.from(communityArrays.values());
+                
+                drawGraph(scenario.nodes, scenario.edges, communities);
+                updateInfo(
+                    communities.length,
+                    result.modularity.toFixed(4),
+                    result.iterations,
+                    getQualityRating(result.modularity)
+                );
+                
+                // Add step info
+                const stepDiv = document.createElement('div');
+                stepDiv.className = 'iteration-step';
+                stepDiv.textContent = `Iteration ${currentStep + 1}: ${communities.length} communities, Modularity: ${result.modularity.toFixed(4)}`;
+                stepContainer.appendChild(stepDiv);
+                
+                currentStep++;
+                setTimeout(animateStep, 1500);
+            }
+            
+            animateStep();
+        };
+
+        window.compareResolutions = function() {
+            if (!currentGraph) return;
+            
+            const resolutions = [0.5, 1.0, 1.5, 2.0];
+            const params = getParameters();
+            const results = [];
+            
+            console.log('\n=== Resolution Comparison ===');
+            resolutions.forEach(resolution => {
+                const result = leiden(currentGraph, {...params, resolution});
+                const communityCount = new Set(result.communities.values()).size;
+                results.push({resolution, result, communityCount});
+                console.log(`Resolution ${resolution}: ${communityCount} communities, Modularity: ${result.modularity.toFixed(4)}`);
+            });
+            
+            // Show the best result
+            const bestResult = results.reduce((best, current) => 
+                current.result.modularity > best.result.modularity ? current : best
+            );
+            
+            // Update visualization with best result
+            const communityArrays = new Map();
+            for (const [nodeId, communityId] of bestResult.result.communities) {
+                if (!communityArrays.has(communityId)) {
+                    communityArrays.set(communityId, []);
+                }
+                communityArrays.get(communityId).push(nodeId);
+            }
+            const communities = Array.from(communityArrays.values());
+            
+            const scenario = scenarios[currentScenario];
+            drawGraph(scenario.nodes, scenario.edges, communities);
+            
+            updateInfo(
+                communities.length,
+                bestResult.result.modularity.toFixed(4),
+                bestResult.result.iterations,
+                getQualityRating(bestResult.result.modularity)
+            );
+            
+            document.getElementById('step-info').textContent = 
+                `Best resolution: ${bestResult.resolution} (${communities.length} communities, modularity: ${bestResult.result.modularity.toFixed(4)})`;
+        };
+
+        window.resetVisualization = function() {
+            isAnimating = false;
+            selectScenario(currentScenario);
+        };
+
+        // Initialize on load
+        window.onload = initGraph;
+    </script>
+</body>
+</html>

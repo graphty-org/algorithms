@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Eruda Mobile Console -->
+    <script src="https://cdn.jsdelivr.net/npm/eruda@3/eruda.min.js"></script>
+    <script>
+      // Initialize Eruda console for mobile debugging
+      if (typeof eruda !== "undefined") {
+        eruda.init();
+        // Auto-show on mobile devices
+        if (/mobile|android|ios|iphone|ipad|ipod/i.test(navigator.userAgent.toLowerCase())) {
+          eruda.show();
+        }
+      }
+    </script>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Betweenness Centrality - Simple Visual Explanation</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        
+        h1 {
+            color: #2c5aa0;
+            text-align: center;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        #graph {
+            width: 100%;
+            height: 400px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .controls {
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin: 0 5px;
+        }
+        
+        button:hover {
+            background: #45a049;
+        }
+        
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .explanation {
+            background: #e8f0fe;
+            border-left: 4px solid #2c5aa0;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        
+        .step-info {
+            text-align: center;
+            font-size: 18px;
+            color: #333;
+            margin: 20px 0;
+            min-height: 30px;
+        }
+        
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .legend-circle {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid #333;
+        }
+        
+        .high-centrality { background: #ff6b6b; }
+        .medium-centrality { background: #4ecdc4; }
+        .low-centrality { background: #96ceb4; }
+        .current-path { background: #feca57; }
+        .source-node { background: #ff9800; }
+        
+        .intro {
+            text-align: center;
+            color: #666;
+            margin: 20px 0;
+        }
+        
+        .centrality-display {
+            background: #f0f0f0;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 20px 0;
+        }
+        
+        .centrality-display h4 {
+            margin: 0 0 10px 0;
+            color: #666;
+        }
+        
+        .node-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+        }
+        
+        .node-item {
+            background: white;
+            padding: 10px;
+            border-radius: 4px;
+            text-align: center;
+            border-left: 4px solid #4CAF50;
+        }
+        
+        .node-item .node-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .node-item .centrality-score {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .back-link {
+            color: #2c5aa0;
+            text-decoration: none;
+            margin-bottom: 20px;
+            display: inline-block;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        
+        .path-info {
+            background: #f9f9f9;
+            padding: 10px;
+            border-radius: 6px;
+            margin: 10px 0;
+            text-align: center;
+            min-height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .code-section {
+            margin-top: 30px;
+        }
+        
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .code-toggle {
+            background: #666;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            font-size: 12px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .code-content {
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            max-height: 1000px;
+        }
+        
+        .code-content.collapsed {
+            max-height: 0;
+        }
+        
+        .edge-path {
+            stroke-width: 3;
+            fill: none;
+            transition: stroke 0.3s;
+        }
+        
+        .edge-path.highlighted {
+            stroke: #feca57;
+            stroke-width: 4;
+        }
+    </style>
+</head>
+<body>
+    <a href="../../index.html" class="back-link">← Back to Examples</a>
+    
+    <h1>Betweenness Centrality Explained</h1>
+    
+    <div class="container">
+        <div class="intro">
+            <p><strong>Betweenness centrality measures how often a node acts as a bridge on the shortest paths between other nodes.</strong></p>
+            <p>Think of it as finding the most important bridges or gatekeepers in a network - nodes that control the flow of information.</p>
+        </div>
+        
+        <svg id="graph"></svg>
+        
+        <div class="path-info" id="path-info">
+            Click "Calculate Betweenness" to see how this algorithm identifies bridge nodes
+        </div>
+        
+        <div class="step-info" id="step-info">
+            Ready to analyze network bridges
+        </div>
+        
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-circle source-node"></div>
+                <span>Current Source</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-circle current-path"></div>
+                <span>Current Path</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-circle high-centrality"></div>
+                <span>High Betweenness</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-circle medium-centrality"></div>
+                <span>Medium Betweenness</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-circle low-centrality"></div>
+                <span>Low Betweenness</span>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <button id="calculate-btn" onclick="startCalculation()">Calculate Betweenness</button>
+            <button id="reset-btn" onclick="resetVisualization()">Reset</button>
+        </div>
+        
+        <div class="centrality-display" id="centrality-display" style="display: none;">
+            <h4>Betweenness Centrality Scores:</h4>
+            <div class="node-list" id="node-list"></div>
+        </div>
+        
+        <div class="explanation">
+            <h3>Key Concept:</h3>
+            <p>Betweenness centrality identifies nodes that frequently lie on the shortest paths between other nodes. These nodes are crucial for information flow and can represent:</p>
+            <ul>
+                <li><strong>Bridges:</strong> Nodes connecting different parts of the network</li>
+                <li><strong>Bottlenecks:</strong> Points where information flow can be controlled</li>
+                <li><strong>Key intermediaries:</strong> Important connectors between groups</li>
+            </ul>
+            <p>The algorithm uses Brandes' method to efficiently compute shortest paths from every node to every other node, counting how often each node appears as an intermediary.</p>
+        </div>
+        
+        <div class="code-section">
+            <div class="code-header">
+                <h3>Code Example</h3>
+                <button class="code-toggle" id="code-toggle">Hide Code ▲</button>
+            </div>
+            <div class="code-content" id="code-content">
+                <pre><code class="language-javascript" id="code-display">Loading code...</code></pre>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    
+    <script type="module">
+        // Import the actual betweenness centrality function
+        import { runBetweennessCentrality } from './betweenness.js';
+        
+        // Load and display the actual code
+        async function loadCodeExample() {
+            try {
+                const response = await fetch('./betweenness.js');
+                const code = await response.text();
+                
+                // Extract the main function for display
+                const functionMatch = code.match(/export function runBetweennessCentrality[\s\S]*?^}/m);
+                if (functionMatch) {
+                    document.getElementById('code-display').textContent = functionMatch[0];
+                    Prism.highlightElement(document.getElementById('code-display'));
+                } else {
+                    document.getElementById('code-display').textContent = code;
+                    Prism.highlightElement(document.getElementById('code-display'));
+                }
+            } catch (error) {
+                document.getElementById('code-display').textContent = 
+`// Example usage of betweenness centrality
+import { betweennessCentrality } from '@graphty/algorithms';
+
+// Create a graph
+const graph = createGraph();
+
+// Calculate betweenness centrality for all nodes
+const centrality = betweennessCentrality(graph, { normalized: true });
+
+// Results show how often each node lies on shortest paths
+console.log('Betweenness Centrality:', centrality);`;
+                Prism.highlightElement(document.getElementById('code-display'));
+            }
+        }
+        
+        // Graph structure for visualization - a network with clear bridge nodes
+        const nodes = [
+            { id: 'A', x: 150, y: 100 },
+            { id: 'B', x: 250, y: 100 },
+            { id: 'C', x: 350, y: 100 },
+            { id: 'D', x: 200, y: 200 },
+            { id: 'E', x: 300, y: 200 },
+            { id: 'F', x: 400, y: 200 },
+            { id: 'G', x: 500, y: 200 },
+            { id: 'H', x: 250, y: 300 },
+            { id: 'I', x: 350, y: 300 },
+            { id: 'J', x: 450, y: 300 }
+        ];
+        
+        const edges = [
+            { source: 'A', target: 'B' },
+            { source: 'B', target: 'C' },
+            { source: 'A', target: 'D' },
+            { source: 'B', target: 'D' },
+            { source: 'C', target: 'E' },
+            { source: 'D', target: 'E' },
+            { source: 'E', target: 'F' },
+            { source: 'F', target: 'G' },
+            { source: 'D', target: 'H' },
+            { source: 'E', target: 'I' },
+            { source: 'F', target: 'J' },
+            { source: 'H', target: 'I' },
+            { source: 'I', target: 'J' }
+        ];
+        
+        let isCalculating = false;
+        let centralityScores = {};
+        
+        // Initialize the graph visualization
+        function initGraph() {
+            const svg = document.getElementById('graph');
+            svg.innerHTML = '';
+            
+            // Add edge elements
+            edges.forEach(edge => {
+                const source = nodes.find(n => n.id === edge.source);
+                const target = nodes.find(n => n.id === edge.target);
+                
+                const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                line.setAttribute('x1', source.x);
+                line.setAttribute('y1', source.y);
+                line.setAttribute('x2', target.x);
+                line.setAttribute('y2', target.y);
+                line.setAttribute('stroke', '#ddd');
+                line.setAttribute('stroke-width', '2');
+                line.setAttribute('id', `edge-${edge.source}-${edge.target}`);
+                line.classList.add('edge-path');
+                svg.appendChild(line);
+            });
+            
+            // Add node elements
+            nodes.forEach(node => {
+                const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+                
+                const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                circle.setAttribute('cx', node.x);
+                circle.setAttribute('cy', node.y);
+                circle.setAttribute('r', '25');
+                circle.setAttribute('fill', '#e0e0e0');
+                circle.setAttribute('stroke', '#333');
+                circle.setAttribute('stroke-width', '2');
+                circle.setAttribute('id', `node-${node.id}`);
+                
+                const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                text.setAttribute('x', node.x);
+                text.setAttribute('y', node.y + 5);
+                text.setAttribute('text-anchor', 'middle');
+                text.setAttribute('font-weight', 'bold');
+                text.textContent = node.id;
+                
+                g.appendChild(circle);
+                g.appendChild(text);
+                svg.appendChild(g);
+            });
+        }
+        
+        // Start the betweenness centrality calculation
+        window.startCalculation = async function() {
+            if (isCalculating) return;
+            
+            isCalculating = true;
+            document.getElementById('calculate-btn').disabled = true;
+            document.getElementById('reset-btn').disabled = true;
+            document.getElementById('centrality-display').style.display = 'none';
+            
+            // Reset all nodes
+            nodes.forEach(node => {
+                document.getElementById(`node-${node.id}`).setAttribute('fill', '#e0e0e0');
+            });
+            
+            // Run the actual algorithm
+            const result = runBetweennessCentrality();
+            console.log('Betweenness Centrality Result:', result);
+            centralityScores = result;
+            
+            // Animate the calculation process
+            await animateCalculation();
+            
+            // Display final results
+            displayResults();
+            
+            isCalculating = false;
+            document.getElementById('reset-btn').disabled = false;
+        }
+        
+        // Animate the betweenness calculation process
+        async function animateCalculation() {
+            const stepInfo = document.getElementById('step-info');
+            const pathInfo = document.getElementById('path-info');
+            
+            // Simulate calculating shortest paths from each node
+            for (const sourceNode of nodes) {
+                // Highlight source node
+                document.getElementById(`node-${sourceNode.id}`).setAttribute('fill', '#ff9800');
+                stepInfo.textContent = `Calculating shortest paths from node ${sourceNode.id}`;
+                
+                // Simulate finding paths to other nodes
+                for (const targetNode of nodes) {
+                    if (sourceNode.id === targetNode.id) continue;
+                    
+                    pathInfo.textContent = `Finding shortest path: ${sourceNode.id} → ${targetNode.id}`;
+                    
+                    // Highlight a sample path (simplified visualization)
+                    if (Math.random() > 0.7) { // Show some paths randomly
+                        await highlightPath(sourceNode.id, targetNode.id);
+                    }
+                    
+                    await sleep(100); // Quick animation
+                }
+                
+                // Reset source node color
+                document.getElementById(`node-${sourceNode.id}`).setAttribute('fill', '#e0e0e0');
+            }
+            
+            stepInfo.textContent = 'Calculation complete! Nodes sized by betweenness centrality.';
+            pathInfo.textContent = 'Nodes that lie on many shortest paths have higher betweenness.';
+        }
+        
+        // Highlight a path between two nodes (simplified)
+        async function highlightPath(source, target) {
+            // This is a simplified visualization - just highlight some edges
+            const possibleEdges = [`edge-${source}-${target}`, `edge-${target}-${source}`];
+            
+            edges.forEach(edge => {
+                const edgeId1 = `edge-${edge.source}-${edge.target}`;
+                const edgeId2 = `edge-${edge.target}-${edge.source}`;
+                
+                if (edge.source === source || edge.target === target) {
+                    const edgeElement = document.getElementById(edgeId1) || document.getElementById(edgeId2);
+                    if (edgeElement) {
+                        edgeElement.classList.add('highlighted');
+                        setTimeout(() => {
+                            edgeElement.classList.remove('highlighted');
+                        }, 500);
+                    }
+                }
+            });
+        }
+        
+        // Display the final centrality results
+        function displayResults() {
+            const centralityDisplay = document.getElementById('centrality-display');
+            const nodeList = document.getElementById('node-list');
+            
+            // Clear previous results
+            nodeList.innerHTML = '';
+            
+            // Sort nodes by centrality
+            const sortedNodes = Object.entries(centralityScores)
+                .sort(([, a], [, b]) => b - a);
+            
+            // Find max centrality for scaling
+            const maxCentrality = Math.max(...Object.values(centralityScores));
+            
+            // Display each node's centrality
+            sortedNodes.forEach(([nodeId, centrality]) => {
+                const nodeItem = document.createElement('div');
+                nodeItem.className = 'node-item';
+                
+                // Color based on centrality
+                let colorClass = 'low-centrality';
+                if (centrality > maxCentrality * 0.7) {
+                    colorClass = 'high-centrality';
+                } else if (centrality > maxCentrality * 0.3) {
+                    colorClass = 'medium-centrality';
+                }
+                
+                nodeItem.innerHTML = `
+                    <div class="node-name">Node ${nodeId}</div>
+                    <div class="centrality-score">Betweenness: ${centrality.toFixed(3)}</div>
+                `;
+                
+                nodeList.appendChild(nodeItem);
+                
+                // Update node color on graph
+                const nodeElement = document.getElementById(`node-${nodeId}`);
+                if (nodeElement) {
+                    if (centrality > maxCentrality * 0.7) {
+                        nodeElement.setAttribute('fill', '#ff6b6b');
+                    } else if (centrality > maxCentrality * 0.3) {
+                        nodeElement.setAttribute('fill', '#4ecdc4');
+                    } else {
+                        nodeElement.setAttribute('fill', '#96ceb4');
+                    }
+                }
+            });
+            
+            centralityDisplay.style.display = 'block';
+        }
+        
+        // Reset the visualization
+        window.resetVisualization = function() {
+            document.getElementById('calculate-btn').disabled = false;
+            document.getElementById('centrality-display').style.display = 'none';
+            document.getElementById('step-info').textContent = 'Ready to analyze network bridges';
+            document.getElementById('path-info').textContent = 'Click "Calculate Betweenness" to see how this algorithm identifies bridge nodes';
+            
+            // Reset all nodes to default color
+            nodes.forEach(node => {
+                document.getElementById(`node-${node.id}`).setAttribute('fill', '#e0e0e0');
+            });
+            
+            // Reset all edges
+            edges.forEach(edge => {
+                const edgeElement = document.getElementById(`edge-${edge.source}-${edge.target}`);
+                if (edgeElement) {
+                    edgeElement.classList.remove('highlighted');
+                }
+            });
+        }
+        
+        // Code toggle functionality
+        document.getElementById('code-toggle').addEventListener('click', function() {
+            const codeContent = document.getElementById('code-content');
+            const toggle = document.getElementById('code-toggle');
+            
+            if (codeContent.classList.contains('collapsed')) {
+                codeContent.classList.remove('collapsed');
+                toggle.textContent = 'Hide Code ▲';
+            } else {
+                codeContent.classList.add('collapsed');
+                toggle.textContent = 'Show Code ▼';
+            }
+        });
+        
+        // Helper sleep function
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+        
+        // Initialize on load
+        window.onload = function() {
+            initGraph();
+            loadCodeExample();
+        };
+    </script>
+</body>
+</html>

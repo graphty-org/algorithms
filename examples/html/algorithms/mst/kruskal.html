@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Eruda Mobile Console -->
+    <script src="https://cdn.jsdelivr.net/npm/eruda@3/eruda.min.js"></script>
+    <script>
+      // Initialize Eruda console for mobile debugging
+      if (typeof eruda !== "undefined") {
+        eruda.init();
+        // Auto-show on mobile devices
+        if (/mobile|android|ios|iphone|ipad|ipod/i.test(navigator.userAgent.toLowerCase())) {
+          eruda.show();
+        }
+      }
+    </script>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kruskal's Algorithm - Simple Visual Explanation</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        
+        h1 {
+            color: #2c5aa0;
+            text-align: center;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        #graph {
+            width: 100%;
+            height: 400px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .controls {
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        button:hover {
+            background: #45a049;
+        }
+        
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .explanation {
+            background: #e8f0fe;
+            border-left: 4px solid #2c5aa0;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        
+        .step-info {
+            text-align: center;
+            font-size: 18px;
+            color: #333;
+            margin: 20px 0;
+            min-height: 30px;
+        }
+        
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .legend-circle {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid #333;
+        }
+        
+        .legend-line {
+            width: 30px;
+            height: 3px;
+            background: #333;
+        }
+        
+        .current { background: #ff9800; }
+        .included { background: #4CAF50; }
+        .rejected { background: #ff4757; }
+        .unprocessed { background: #e0e0e0; }
+        
+        .intro {
+            text-align: center;
+            color: #666;
+            margin: 20px 0;
+        }
+        
+        .sorted-edges-display {
+            background: #f0f0f0;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .sorted-edges-display h4 {
+            margin: 0 0 10px 0;
+            color: #666;
+        }
+        
+        .edge-list {
+            font-size: 16px;
+            color: #2c5aa0;
+            min-height: 30px;
+        }
+        
+        .back-link {
+            color: #2c5aa0;
+            text-decoration: none;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        
+        .code-section {
+            margin-top: 30px;
+            border-top: 2px solid #e0e0e0;
+            padding-top: 20px;
+        }
+        
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .code-toggle {
+            background: #2c5aa0;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .code-toggle:hover {
+            background: #1e3f73;
+        }
+        
+        .code-content {
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            max-height: 1000px;
+        }
+        
+        .code-content.collapsed {
+            max-height: 0;
+        }
+        
+        pre {
+            background: #f4f4f4;
+            border-radius: 4px;
+            padding: 15px;
+            overflow: auto;
+            margin: 0;
+            max-height: 400px;
+        }
+        
+        code {
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+        }
+        
+        .mst-result {
+            background: #e8f5e9;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 20px 0;
+            text-align: center;
+            display: none;
+        }
+        
+        .mst-result h4 {
+            margin: 0 0 10px 0;
+            color: #2e7d32;
+        }
+        
+        .edge-weight-label {
+            font-size: 14px;
+            font-weight: bold;
+            fill: #333;
+        }
+    </style>
+</head>
+<body>
+    <a href="../../index.html" class="back-link">← Back to Examples</a>
+    
+    <h1>Kruskal's Algorithm Explained</h1>
+    
+    <div class="container">
+        <div class="intro">
+            <p><strong>Kruskal's builds the cheapest network by always choosing the cheapest connection.</strong></p>
+            <p>It sorts all edges by weight and adds them one by one, skipping any that would create a loop.</p>
+        </div>
+        
+        <svg id="graph"></svg>
+        
+        <div class="sorted-edges-display">
+            <h4>Sorted Edges (by weight):</h4>
+            <div class="edge-list" id="sorted-edges">Edges will appear here after sorting</div>
+        </div>
+        
+        <div class="step-info" id="step-info">Click "Start" to see how Kruskal's algorithm works</div>
+        
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-line current"></div>
+                <span>Currently Checking</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-line included"></div>
+                <span>Included in MST</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-line rejected"></div>
+                <span>Rejected (Would Create Cycle)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-line unprocessed"></div>
+                <span>Not Yet Processed</span>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <button id="start-btn" onclick="startKruskal()">Start Kruskal's</button>
+        </div>
+        
+        <div class="mst-result" id="mst-result">
+            <h4>Minimum Spanning Tree Complete!</h4>
+            <p>Total Weight: <strong id="total-weight">0</strong></p>
+            <p>Edges in MST: <span id="mst-edges"></span></p>
+        </div>
+        
+        <div class="explanation">
+            <h3>Key Concept:</h3>
+            <p>Kruskal's algorithm uses a <strong>Union-Find</strong> data structure to detect cycles. Think of it as building bridges between islands - we always choose the cheapest bridge that connects two separate islands.</p>
+        </div>
+        
+        <div class="code-section">
+            <div class="code-header">
+                <h3>Code Example</h3>
+                <button class="code-toggle" id="code-toggle">Hide Code ▲</button>
+            </div>
+            <div class="code-content" id="code-content">
+                <pre><code class="language-javascript" id="code-display">Loading code...</code></pre>
+            </div>
+        </div>
+    </div>
+
+    <!-- Load Prism for syntax highlighting -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    
+    <script type="module">
+        // Import our Kruskal implementation
+        import { runKruskalAlgorithm } from './kruskal.js';
+        
+        // Load and display the actual code
+        async function loadCodeExample() {
+            try {
+                const response = await fetch('./kruskal.js');
+                const code = await response.text();
+                const codeDisplay = document.getElementById('code-display');
+                codeDisplay.textContent = code;
+                
+                // Re-highlight the code with Prism
+                if (typeof Prism !== 'undefined') {
+                    Prism.highlightElement(codeDisplay);
+                }
+            } catch (error) {
+                console.error('Failed to load code example:', error);
+                document.getElementById('code-display').textContent = '// Failed to load code example';
+            }
+        }
+        
+        // Load code on page load
+        loadCodeExample();
+        
+        // Graph structure for visualization
+        const nodes = [
+            {id: 'A', x: 100, y: 100},
+            {id: 'B', x: 250, y: 50},
+            {id: 'C', x: 400, y: 100},
+            {id: 'D', x: 550, y: 150},
+            {id: 'E', x: 100, y: 250},
+            {id: 'F', x: 250, y: 300},
+            {id: 'G', x: 400, y: 250},
+            {id: 'H', x: 550, y: 300}
+        ];
+        
+        const edges = [
+            {source: 'A', target: 'B', weight: 4},
+            {source: 'A', target: 'E', weight: 8},
+            {source: 'B', target: 'C', weight: 8},
+            {source: 'B', target: 'E', weight: 11},
+            {source: 'B', target: 'F', weight: 7},
+            {source: 'C', target: 'D', weight: 7},
+            {source: 'C', target: 'G', weight: 4},
+            {source: 'C', target: 'F', weight: 2},
+            {source: 'D', target: 'G', weight: 9},
+            {source: 'D', target: 'H', weight: 14},
+            {source: 'E', target: 'F', weight: 1},
+            {source: 'F', target: 'G', weight: 6},
+            {source: 'G', target: 'H', weight: 10},
+            {source: 'H', target: 'F', weight: 2}
+        ];
+        
+        let animationSteps = [];
+        let currentStep = -1;
+        let animationTimer = null;
+        
+        // Code toggle functionality
+        document.getElementById('code-toggle').addEventListener('click', function() {
+            const codeContent = document.getElementById('code-content');
+            const toggle = document.getElementById('code-toggle');
+            
+            codeContent.classList.toggle('collapsed');
+            toggle.textContent = codeContent.classList.contains('collapsed') 
+                ? 'Show Code ▼' 
+                : 'Hide Code ▲';
+        });
+        
+        // Initialize SVG
+        function initGraph() {
+            const svg = document.getElementById('graph');
+            svg.innerHTML = '';
+            
+            // Draw edges
+            edges.forEach((edge, index) => {
+                const sourceNode = nodes.find(n => n.id === edge.source);
+                const targetNode = nodes.find(n => n.id === edge.target);
+                
+                const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                line.setAttribute('id', `edge-${edge.source}-${edge.target}`);
+                line.setAttribute('x1', sourceNode.x);
+                line.setAttribute('y1', sourceNode.y);
+                line.setAttribute('x2', targetNode.x);
+                line.setAttribute('y2', targetNode.y);
+                line.setAttribute('stroke', '#e0e0e0');
+                line.setAttribute('stroke-width', '3');
+                svg.appendChild(line);
+                
+                // Add edge weight label
+                const midX = (sourceNode.x + targetNode.x) / 2;
+                const midY = (sourceNode.y + targetNode.y) / 2;
+                
+                const weightBg = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                weightBg.setAttribute('cx', midX);
+                weightBg.setAttribute('cy', midY);
+                weightBg.setAttribute('r', '15');
+                weightBg.setAttribute('fill', 'white');
+                weightBg.setAttribute('stroke', '#e0e0e0');
+                svg.appendChild(weightBg);
+                
+                const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                text.setAttribute('x', midX);
+                text.setAttribute('y', midY + 5);
+                text.setAttribute('text-anchor', 'middle');
+                text.setAttribute('class', 'edge-weight-label');
+                text.textContent = edge.weight;
+                svg.appendChild(text);
+            });
+            
+            // Draw nodes
+            nodes.forEach(node => {
+                const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                circle.setAttribute('cx', node.x);
+                circle.setAttribute('cy', node.y);
+                circle.setAttribute('r', '25');
+                circle.setAttribute('fill', '#2c5aa0');
+                circle.setAttribute('stroke', 'white');
+                circle.setAttribute('stroke-width', '3');
+                svg.appendChild(circle);
+                
+                const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                text.setAttribute('x', node.x);
+                text.setAttribute('y', node.y + 5);
+                text.setAttribute('text-anchor', 'middle');
+                text.setAttribute('font-size', '18');
+                text.setAttribute('font-weight', 'bold');
+                text.setAttribute('fill', 'white');
+                text.textContent = node.id;
+                svg.appendChild(text);
+            });
+        }
+        
+        // Create animation steps
+        function createAnimationSteps() {
+            animationSteps = [];
+            
+            // Sort edges by weight
+            const sortedEdges = [...edges].sort((a, b) => a.weight - b.weight);
+            
+            // Display sorted edges
+            const sortedEdgesText = sortedEdges.map(e => `${e.source}-${e.target}(${e.weight})`).join(', ');
+            document.getElementById('sorted-edges').textContent = sortedEdgesText;
+            
+            // Initialize Union-Find
+            const parent = {};
+            nodes.forEach(node => {
+                parent[node.id] = node.id;
+            });
+            
+            function find(x) {
+                if (parent[x] !== x) {
+                    parent[x] = find(parent[x]);
+                }
+                return parent[x];
+            }
+            
+            function union(x, y) {
+                const rootX = find(x);
+                const rootY = find(y);
+                if (rootX !== rootY) {
+                    parent[rootX] = rootY;
+                    return true;
+                }
+                return false;
+            }
+            
+            const mstEdges = [];
+            let totalWeight = 0;
+            
+            // Process each edge
+            sortedEdges.forEach(edge => {
+                animationSteps.push({
+                    action: 'check',
+                    edge: edge,
+                    message: `Checking edge ${edge.source}-${edge.target} with weight ${edge.weight}`
+                });
+                
+                if (find(edge.source) !== find(edge.target)) {
+                    union(edge.source, edge.target);
+                    mstEdges.push(edge);
+                    totalWeight += edge.weight;
+                    
+                    animationSteps.push({
+                        action: 'include',
+                        edge: edge,
+                        message: `Added edge ${edge.source}-${edge.target} to MST (weight: ${edge.weight})`,
+                        totalWeight: totalWeight,
+                        mstEdges: [...mstEdges]
+                    });
+                } else {
+                    animationSteps.push({
+                        action: 'reject',
+                        edge: edge,
+                        message: `Rejected edge ${edge.source}-${edge.target} (would create a cycle)`
+                    });
+                }
+            });
+            
+            animationSteps.push({
+                action: 'complete',
+                message: 'Kruskal\'s Algorithm Complete!',
+                totalWeight: totalWeight,
+                mstEdges: mstEdges
+            });
+        }
+        
+        // Animate one step
+        function animateStep() {
+            if (currentStep >= animationSteps.length - 1) {
+                document.getElementById('start-btn').textContent = 'Restart';
+                document.getElementById('start-btn').disabled = false;
+                clearInterval(animationTimer);
+                return;
+            }
+            
+            currentStep++;
+            const step = animationSteps[currentStep];
+            
+            // Reset previous highlights
+            if (currentStep > 0 && animationSteps[currentStep - 1].action === 'check') {
+                const prevEdge = animationSteps[currentStep - 1].edge;
+                const prevLine = document.getElementById(`edge-${prevEdge.source}-${prevEdge.target}`);
+                if (prevLine.getAttribute('stroke') === '#ff9800') {
+                    prevLine.setAttribute('stroke', '#e0e0e0');
+                    prevLine.setAttribute('stroke-width', '3');
+                }
+            }
+            
+            // Update visualization
+            if (step.action === 'check') {
+                const line = document.getElementById(`edge-${step.edge.source}-${step.edge.target}`);
+                line.setAttribute('stroke', '#ff9800');
+                line.setAttribute('stroke-width', '5');
+            } else if (step.action === 'include') {
+                const line = document.getElementById(`edge-${step.edge.source}-${step.edge.target}`);
+                line.setAttribute('stroke', '#4CAF50');
+                line.setAttribute('stroke-width', '4');
+            } else if (step.action === 'reject') {
+                const line = document.getElementById(`edge-${step.edge.source}-${step.edge.target}`);
+                line.setAttribute('stroke', '#ff4757');
+                line.setAttribute('stroke-width', '3');
+            } else if (step.action === 'complete') {
+                document.getElementById('mst-result').style.display = 'block';
+                document.getElementById('total-weight').textContent = step.totalWeight;
+                document.getElementById('mst-edges').textContent = 
+                    step.mstEdges.map(e => `${e.source}-${e.target}`).join(', ');
+            }
+            
+            // Update step info
+            document.getElementById('step-info').textContent = step.message;
+        }
+        
+        // Start the animation
+        window.startKruskal = function() {
+            // Reset
+            clearInterval(animationTimer);
+            currentStep = -1;
+            document.getElementById('mst-result').style.display = 'none';
+            
+            // Initialize graph
+            initGraph();
+            
+            // Create animation steps
+            createAnimationSteps();
+            
+            // Run the actual algorithm and log result
+            const result = runKruskalAlgorithm();
+            console.log('Kruskal\'s Algorithm Result:', result);
+            
+            // Disable button during animation
+            document.getElementById('start-btn').disabled = true;
+            
+            // Start animation
+            animationTimer = setInterval(animateStep, 1500);
+        }
+        
+        // Initialize on load
+        window.onload = initGraph;
+    </script>
+</body>
+</html>

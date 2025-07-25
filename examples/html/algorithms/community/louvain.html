@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Eruda Mobile Console -->
+    <script src="https://cdn.jsdelivr.net/npm/eruda@3/eruda.min.js"></script>
+    <script>
+      if (typeof eruda !== "undefined") {
+        eruda.init();
+        if (/mobile|android|ios|iphone|ipad|ipod/i.test(navigator.userAgent.toLowerCase())) {
+          eruda.show();
+        }
+      }
+    </script>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Louvain Community Detection - Simple Visual Explanation</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        
+        h1 {
+            color: #2c5aa0;
+            text-align: center;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        #graph {
+            width: 100%;
+            height: 400px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        
+        button:hover {
+            background: #45a049;
+        }
+        
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .explanation {
+            background: #e8f0fe;
+            border-left: 4px solid #2c5aa0;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        
+        .controls {
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .step-info {
+            text-align: center;
+            font-size: 18px;
+            color: #333;
+            margin: 20px 0;
+            min-height: 30px;
+        }
+        
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .legend-circle {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid #333;
+        }
+        
+        .community-1 { background: #ff6b6b; }
+        .community-2 { background: #4ecdc4; }
+        .community-3 { background: #45b7d1; }
+        .community-4 { background: #f9ca24; }
+        .community-5 { background: #a55eea; }
+        .community-6 { background: #fd79a8; }
+        
+        .intro {
+            text-align: center;
+            color: #666;
+            margin: 20px 0;
+        }
+        
+        .modularity-display {
+            background: #f0f0f0;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 20px 0;
+        }
+        
+        .modularity-display h4 {
+            margin: 0 0 10px 0;
+            color: #666;
+        }
+        
+        .community-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .community-item {
+            background: white;
+            padding: 10px;
+            border-radius: 4px;
+            text-align: center;
+            border-left: 4px solid #4CAF50;
+        }
+        
+        .community-item .community-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .community-item .community-nodes {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .back-link {
+            color: #2c5aa0;
+            text-decoration: none;
+            margin-bottom: 20px;
+            display: inline-block;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        
+        .code-section {
+            margin-top: 30px;
+        }
+        
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .code-toggle {
+            background: #666;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            font-size: 12px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .code-content {
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            max-height: 1000px;
+        }
+        
+        .code-content.collapsed {
+            max-height: 0;
+        }
+        
+        .resolution-control {
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .resolution-control label {
+            margin-right: 10px;
+        }
+        
+        .resolution-control input[type="range"] {
+            width: 200px;
+            vertical-align: middle;
+        }
+        
+        .resolution-control span {
+            margin-left: 10px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <a href="../../index.html" class="back-link">← Back to Examples</a>
+    
+    <h1>Louvain Community Detection Explained</h1>
+    
+    <div class="container">
+        <div class="intro">
+            <p><strong>Louvain finds groups of tightly connected nodes, like finding friend groups in a social network.</strong></p>
+            <p>It optimizes modularity - a measure of how well a network divides into communities.</p>
+        </div>
+        
+        <svg id="graph"></svg>
+        
+        <div class="resolution-control">
+            <label for="resolution">Resolution:</label>
+            <input type="range" id="resolution" min="0.5" max="2.0" step="0.1" value="1.0">
+            <span id="resolution-value">1.0</span>
+        </div>
+        
+        <div class="step-info" id="step-info">Click "Detect Communities" to find groups in the network</div>
+        
+        <div class="legend" id="legend">
+            <div class="legend-item">
+                <div class="legend-circle community-1"></div>
+                <span>Community 1</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-circle community-2"></div>
+                <span>Community 2</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-circle community-3"></div>
+                <span>Community 3</span>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <button id="detect-btn" onclick="startDetection()">Detect Communities</button>
+            <button id="reset-btn" onclick="resetVisualization()">Reset</button>
+        </div>
+        
+        <div class="modularity-display" id="modularity-display" style="display: none;">
+            <h4>Community Detection Results:</h4>
+            <div>Modularity Score: <strong id="modularity-score">0.000</strong></div>
+            <div>Number of Communities: <strong id="community-count">0</strong></div>
+            <div>Iterations: <strong id="iteration-count">0</strong></div>
+            <div class="community-list" id="community-list"></div>
+        </div>
+        
+        <div class="explanation">
+            <h3>Key Concept:</h3>
+            <p>Louvain community detection works by:</p>
+            <ul>
+                <li><strong>Modularity optimization:</strong> Measures quality of community division</li>
+                <li><strong>Two-phase approach:</strong> Local optimization followed by aggregation</li>
+                <li><strong>Resolution parameter:</strong> Controls community size (higher = smaller communities)</li>
+            </ul>
+            <p>Communities represent groups of nodes that are more densely connected to each other than to the rest of the network.</p>
+        </div>
+        
+        <div class="code-section">
+            <div class="code-header">
+                <h3>Code Example</h3>
+                <button class="code-toggle" id="code-toggle">Hide Code ▲</button>
+            </div>
+            <div class="code-content" id="code-content">
+                <pre><code class="language-javascript" id="code-display">Loading code...</code></pre>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    
+    <script type="module">
+        // Import the Louvain community detection function
+        import { runLouvainDetection } from './louvain.js';
+        
+        // Load and display the actual code
+        async function loadCodeExample() {
+            try {
+                const response = await fetch('./louvain.js');
+                const code = await response.text();
+                
+                // Extract the main function for display
+                const functionMatch = code.match(/export function runLouvainDetection[\s\S]*?^}/m);
+                if (functionMatch) {
+                    document.getElementById('code-display').textContent = functionMatch[0];
+                    Prism.highlightElement(document.getElementById('code-display'));
+                } else {
+                    document.getElementById('code-display').textContent = code;
+                    Prism.highlightElement(document.getElementById('code-display'));
+                }
+            } catch (error) {
+                document.getElementById('code-display').textContent = 
+`// Example usage of Louvain community detection
+import { louvain } from '@graphty/algorithms';
+
+// Create a graph
+const graph = createGraph();
+
+// Detect communities with resolution parameter
+const result = louvain(graph, { 
+    resolution: 1.0,  // Higher values = smaller communities
+    maxIterations: 100 
+});
+
+console.log('Communities:', result.communities);
+console.log('Modularity:', result.modularity);`;
+                Prism.highlightElement(document.getElementById('code-display'));
+            }
+        }
+        
+        // Graph structure - social network with clear community structure
+        const nodes = [
+            // Community 1
+            { id: 'A', x: 150, y: 100, community: 1 },
+            { id: 'B', x: 200, y: 80, community: 1 },
+            { id: 'C', x: 180, y: 140, community: 1 },
+            { id: 'D', x: 120, y: 120, community: 1 },
+            
+            // Community 2
+            { id: 'E', x: 350, y: 100, community: 2 },
+            { id: 'F', x: 400, y: 80, community: 2 },
+            { id: 'G', x: 380, y: 140, community: 2 },
+            { id: 'H', x: 420, y: 120, community: 2 },
+            
+            // Community 3
+            { id: 'I', x: 250, y: 250, community: 3 },
+            { id: 'J', x: 300, y: 230, community: 3 },
+            { id: 'K', x: 280, y: 290, community: 3 },
+            { id: 'L', x: 320, y: 270, community: 3 },
+            
+            // Bridge nodes
+            { id: 'M', x: 250, y: 150, community: 0 },
+            { id: 'N', x: 350, y: 200, community: 0 }
+        ];
+        
+        const edges = [
+            // Community 1 - dense connections
+            { source: 'A', target: 'B' },
+            { source: 'A', target: 'C' },
+            { source: 'A', target: 'D' },
+            { source: 'B', target: 'C' },
+            { source: 'B', target: 'D' },
+            { source: 'C', target: 'D' },
+            
+            // Community 2 - dense connections
+            { source: 'E', target: 'F' },
+            { source: 'E', target: 'G' },
+            { source: 'E', target: 'H' },
+            { source: 'F', target: 'G' },
+            { source: 'F', target: 'H' },
+            { source: 'G', target: 'H' },
+            
+            // Community 3 - dense connections
+            { source: 'I', target: 'J' },
+            { source: 'I', target: 'K' },
+            { source: 'I', target: 'L' },
+            { source: 'J', target: 'K' },
+            { source: 'J', target: 'L' },
+            { source: 'K', target: 'L' },
+            
+            // Bridge connections
+            { source: 'C', target: 'M' },
+            { source: 'M', target: 'E' },
+            { source: 'M', target: 'I' },
+            { source: 'G', target: 'N' },
+            { source: 'N', target: 'J' }
+        ];
+        
+        const communityColors = ['#999', '#ff6b6b', '#4ecdc4', '#45b7d1', '#f9ca24', '#a55eea', '#fd79a8'];
+        let isRunning = false;
+        let detectionResult = null;
+        
+        // Initialize the graph visualization
+        function initGraph() {
+            const svg = document.getElementById('graph');
+            svg.innerHTML = '';
+            
+            // Add edge elements
+            edges.forEach(edge => {
+                const source = nodes.find(n => n.id === edge.source);
+                const target = nodes.find(n => n.id === edge.target);
+                
+                const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                line.setAttribute('x1', source.x);
+                line.setAttribute('y1', source.y);
+                line.setAttribute('x2', target.x);
+                line.setAttribute('y2', target.y);
+                line.setAttribute('stroke', '#ddd');
+                line.setAttribute('stroke-width', '2');
+                line.setAttribute('id', `edge-${edge.source}-${edge.target}`);
+                svg.appendChild(line);
+            });
+            
+            // Add node elements
+            nodes.forEach(node => {
+                const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+                
+                const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                circle.setAttribute('cx', node.x);
+                circle.setAttribute('cy', node.y);
+                circle.setAttribute('r', '20');
+                circle.setAttribute('fill', '#e0e0e0');
+                circle.setAttribute('stroke', '#333');
+                circle.setAttribute('stroke-width', '2');
+                circle.setAttribute('id', `node-${node.id}`);
+                
+                const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                text.setAttribute('x', node.x);
+                text.setAttribute('y', node.y + 5);
+                text.setAttribute('text-anchor', 'middle');
+                text.setAttribute('font-weight', 'bold');
+                text.textContent = node.id;
+                
+                g.appendChild(circle);
+                g.appendChild(text);
+                svg.appendChild(g);
+            });
+        }
+        
+        // Start the community detection
+        window.startDetection = async function() {
+            if (isRunning) return;
+            
+            isRunning = true;
+            document.getElementById('detect-btn').disabled = true;
+            document.getElementById('reset-btn').disabled = true;
+            document.getElementById('modularity-display').style.display = 'none';
+            
+            // Reset all nodes
+            nodes.forEach(node => {
+                document.getElementById(`node-${node.id}`).setAttribute('fill', '#e0e0e0');
+            });
+            
+            // Get resolution parameter
+            const resolution = parseFloat(document.getElementById('resolution').value);
+            
+            // Run the actual algorithm
+            const result = runLouvainDetection(nodes, edges, resolution);
+            console.log('Louvain Result:', result);
+            detectionResult = result;
+            
+            // Animate the detection process
+            await animateDetection(result);
+            
+            // Display results
+            displayResults(result);
+            
+            isRunning = false;
+            document.getElementById('reset-btn').disabled = false;
+        }
+        
+        // Animate the community detection process
+        async function animateDetection(result) {
+            const stepInfo = document.getElementById('step-info');
+            
+            // Phase 1: Initialize each node in its own community
+            stepInfo.textContent = 'Phase 1: Initializing - each node starts in its own community';
+            nodes.forEach((node, index) => {
+                const nodeElement = document.getElementById(`node-${node.id}`);
+                nodeElement.setAttribute('fill', communityColors[index % communityColors.length]);
+            });
+            await sleep(1500);
+            
+            // Phase 2: Local optimization - simulate moving nodes between communities
+            stepInfo.textContent = 'Phase 2: Local optimization - nodes join neighboring communities';
+            
+            // Simulate iterations
+            for (let i = 0; i < 3; i++) {
+                stepInfo.textContent = `Iteration ${i + 1}: Optimizing community assignments...`;
+                
+                // Animate some node movements
+                for (const node of nodes) {
+                    const nodeElement = document.getElementById(`node-${node.id}`);
+                    nodeElement.setAttribute('fill', '#feca57'); // Highlight as being evaluated
+                    await sleep(100);
+                    
+                    // Assign to final community
+                    const communityId = result.communities[node.id] || 0;
+                    nodeElement.setAttribute('fill', communityColors[communityId % communityColors.length]);
+                }
+                
+                await sleep(500);
+            }
+            
+            stepInfo.textContent = `Community detection complete! Found ${Object.keys(result.communityGroups).length} communities`;
+        }
+        
+        // Display the detection results
+        function displayResults(result) {
+            const modularityDisplay = document.getElementById('modularity-display');
+            const communityList = document.getElementById('community-list');
+            
+            // Update modularity score
+            document.getElementById('modularity-score').textContent = result.modularity.toFixed(3);
+            document.getElementById('community-count').textContent = Object.keys(result.communityGroups).length;
+            document.getElementById('iteration-count').textContent = result.iterations;
+            
+            // Clear and populate community list
+            communityList.innerHTML = '';
+            
+            Object.entries(result.communityGroups).forEach(([communityId, nodeIds]) => {
+                const communityItem = document.createElement('div');
+                communityItem.className = 'community-item';
+                communityItem.style.borderLeftColor = communityColors[parseInt(communityId) % communityColors.length];
+                
+                communityItem.innerHTML = `
+                    <div class="community-name">Community ${parseInt(communityId) + 1}</div>
+                    <div class="community-nodes">Nodes: ${nodeIds.join(', ')}</div>
+                `;
+                
+                communityList.appendChild(communityItem);
+            });
+            
+            modularityDisplay.style.display = 'block';
+            
+            // Update legend
+            updateLegend(Object.keys(result.communityGroups).length);
+        }
+        
+        // Update legend based on number of communities
+        function updateLegend(numCommunities) {
+            const legend = document.getElementById('legend');
+            legend.innerHTML = '';
+            
+            for (let i = 0; i < numCommunities; i++) {
+                const legendItem = document.createElement('div');
+                legendItem.className = 'legend-item';
+                
+                const circle = document.createElement('div');
+                circle.className = 'legend-circle';
+                circle.style.background = communityColors[i % communityColors.length];
+                
+                const label = document.createElement('span');
+                label.textContent = `Community ${i + 1}`;
+                
+                legendItem.appendChild(circle);
+                legendItem.appendChild(label);
+                legend.appendChild(legendItem);
+            }
+        }
+        
+        // Reset the visualization
+        window.resetVisualization = function() {
+            document.getElementById('detect-btn').disabled = false;
+            document.getElementById('modularity-display').style.display = 'none';
+            document.getElementById('step-info').textContent = 'Click "Detect Communities" to find groups in the network';
+            
+            // Reset all nodes to default color
+            nodes.forEach(node => {
+                document.getElementById(`node-${node.id}`).setAttribute('fill', '#e0e0e0');
+            });
+            
+            // Reset legend
+            updateLegend(3);
+        }
+        
+        // Resolution slider
+        document.getElementById('resolution').addEventListener('input', function(e) {
+            document.getElementById('resolution-value').textContent = e.target.value;
+        });
+        
+        // Code toggle functionality
+        document.getElementById('code-toggle').addEventListener('click', function() {
+            const codeContent = document.getElementById('code-content');
+            const toggle = document.getElementById('code-toggle');
+            
+            if (codeContent.classList.contains('collapsed')) {
+                codeContent.classList.remove('collapsed');
+                toggle.textContent = 'Hide Code ▲';
+            } else {
+                codeContent.classList.add('collapsed');
+                toggle.textContent = 'Show Code ▼';
+            }
+        });
+        
+        // Helper sleep function
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+        
+        // Initialize on load
+        window.onload = function() {
+            initGraph();
+            loadCodeExample();
+        };
+    </script>
+</body>
+</html>

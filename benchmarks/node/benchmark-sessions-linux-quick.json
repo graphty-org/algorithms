@@ -1,0 +1,156 @@
+[
+  {
+    "sessionId": "wybdbk",
+    "timestamp": "2025-07-25T00:19:43.404Z",
+    "systemInfo": {
+      "platform": "linux",
+      "arch": "x64",
+      "nodeVersion": "v22.14.0",
+      "v8Version": "12.4.254.21-node.22",
+      "libraryVersion": "unknown",
+      "cpu": {
+        "model": "Intel(R) Core(TM) i9-14900KF",
+        "cores": 32,
+        "speed": 5700
+      },
+      "memory": {
+        "total": 100899524608,
+        "totalGB": 94
+      },
+      "os": {
+        "type": "Linux",
+        "release": "5.15.0-136-generic",
+        "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+      }
+    },
+    "testType": "quick",
+    "results": [
+      {
+        "algorithm": "Degree Centrality",
+        "graphType": "sparse",
+        "graphGenerationAlgorithm": "Erdős–Rényi Random Graph (Fixed Edges)",
+        "graphSize": 100,
+        "edges": 300,
+        "executionTime": 0.005210581197790898,
+        "memoryUsage": 21493744,
+        "memoryPerVertex": 214937.44,
+        "timestamp": "2025-07-25T00:19:30.258Z",
+        "systemInfo": {
+          "platform": "linux",
+          "arch": "x64",
+          "nodeVersion": "v22.14.0",
+          "v8Version": "12.4.254.21-node.22",
+          "libraryVersion": "unknown",
+          "cpu": {
+            "model": "Intel(R) Core(TM) i9-14900KF",
+            "cores": 32,
+            "speed": 5700
+          },
+          "memory": {
+            "total": 100899524608,
+            "totalGB": 94
+          },
+          "os": {
+            "type": "Linux",
+            "release": "5.15.0-136-generic",
+            "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+          }
+        },
+        "metrics": {
+          "opsPerSecond": 191917.17047302987,
+          "samples": 73,
+          "marginOfError": 0.9807412321198951,
+          "standardDeviation": 2.227644889976775e-7,
+          "variance": 4.962401755839639e-14,
+          "platform": "node",
+          "testType": "quick",
+          "teps": 57575151.14190896
+        }
+      },
+      {
+        "algorithm": "Degree Centrality",
+        "graphType": "sparse",
+        "graphGenerationAlgorithm": "Erdős–Rényi Random Graph (Fixed Edges)",
+        "graphSize": 1000,
+        "edges": 3000,
+        "executionTime": 0.06374861455967082,
+        "memoryUsage": 16452304,
+        "memoryPerVertex": 16452.304,
+        "timestamp": "2025-07-25T00:19:36.737Z",
+        "systemInfo": {
+          "platform": "linux",
+          "arch": "x64",
+          "nodeVersion": "v22.14.0",
+          "v8Version": "12.4.254.21-node.22",
+          "libraryVersion": "unknown",
+          "cpu": {
+            "model": "Intel(R) Core(TM) i9-14900KF",
+            "cores": 32,
+            "speed": 5700
+          },
+          "memory": {
+            "total": 100899524608,
+            "totalGB": 94
+          },
+          "os": {
+            "type": "Linux",
+            "release": "5.15.0-136-generic",
+            "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+          }
+        },
+        "metrics": {
+          "opsPerSecond": 15686.61541756279,
+          "samples": 51,
+          "marginOfError": 3.901272456129185,
+          "standardDeviation": 0.000009061624233972694,
+          "variance": 8.211303375772122e-11,
+          "platform": "node",
+          "testType": "quick",
+          "teps": 47059846.25268837
+        }
+      },
+      {
+        "algorithm": "Degree Centrality",
+        "graphType": "sparse",
+        "graphGenerationAlgorithm": "Erdős–Rényi Random Graph (Fixed Edges)",
+        "graphSize": 5000,
+        "edges": 15000,
+        "executionTime": 0.7877305456569592,
+        "memoryUsage": 26362664,
+        "memoryPerVertex": 5272.5328,
+        "timestamp": "2025-07-25T00:19:43.096Z",
+        "systemInfo": {
+          "platform": "linux",
+          "arch": "x64",
+          "nodeVersion": "v22.14.0",
+          "v8Version": "12.4.254.21-node.22",
+          "libraryVersion": "unknown",
+          "cpu": {
+            "model": "Intel(R) Core(TM) i9-14900KF",
+            "cores": 32,
+            "speed": 5700
+          },
+          "memory": {
+            "total": 100899524608,
+            "totalGB": 94
+          },
+          "os": {
+            "type": "Linux",
+            "release": "5.15.0-136-generic",
+            "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+          }
+        },
+        "metrics": {
+          "opsPerSecond": 1269.4696244970546,
+          "samples": 59,
+          "marginOfError": 4.681392337067507,
+          "standardDeviation": 0.0001445182389320577,
+          "variance": 2.0885521384023316e-8,
+          "platform": "node",
+          "testType": "quick",
+          "teps": 19042044.36745582
+        }
+      }
+    ]
+  }
+]

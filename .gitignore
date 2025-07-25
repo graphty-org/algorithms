@@ -56,3 +56,6 @@ playwright-report/
 # Temporary files
 .tmp/
 tmp/
+
+# GitHub Pages
+gh-pages

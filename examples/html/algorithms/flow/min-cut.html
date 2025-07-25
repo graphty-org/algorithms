@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- MANDATORY: Eruda Mobile Console (exact code) -->
+    <script src="https://cdn.jsdelivr.net/npm/eruda@3/eruda.min.js"></script>
+    <script>
+      if (typeof eruda !== "undefined") {
+        eruda.init();
+        if (/mobile|android|ios|iphone|ipad|ipod/i.test(navigator.userAgent.toLowerCase())) {
+          eruda.show();
+        }
+      }
+    </script>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Min-Cut Algorithm - Simple Visual Explanation</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
+    <style>
+        /* MANDATORY STYLES - DO NOT MODIFY */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5; /* Light gray background */
+        }
+        
+        h1 {
+            color: #2c5aa0; /* Blue header */
+            text-align: center;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        #graph {
+            width: 100%;
+            height: 400px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        button {
+            background: #4CAF50; /* Green button */
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        
+        .explanation {
+            background: #e8f0fe;
+            border-left: 4px solid #2c5aa0;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        
+        /* Additional algorithm-specific styles */
+        .back-link {
+            text-decoration: none;
+            color: #2c5aa0;
+            display: inline-block;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        
+        .intro {
+            margin-bottom: 20px;
+        }
+        
+        .intro p {
+            margin: 10px 0;
+            line-height: 1.6;
+        }
+        
+        .intro strong {
+            color: #333;
+        }
+        
+        .scenario-selector {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        
+        .scenario-btn {
+            background: #e0e0e0;
+            color: #333;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .scenario-btn.active {
+            background: #2c5aa0;
+            color: white;
+        }
+        
+        .scenario-btn:hover {
+            background: #2196F3;
+            color: white;
+        }
+        
+        .algorithm-selector {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 15px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 6px;
+        }
+        
+        .algorithm-btn {
+            background: #e0e0e0;
+            color: #333;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .algorithm-btn.active {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .algorithm-btn:hover {
+            background: #45a049;
+            color: white;
+        }
+        
+        .algorithm-info {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            flex-wrap: wrap;
+        }
+        
+        .info-item {
+            text-align: center;
+            min-width: 120px;
+        }
+        
+        .info-label {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        
+        .info-value {
+            font-size: 18px;
+            font-weight: bold;
+            color: #2c5aa0;
+        }
+        
+        .step-info {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 15px 0;
+            font-size: 16px;
+            text-align: center;
+        }
+        
+        .legend {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin: 15px 0;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 6px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            border: 2px solid #333;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+        
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .source-sink-selector {
+            margin: 15px 0;
+            padding: 15px;
+            background: #f0f8ff;
+            border-radius: 6px;
+            border-left: 4px solid #2c5aa0;
+        }
+        
+        .source-sink-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 10px 0;
+            flex-wrap: wrap;
+        }
+        
+        .source-sink-group label {
+            font-weight: 500;
+            min-width: 60px;
+        }
+        
+        .source-sink-group select {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background: white;
+        }
+        
+        .partition-display {
+            margin: 20px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 6px;
+        }
+        
+        .partition-group {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        
+        .partition1 {
+            background: #e3f2fd;
+            border-left: 4px solid #2196F3;
+        }
+        
+        .partition2 {
+            background: #f3e5f5;
+            border-left: 4px solid #9c27b0;
+        }
+        
+        .cut-edges-display {
+            margin: 15px 0;
+            padding: 15px;
+            background: #fff3e0;
+            border-radius: 6px;
+            border-left: 4px solid #ff9800;
+        }
+        
+        .cut-edge {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px;
+            margin: 5px 0;
+            background: white;
+            border-radius: 4px;
+            border: 1px solid #ffcc02;
+        }
+        
+        .edge-info {
+            font-weight: 500;
+        }
+        
+        .edge-weight {
+            color: #e65100;
+            font-weight: bold;
+        }
+        
+        .code-section {
+            margin: 30px 0;
+        }
+        
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .code-toggle {
+            background: #666;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .code-content {
+            background: #f8f8f8;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        #code-display {
+            margin: 0;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .cut-edge-highlight {
+            stroke: #ff9800 !important;
+            stroke-width: 4 !important;
+            opacity: 1 !important;
+        }
+        
+        .partition-node-1 {
+            fill: #2196F3 !important;
+        }
+        
+        .partition-node-2 {
+            fill: #9c27b0 !important;
+        }
+    </style>
+</head>
+<body>
+    <a href="../../index.html" class="back-link">← Back to Examples</a>
+    
+    <h1>Min-Cut Algorithm Explained</h1>
+    
+    <div class="container">
+        <div class="intro">
+            <p><strong>Like finding the weakest link in a chain!</strong></p>
+            <p>Min-Cut algorithms find the smallest set of edges that, when removed, disconnect a network into two parts. This reveals bottlenecks, critical connections, and optimal ways to partition networks.</p>
+        </div>
+        
+        <div class="scenario-selector">
+            <button class="scenario-btn active" onclick="selectScenario('network')">Computer Network</button>
+            <button class="scenario-btn" onclick="selectScenario('social')">Social Groups</button>
+            <button class="scenario-btn" onclick="selectScenario('transport')">Transport Routes</button>
+            <button class="scenario-btn" onclick="selectScenario('circuit')">Circuit Design</button>
+        </div>
+        
+        <div class="algorithm-selector">
+            <h4 style="margin: 0; width: 100%;">Choose Algorithm:</h4>
+            <button class="algorithm-btn active" onclick="selectAlgorithm('stcut')">S-T Cut (Specific)</button>
+            <button class="algorithm-btn" onclick="selectAlgorithm('stoer')">Stoer-Wagner (Global)</button>
+            <button class="algorithm-btn" onclick="selectAlgorithm('karger')">Karger (Randomized)</button>
+        </div>
+        
+        <div class="source-sink-selector" id="source-sink-selector" style="display: block;">
+            <h4>Source-Sink Selection (for S-T Cut):</h4>
+            <div class="source-sink-group">
+                <label>Source:</label>
+                <select id="source-select"></select>
+            </div>
+            <div class="source-sink-group">
+                <label>Sink:</label>
+                <select id="sink-select"></select>
+            </div>
+        </div>
+        
+        <svg id="graph"></svg>
+        
+        <div class="algorithm-info" id="algorithm-info">
+            <div class="info-item">
+                <div class="info-label">Cut Value</div>
+                <div class="info-value" id="cut-value">-</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Cut Edges</div>
+                <div class="info-value" id="cut-edges-count">-</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Partition 1</div>
+                <div class="info-value" id="partition1-size">-</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Partition 2</div>
+                <div class="info-value" id="partition2-size">-</div>
+            </div>
+        </div>
+        
+        <div class="step-info" id="step-info">Choose a scenario and algorithm, then click "Find Min Cut" to discover the weakest connections</div>
+        
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-color" style="background: #e0e0e0;"></div>
+                <span>Normal Nodes</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #2196F3;"></div>
+                <span>Partition 1</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #9c27b0;"></div>
+                <span>Partition 2</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #ff9800;"></div>
+                <span>Cut Edges</span>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <button id="find-btn" onclick="findMinCut()">Find Min Cut</button>
+            <button id="compare-btn" onclick="compareAlgorithms()" disabled>Compare All Algorithms</button>
+            <button id="animate-btn" onclick="animateCutProcess()" disabled>Animate Process</button>
+            <button id="reset-btn" onclick="resetVisualization()">Reset</button>
+        </div>
+        
+        <div class="partition-display" id="partition-display" style="display: none;">
+            <h4>Network Partitions</h4>
+            <div class="partition-group partition1" id="partition1-display">
+                <strong>Partition 1:</strong> <span id="partition1-nodes"></span>
+            </div>
+            <div class="partition-group partition2" id="partition2-display">
+                <strong>Partition 2:</strong> <span id="partition2-nodes"></span>
+            </div>
+        </div>
+        
+        <div class="cut-edges-display" id="cut-edges-display" style="display: none;">
+            <h4>Critical Cut Edges</h4>
+            <div id="cut-edges-list"></div>
+        </div>
+        
+        <div class="explanation">
+            <h3>Key Concept:</h3>
+            <p>Min-Cut algorithms identify the <strong>bottleneck edges</strong> in a network. These are the minimum set of connections that, when severed, split the network into two disconnected parts. Different algorithms offer different advantages: S-T Cut finds specific source-to-sink bottlenecks, Stoer-Wagner finds the globally weakest connection, and Karger provides a fast randomized approach.</p>
+        </div>
+        
+        <div class="code-section">
+            <div class="code-header">
+                <h3>Code Example</h3>
+                <button class="code-toggle" id="code-toggle">Hide Code ▲</button>
+            </div>
+            <div class="code-content" id="code-content">
+                <pre><code class="language-javascript" id="code-display">Loading code...</code></pre>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    
+    <script type="module">
+        // Import the algorithm functions
+        import { minSTCut, stoerWagner, kargerMinCut } from './algorithms.js';
+
+        // Load and display the actual code
+        async function loadCodeExample() {
+            try {
+                const response = await fetch('./min-cut.js');
+                const code = await response.text();
+                document.getElementById('code-display').textContent = code;
+                if (window.Prism) {
+                    window.Prism.highlightAll();
+                }
+            } catch (error) {
+                document.getElementById('code-display').textContent = 'Error loading code example';
+            }
+        }
+
+        // Current state
+        let currentScenario = 'network';
+        let currentAlgorithm = 'stcut';
+        let currentGraph = null;
+        let currentResult = null;
+        let isAnimating = false;
+        
+        // Scenario definitions with positioned nodes and weighted edges
+        const scenarios = {
+            network: {
+                name: "Computer Network",
+                description: "Finding bottlenecks in network infrastructure",
+                nodes: [
+                    {id: 'Server1', x: 100, y: 150, type: 'server'},
+                    {id: 'Server2', x: 100, y: 250, type: 'server'},
+                    {id: 'Switch1', x: 220, y: 120, type: 'switch'},
+                    {id: 'Switch2', x: 220, y: 280, type: 'switch'},
+                    {id: 'Router1', x: 350, y: 140, type: 'router'},
+                    {id: 'Router2', x: 350, y: 260, type: 'router'},
+                    {id: 'Gateway', x: 500, y: 200, type: 'gateway'}
+                ],
+                edges: [
+                    ['Server1', 'Switch1', 100], ['Server2', 'Switch2', 100],
+                    ['Switch1', 'Router1', 50], ['Switch1', 'Router2', 30],
+                    ['Switch2', 'Router1', 30], ['Switch2', 'Router2', 50],
+                    ['Router1', 'Gateway', 80], ['Router2', 'Gateway', 80]
+                ]
+            },
+            social: {
+                name: "Social Groups",
+                description: "Finding weak connections between friend groups",
+                nodes: [
+                    {id: 'Alice', x: 120, y: 100, type: 'person'},
+                    {id: 'Bob', x: 80, y: 180, type: 'person'},
+                    {id: 'Carol', x: 160, y: 180, type: 'person'},
+                    {id: 'Diana', x: 120, y: 260, type: 'person'},
+                    {id: 'Eve', x: 380, y: 100, type: 'person'},
+                    {id: 'Frank', x: 340, y: 180, type: 'person'},
+                    {id: 'Grace', x: 420, y: 180, type: 'person'},
+                    {id: 'Henry', x: 380, y: 260, type: 'person'}
+                ],
+                edges: [
+                    ['Alice', 'Bob', 10], ['Alice', 'Carol', 10], ['Bob', 'Carol', 9], ['Bob', 'Diana', 7],
+                    ['Carol', 'Diana', 8], ['Diana', 'Eve', 2], // Weak link between groups
+                    ['Eve', 'Frank', 9], ['Eve', 'Grace', 10], ['Frank', 'Grace', 10],
+                    ['Frank', 'Henry', 9], ['Grace', 'Henry', 8]
+                ]
+            },
+            transport: {
+                name: "Transport Routes",
+                description: "Identifying critical road segments and bottlenecks",
+                nodes: [
+                    {id: 'North_Hub', x: 120, y: 80, type: 'hub'},
+                    {id: 'Highway_1', x: 200, y: 120, type: 'road'},
+                    {id: 'Highway_2', x: 200, y: 160, type: 'road'},
+                    {id: 'Junction_1', x: 300, y: 140, type: 'junction'},
+                    {id: 'Bridge_1', x: 400, y: 120, type: 'bridge'},
+                    {id: 'Bridge_2', x: 400, y: 160, type: 'bridge'},
+                    {id: 'South_Road', x: 480, y: 140, type: 'road'},
+                    {id: 'South_Hub', x: 560, y: 140, type: 'hub'}
+                ],
+                edges: [
+                    ['North_Hub', 'Highway_1', 1000], ['North_Hub', 'Highway_2', 800],
+                    ['Highway_1', 'Junction_1', 600], ['Highway_2', 'Junction_1', 500],
+                    ['Junction_1', 'Bridge_1', 300], ['Junction_1', 'Bridge_2', 200], // Bottleneck
+                    ['Bridge_1', 'South_Road', 500], ['Bridge_2', 'South_Road', 400],
+                    ['South_Road', 'South_Hub', 700]
+                ]
+            },
+            circuit: {
+                name: "Circuit Design",
+                description: "Optimal partitioning to minimize inter-module connections",
+                nodes: [
+                    {id: 'A1', x: 100, y: 100, type: 'component'},
+                    {id: 'A2', x: 150, y: 80, type: 'component'},
+                    {id: 'A3', x: 150, y: 140, type: 'component'},
+                    {id: 'A4', x: 200, y: 110, type: 'component'},
+                    {id: 'B1', x: 350, y: 100, type: 'component'},
+                    {id: 'B2', x: 400, y: 80, type: 'component'},
+                    {id: 'B3', x: 400, y: 140, type: 'component'},
+                    {id: 'B4', x: 450, y: 110, type: 'component'},
+                    {id: 'C1', x: 300, y: 200, type: 'component'},
+                    {id: 'C2', x: 350, y: 220, type: 'component'}
+                ],
+                edges: [
+                    // Module A (tightly connected)
+                    ['A1', 'A2', 5], ['A1', 'A3', 4], ['A2', 'A3', 6], ['A2', 'A4', 4], ['A3', 'A4', 5],
+                    // Module B (tightly connected)
+                    ['B1', 'B2', 5], ['B1', 'B3', 4], ['B2', 'B3', 6], ['B2', 'B4', 4], ['B3', 'B4', 5],
+                    // Module C (tightly connected)
+                    ['C1', 'C2', 6],
+                    // Inter-module connections (weak)
+                    ['A4', 'B1', 1], ['A2', 'C1', 1], ['B4', 'C2', 1]
+                ]
+            }
+        };
+
+        // Algorithm descriptions
+        const algorithmDescriptions = {
+            stcut: "S-T Cut: Finds minimum cut between specific source and sink nodes",
+            stoer: "Stoer-Wagner: Finds the global minimum cut in the entire network",
+            karger: "Karger: Randomized algorithm for fast approximate minimum cuts"
+        };
+
+        // Graph setup and visualization
+        function initGraph() {
+            selectScenario(currentScenario);
+            loadCodeExample();
+            setupCodeToggle();
+        }
+
+        function setupCodeToggle() {
+            const toggle = document.getElementById('code-toggle');
+            const content = document.getElementById('code-content');
+            
+            toggle.addEventListener('click', () => {
+                if (content.style.display === 'none') {
+                    content.style.display = 'block';
+                    toggle.textContent = 'Hide Code ▲';
+                } else {
+                    content.style.display = 'none';
+                    toggle.textContent = 'Show Code ▼';
+                }
+            });
+        }
+
+        // Convert scenario to graph format
+        function createGraph(scenario) {
+            const graph = new Map();
+            
+            // Initialize all nodes
+            scenario.nodes.forEach(node => {
+                graph.set(node.id, new Map());
+            });
+            
+            // Add edges (bidirectional for min-cut)
+            scenario.edges.forEach(([source, target, weight]) => {
+                if (graph.has(source) && graph.has(target)) {
+                    graph.get(source).set(target, weight);
+                    graph.get(target).set(source, weight); // Undirected graph
+                }
+            });
+            
+            return graph;
+        }
+
+        function populateSourceSinkSelectors(nodes) {
+            const sourceSelect = document.getElementById('source-select');
+            const sinkSelect = document.getElementById('sink-select');
+            
+            sourceSelect.innerHTML = '';
+            sinkSelect.innerHTML = '';
+            
+            nodes.forEach(node => {
+                const sourceOption = document.createElement('option');
+                sourceOption.value = node.id;
+                sourceOption.textContent = node.id;
+                sourceSelect.appendChild(sourceOption);
+                
+                const sinkOption = document.createElement('option');
+                sinkOption.value = node.id;
+                sinkOption.textContent = node.id;
+                sinkSelect.appendChild(sinkOption);
+            });
+            
+            // Set default source and sink
+            if (nodes.length >= 2) {
+                sourceSelect.value = nodes[0].id;
+                sinkSelect.value = nodes[nodes.length - 1].id;
+            }
+        }
+
+        window.selectScenario = function(scenarioKey) {
+            currentScenario = scenarioKey;
+            const scenario = scenarios[scenarioKey];
+            
+            // Update active button
+            document.querySelectorAll('.scenario-btn').forEach(btn => btn.classList.remove('active'));
+            event?.target?.classList.add('active') || document.querySelector(`[onclick="selectScenario('${scenarioKey}')"]`).classList.add('active');
+            
+            // Create new graph
+            currentGraph = createGraph(scenario);
+            currentResult = null;
+            
+            // Populate source/sink selectors
+            populateSourceSinkSelectors(scenario.nodes);
+            
+            // Update UI
+            document.getElementById('step-info').textContent = `Scenario: ${scenario.name} - ${scenario.description}`;
+            updateInfo('-', '-', '-', '-');
+            
+            // Render initial graph
+            drawGraph(scenario.nodes, scenario.edges, null);
+            
+            // Reset UI state
+            document.getElementById('find-btn').disabled = false;
+            document.getElementById('compare-btn').disabled = true;
+            document.getElementById('animate-btn').disabled = true;
+            document.getElementById('partition-display').style.display = 'none';
+            document.getElementById('cut-edges-display').style.display = 'none';
+        };
+
+        window.selectAlgorithm = function(algorithmKey) {
+            currentAlgorithm = algorithmKey;
+            
+            // Update active button
+            document.querySelectorAll('.algorithm-btn').forEach(btn => btn.classList.remove('active'));
+            event?.target?.classList.add('active') || document.querySelector(`[onclick="selectAlgorithm('${algorithmKey}')"]`).classList.add('active');
+            
+            // Show/hide source-sink selector based on algorithm
+            const sourceSinkSelector = document.getElementById('source-sink-selector');
+            sourceSinkSelector.style.display = algorithmKey === 'stcut' ? 'block' : 'none';
+            
+            // Update step info
+            document.getElementById('step-info').textContent = algorithmDescriptions[algorithmKey];
+        };
+
+        function drawGraph(nodes, edges, result = null) {
+            const svg = document.getElementById('graph');
+            svg.innerHTML = '';
+            
+            const width = 600;
+            const height = 400;
+            svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
+            
+            // Draw edges first (so they appear behind nodes)
+            edges.forEach(([source, target, weight]) => {
+                const sourceNode = nodes.find(n => n.id === source);
+                const targetNode = nodes.find(n => n.id === target);
+                if (sourceNode && targetNode) {
+                    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                    line.setAttribute('x1', sourceNode.x);
+                    line.setAttribute('y1', sourceNode.y);
+                    line.setAttribute('x2', targetNode.x);
+                    line.setAttribute('y2', targetNode.y);
+                    
+                    // Check if this edge is in the cut
+                    const isCutEdge = result && result.cutEdges && result.cutEdges.some(cutEdge => 
+                        (cutEdge.from === source && cutEdge.to === target) ||
+                        (cutEdge.from === target && cutEdge.to === source)
+                    );
+                    
+                    if (isCutEdge) {
+                        line.setAttribute('class', 'cut-edge-highlight');
+                    } else {
+                        line.setAttribute('stroke', '#999');
+                        line.setAttribute('stroke-width', '2');
+                    }
+                    
+                    svg.appendChild(line);
+                    
+                    // Add edge weight label
+                    const midX = (sourceNode.x + targetNode.x) / 2;
+                    const midY = (sourceNode.y + targetNode.y) / 2;
+                    const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                    text.setAttribute('x', midX);
+                    text.setAttribute('y', midY - 5);
+                    text.setAttribute('text-anchor', 'middle');
+                    text.setAttribute('font-size', '12');
+                    text.setAttribute('font-weight', 'bold');
+                    text.setAttribute('fill', isCutEdge ? '#e65100' : '#666');
+                    text.textContent = weight;
+                    svg.appendChild(text);
+                }
+            });
+            
+            // Draw nodes
+            nodes.forEach(node => {
+                const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                circle.setAttribute('cx', node.x);
+                circle.setAttribute('cy', node.y);
+                circle.setAttribute('r', '20');
+                
+                // Determine node color based on partition
+                let nodeColor = '#e0e0e0';
+                if (result && result.partition1 && result.partition1.has(node.id)) {
+                    nodeColor = '#2196F3';
+                    circle.setAttribute('class', 'partition-node-1');
+                } else if (result && result.partition2 && result.partition2.has(node.id)) {
+                    nodeColor = '#9c27b0';
+                    circle.setAttribute('class', 'partition-node-2');
+                }
+                
+                circle.setAttribute('fill', nodeColor);
+                circle.setAttribute('stroke', '#333');
+                circle.setAttribute('stroke-width', '2');
+                svg.appendChild(circle);
+                
+                // Node label
+                const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                text.setAttribute('x', node.x);
+                text.setAttribute('y', node.y + 5);
+                text.setAttribute('text-anchor', 'middle');
+                text.setAttribute('font-size', '11');
+                text.setAttribute('font-weight', 'bold');
+                text.setAttribute('fill', nodeColor === '#e0e0e0' ? '#333' : 'white');
+                text.textContent = node.id.substring(0, 6);
+                svg.appendChild(text);
+            });
+        }
+
+        function updateInfo(cutValue, cutEdges, partition1Size, partition2Size) {
+            document.getElementById('cut-value').textContent = cutValue;
+            document.getElementById('cut-edges-count').textContent = cutEdges;
+            document.getElementById('partition1-size').textContent = partition1Size;
+            document.getElementById('partition2-size').textContent = partition2Size;
+        }
+
+        function displayPartitions(result) {
+            const partitionDisplay = document.getElementById('partition-display');
+            const partition1Nodes = document.getElementById('partition1-nodes');
+            const partition2Nodes = document.getElementById('partition2-nodes');
+            
+            partition1Nodes.textContent = Array.from(result.partition1).join(', ');
+            partition2Nodes.textContent = Array.from(result.partition2).join(', ');
+            
+            partitionDisplay.style.display = 'block';
+        }
+
+        function displayCutEdges(result) {
+            const cutEdgesDisplay = document.getElementById('cut-edges-display');
+            const cutEdgesList = document.getElementById('cut-edges-list');
+            
+            cutEdgesList.innerHTML = '';
+            
+            result.cutEdges.forEach(edge => {
+                const edgeDiv = document.createElement('div');
+                edgeDiv.className = 'cut-edge';
+                edgeDiv.innerHTML = `
+                    <span class="edge-info">${edge.from} ↔ ${edge.to}</span>
+                    <span class="edge-weight">Weight: ${edge.weight}</span>
+                `;
+                cutEdgesList.appendChild(edgeDiv);
+            });
+            
+            cutEdgesDisplay.style.display = 'block';
+        }
+
+        window.findMinCut = function() {
+            if (!currentGraph) return;
+            
+            const scenario = scenarios[currentScenario];
+            let result;
+            
+            try {
+                switch (currentAlgorithm) {
+                    case 'stcut':
+                        const source = document.getElementById('source-select').value;
+                        const sink = document.getElementById('sink-select').value;
+                        result = minSTCut(currentGraph, source, sink);
+                        console.log('S-T Min Cut Result:', result);
+                        break;
+                    case 'stoer':
+                        result = stoerWagner(currentGraph);
+                        console.log('Stoer-Wagner Result:', result);
+                        break;
+                    case 'karger':
+                        result = kargerMinCut(currentGraph, 20); // 20 iterations for better accuracy
+                        console.log('Karger Min Cut Result:', result);
+                        break;
+                    default:
+                        return;
+                }
+                
+                currentResult = result;
+                
+                // Update visualization
+                drawGraph(scenario.nodes, scenario.edges, result);
+                
+                // Update info
+                updateInfo(
+                    result.cutValue,
+                    result.cutEdges.length,
+                    result.partition1.size,
+                    result.partition2.size
+                );
+                
+                // Display partitions and cut edges
+                displayPartitions(result);
+                displayCutEdges(result);
+                
+                // Update UI
+                document.getElementById('find-btn').disabled = true;
+                document.getElementById('compare-btn').disabled = false;
+                document.getElementById('animate-btn').disabled = false;
+                
+                const algorithmName = {
+                    stcut: 'S-T Cut',
+                    stoer: 'Stoer-Wagner',
+                    karger: 'Karger'
+                }[currentAlgorithm];
+                
+                document.getElementById('step-info').textContent = 
+                    `${algorithmName} found min cut with value ${result.cutValue}. Removing ${result.cutEdges.length} edge(s) separates the network.`;
+                
+            } catch (error) {
+                console.error('Min-cut algorithm error:', error);
+                document.getElementById('step-info').textContent = 'Error running algorithm. Check console for details.';
+            }
+        };
+
+        window.compareAlgorithms = function() {
+            if (!currentGraph) return;
+            
+            console.log('\n=== Algorithm Comparison ===');
+            
+            const source = document.getElementById('source-select').value;
+            const sink = document.getElementById('sink-select').value;
+            
+            const results = {};
+            
+            // Run all algorithms
+            try {
+                results.stcut = minSTCut(currentGraph, source, sink);
+                results.stoer = stoerWagner(currentGraph);
+                results.karger = kargerMinCut(currentGraph, 50);
+                
+                console.log(`S-T Cut (${source} to ${sink}): Cut value = ${results.stcut.cutValue}, Edges = ${results.stcut.cutEdges.length}`);
+                console.log(`Stoer-Wagner: Cut value = ${results.stoer.cutValue}, Edges = ${results.stoer.cutEdges.length}`);
+                console.log(`Karger: Cut value = ${results.karger.cutValue}, Edges = ${results.karger.cutEdges.length}`);
+                
+                // Find the algorithm with minimum cut value
+                const minCutValue = Math.min(results.stcut.cutValue, results.stoer.cutValue, results.karger.cutValue);
+                const bestAlgorithm = Object.keys(results).find(alg => results[alg].cutValue === minCutValue);
+                
+                document.getElementById('step-info').textContent = 
+                    `Best result: ${bestAlgorithm.toUpperCase()} with cut value ${minCutValue}. Check console for detailed comparison.`;
+                
+            } catch (error) {
+                console.error('Comparison error:', error);
+                document.getElementById('step-info').textContent = 'Error comparing algorithms. Check console for details.';
+            }
+        };
+
+        window.animateCutProcess = function() {
+            if (!currentResult || isAnimating) return;
+            
+            isAnimating = true;
+            document.getElementById('animate-btn').disabled = true;
+            
+            const scenario = scenarios[currentScenario];
+            let step = 0;
+            const steps = [
+                { message: 'Initial network with all connections', showResult: false },
+                { message: 'Analyzing network structure...', showResult: false },
+                { message: 'Identifying potential cut edges...', showResult: false },
+                { message: 'Computing minimum cut...', showResult: false },
+                { message: 'Min cut found! Highlighting critical edges', showResult: true }
+            ];
+            
+            function animateStep() {
+                if (step >= steps.length) {
+                    isAnimating = false;
+                    document.getElementById('animate-btn').disabled = false;
+                    return;
+                }
+                
+                const currentStep = steps[step];
+                document.getElementById('step-info').textContent = currentStep.message;
+                
+                if (currentStep.showResult && currentResult) {
+                    drawGraph(scenario.nodes, scenario.edges, currentResult);
+                } else {
+                    drawGraph(scenario.nodes, scenario.edges, null);
+                }
+                
+                step++;
+                setTimeout(animateStep, 1500);
+            }
+            
+            animateStep();
+        };
+
+        window.resetVisualization = function() {
+            isAnimating = false;
+            selectScenario(currentScenario);
+        };
+
+        // Initialize on load
+        window.onload = initGraph;
+    </script>
+</body>
+</html>

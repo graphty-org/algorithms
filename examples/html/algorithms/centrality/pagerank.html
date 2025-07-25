@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Eruda Mobile Console -->
+    <script src="https://cdn.jsdelivr.net/npm/eruda@3/eruda.min.js"></script>
+    <script>
+      // Initialize Eruda console for mobile debugging
+      if (typeof eruda !== "undefined") {
+        eruda.init();
+        // Auto-show on mobile devices
+        if (/mobile|android|ios|iphone|ipad|ipod/i.test(navigator.userAgent.toLowerCase())) {
+          eruda.show();
+        }
+      }
+    </script>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PageRank - Simple Visual Explanation</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        
+        h1 {
+            color: #2c5aa0;
+            text-align: center;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        #graph {
+            width: 100%;
+            height: 400px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .controls {
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin: 0 5px;
+        }
+        
+        button:hover {
+            background: #45a049;
+        }
+        
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .explanation {
+            background: #e8f0fe;
+            border-left: 4px solid #2c5aa0;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        
+        .step-info {
+            text-align: center;
+            font-size: 18px;
+            color: #333;
+            margin: 20px 0;
+            min-height: 30px;
+        }
+        
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .legend-circle {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid #333;
+        }
+        
+        .high-rank { background: #ff6b6b; }
+        .medium-rank { background: #ffa726; }
+        .low-rank { background: #66bb6a; }
+        
+        .intro {
+            text-align: center;
+            color: #666;
+            margin: 20px 0;
+        }
+        
+        .scores-display {
+            background: #f0f0f0;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 20px 0;
+        }
+        
+        .scores-display h4 {
+            margin: 0 0 10px 0;
+            color: #666;
+        }
+        
+        .score-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+        }
+        
+        .score-item {
+            background: white;
+            padding: 8px;
+            border-radius: 4px;
+            text-align: center;
+            font-size: 14px;
+        }
+        
+        .score-item .node-name {
+            font-weight: bold;
+            color: #2c5aa0;
+        }
+        
+        .score-item .score-value {
+            color: #666;
+            font-size: 12px;
+        }
+        
+        .back-link {
+            color: #2c5aa0;
+            text-decoration: none;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        
+        .code-section {
+            margin-top: 30px;
+            border-top: 2px solid #e0e0e0;
+            padding-top: 20px;
+        }
+        
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .code-toggle {
+            background: #2c5aa0;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .code-toggle:hover {
+            background: #1e3f73;
+        }
+        
+        .code-content {
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            max-height: 1000px;
+        }
+        
+        .code-content.collapsed {
+            max-height: 0;
+        }
+        
+        pre {
+            background: #f4f4f4;
+            border-radius: 4px;
+            padding: 15px;
+            overflow: auto;
+            margin: 0;
+            max-height: 400px;
+        }
+        
+        code {
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+        }
+        
+        .parameter-control {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin: 10px 0;
+        }
+        
+        .parameter-control label {
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .parameter-control input[type="range"] {
+            width: 200px;
+        }
+        
+        .parameter-value {
+            min-width: 50px;
+            text-align: left;
+            color: #2c5aa0;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <a href="../../index.html" class="back-link">← Back to Examples</a>
+    
+    <h1>PageRank Algorithm Explained</h1>
+    
+    <div class="container">
+        <div class="intro">
+            <p><strong>PageRank measures the importance of nodes based on their connections.</strong></p>
+            <p>Important nodes tend to be connected to other important nodes.</p>
+        </div>
+        
+        <svg id="graph"></svg>
+        
+        <div class="parameter-control">
+            <label for="damping">Damping Factor:</label>
+            <input type="range" id="damping" min="0.5" max="0.95" step="0.05" value="0.85">
+            <span class="parameter-value" id="damping-value">0.85</span>
+        </div>
+        
+        <div class="scores-display">
+            <h4>PageRank Scores (Iteration <span id="iteration">0</span>):</h4>
+            <div class="score-list" id="scores"></div>
+        </div>
+        
+        <div class="step-info" id="step-info">Click "Start" to see how PageRank works</div>
+        
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-circle high-rank"></div>
+                <span>High PageRank</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-circle medium-rank"></div>
+                <span>Medium PageRank</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-circle low-rank"></div>
+                <span>Low PageRank</span>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <button id="start-btn" onclick="startPageRank()">Start PageRank</button>
+            <button id="reset-btn" onclick="resetVisualization()">Reset</button>
+        </div>
+        
+        <div class="explanation">
+            <h3>How PageRank Works:</h3>
+            <p>PageRank simulates a random web surfer who:</p>
+            <ul>
+                <li>Follows links from page to page with probability = damping factor</li>
+                <li>Jumps to a random page with probability = 1 - damping factor</li>
+                <li>The PageRank score represents how often the surfer visits each page</li>
+            </ul>
+            <p>The algorithm iterates until the scores converge to stable values.</p>
+        </div>
+        
+        <div class="code-section">
+            <div class="code-header">
+                <h3>Code Example</h3>
+                <button class="code-toggle" id="code-toggle">Hide Code ▲</button>
+            </div>
+            <div class="code-content" id="code-content">
+                <pre><code class="language-javascript" id="code-display">Loading code...</code></pre>
+            </div>
+        </div>
+    </div>
+
+    <!-- Load Prism for syntax highlighting -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    
+    <script type="module">
+        // Import our PageRank implementation
+        import { runPageRankAlgorithm } from './pagerank.js';
+        
+        // Load and display the actual code
+        async function loadCodeExample() {
+            try {
+                const response = await fetch('./pagerank.js');
+                const code = await response.text();
+                const codeDisplay = document.getElementById('code-display');
+                codeDisplay.textContent = code;
+                
+                // Re-highlight the code with Prism
+                if (typeof Prism !== 'undefined') {
+                    Prism.highlightElement(codeDisplay);
+                }
+            } catch (error) {
+                console.error('Failed to load code example:', error);
+                document.getElementById('code-display').textContent = '// Failed to load code example';
+            }
+        }
+        
+        // Load code on page load
+        loadCodeExample();
+        
+        // Graph structure for visualization
+        const nodes = [
+            {id: 'A', x: 400, y: 100, label: 'A'},
+            {id: 'B', x: 200, y: 200, label: 'B'},
+            {id: 'C', x: 600, y: 200, label: 'C'},
+            {id: 'D', x: 300, y: 300, label: 'D'},
+            {id: 'E', x: 500, y: 300, label: 'E'},
+            {id: 'F', x: 400, y: 400, label: 'F'}
+        ];
+        
+        const edges = [
+            {from: 'A', to: 'B'},
+            {from: 'A', to: 'C'},
+            {from: 'B', to: 'C'},
+            {from: 'C', to: 'A'},
+            {from: 'D', to: 'C'},
+            {from: 'B', to: 'D'},
+            {from: 'D', to: 'E'},
+            {from: 'E', to: 'F'},
+            {from: 'F', to: 'E'},
+            {from: 'F', to: 'D'}
+        ];
+        
+        let currentIteration = 0;
+        let animationTimer = null;
+        let pageRankScores = {};
+        
+        // Code toggle functionality
+        document.getElementById('code-toggle').addEventListener('click', function() {
+            const codeContent = document.getElementById('code-content');
+            const toggle = document.getElementById('code-toggle');
+            
+            codeContent.classList.toggle('collapsed');
+            toggle.textContent = codeContent.classList.contains('collapsed') 
+                ? 'Show Code ▼' 
+                : 'Hide Code ▲';
+        });
+        
+        // Damping factor control
+        document.getElementById('damping').addEventListener('input', function(e) {
+            document.getElementById('damping-value').textContent = e.target.value;
+        });
+        
+        // Initialize SVG
+        function initGraph() {
+            const svg = document.getElementById('graph');
+            svg.innerHTML = '';
+            
+            // Add edges
+            edges.forEach(edge => {
+                const fromNode = nodes.find(n => n.id === edge.from);
+                const toNode = nodes.find(n => n.id === edge.to);
+                
+                // Add arrow marker definition
+                if (!svg.querySelector('#arrowhead')) {
+                    const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+                    const marker = document.createElementNS('http://www.w3.org/2000/svg', 'marker');
+                    marker.setAttribute('id', 'arrowhead');
+                    marker.setAttribute('markerWidth', '10');
+                    marker.setAttribute('markerHeight', '7');
+                    marker.setAttribute('refX', '20');
+                    marker.setAttribute('refY', '3.5');
+                    marker.setAttribute('orient', 'auto');
+                    
+                    const polygon = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+                    polygon.setAttribute('points', '0 0, 10 3.5, 0 7');
+                    polygon.setAttribute('fill', '#666');
+                    
+                    marker.appendChild(polygon);
+                    defs.appendChild(marker);
+                    svg.appendChild(defs);
+                }
+                
+                const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                line.setAttribute('x1', fromNode.x);
+                line.setAttribute('y1', fromNode.y);
+                line.setAttribute('x2', toNode.x);
+                line.setAttribute('y2', toNode.y);
+                line.setAttribute('stroke', '#666');
+                line.setAttribute('stroke-width', '2');
+                line.setAttribute('marker-end', 'url(#arrowhead)');
+                svg.appendChild(line);
+            });
+            
+            // Add nodes
+            nodes.forEach(node => {
+                const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+                
+                const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                circle.setAttribute('cx', node.x);
+                circle.setAttribute('cy', node.y);
+                circle.setAttribute('r', '30');
+                circle.setAttribute('fill', '#66bb6a');
+                circle.setAttribute('stroke', '#333');
+                circle.setAttribute('stroke-width', '2');
+                circle.setAttribute('id', 'node-' + node.id);
+                
+                const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                text.setAttribute('x', node.x);
+                text.setAttribute('y', node.y + 5);
+                text.setAttribute('text-anchor', 'middle');
+                text.setAttribute('font-size', '18');
+                text.setAttribute('font-weight', 'bold');
+                text.setAttribute('fill', 'white');
+                text.textContent = node.label;
+                
+                g.appendChild(circle);
+                g.appendChild(text);
+                svg.appendChild(g);
+            });
+            
+            // Initialize scores
+            nodes.forEach(node => {
+                pageRankScores[node.id] = 1 / nodes.length;
+            });
+            
+            updateScoreDisplay();
+        }
+        
+        // Update score display
+        function updateScoreDisplay() {
+            const scoresDiv = document.getElementById('scores');
+            scoresDiv.innerHTML = '';
+            
+            // Sort nodes by PageRank score
+            const sortedNodes = Object.entries(pageRankScores)
+                .sort((a, b) => b[1] - a[1]);
+            
+            sortedNodes.forEach(([nodeId, score]) => {
+                const div = document.createElement('div');
+                div.className = 'score-item';
+                div.innerHTML = `
+                    <div class="node-name">${nodeId}</div>
+                    <div class="score-value">${score.toFixed(4)}</div>
+                `;
+                scoresDiv.appendChild(div);
+            });
+            
+            // Update node colors based on scores
+            const maxScore = Math.max(...Object.values(pageRankScores));
+            const minScore = Math.min(...Object.values(pageRankScores));
+            const range = maxScore - minScore || 1;
+            
+            nodes.forEach(node => {
+                const score = pageRankScores[node.id];
+                const normalized = (score - minScore) / range;
+                const circle = document.getElementById('node-' + node.id);
+                
+                // Update node size based on score
+                const radius = 20 + normalized * 20; // 20-40 radius
+                circle.setAttribute('r', radius);
+                
+                // Update color
+                if (normalized > 0.66) {
+                    circle.setAttribute('fill', '#ff6b6b'); // High
+                } else if (normalized > 0.33) {
+                    circle.setAttribute('fill', '#ffa726'); // Medium
+                } else {
+                    circle.setAttribute('fill', '#66bb6a'); // Low
+                }
+            });
+        }
+        
+        // Run PageRank algorithm step by step
+        window.startPageRank = function() {
+            const dampingFactor = parseFloat(document.getElementById('damping').value);
+            const result = runPageRankAlgorithm(dampingFactor);
+            
+            console.log('PageRank Result:', result);
+            
+            // Disable button during animation
+            document.getElementById('start-btn').disabled = true;
+            currentIteration = 0;
+            
+            // Animate through iterations
+            animationTimer = setInterval(() => {
+                if (currentIteration >= result.iterations.length) {
+                    clearInterval(animationTimer);
+                    document.getElementById('start-btn').disabled = false;
+                    document.getElementById('step-info').textContent = 
+                        `PageRank converged after ${result.iterations.length} iterations`;
+                    return;
+                }
+                
+                const iteration = result.iterations[currentIteration];
+                pageRankScores = iteration.scores;
+                
+                document.getElementById('iteration').textContent = currentIteration + 1;
+                document.getElementById('step-info').textContent = 
+                    `Iteration ${currentIteration + 1}: Updating PageRank scores...`;
+                
+                updateScoreDisplay();
+                currentIteration++;
+            }, 1000);
+        }
+        
+        // Reset visualization
+        window.resetVisualization = function() {
+            clearInterval(animationTimer);
+            currentIteration = 0;
+            document.getElementById('iteration').textContent = '0';
+            document.getElementById('step-info').textContent = 'Click "Start" to see how PageRank works';
+            document.getElementById('start-btn').disabled = false;
+            
+            // Reset scores
+            nodes.forEach(node => {
+                pageRankScores[node.id] = 1 / nodes.length;
+            });
+            
+            updateScoreDisplay();
+        }
+        
+        // Initialize on load
+        window.onload = initGraph;
+    </script>
+</body>
+</html>

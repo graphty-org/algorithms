@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Graphty Algorithms - Interactive Examples & Performance Analysis</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .hero {
+            text-align: center;
+            color: white;
+            padding: 4rem 0;
+        }
+        
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            font-weight: 300;
+        }
+        
+        .hero p {
+            font-size: 1.3rem;
+            margin-bottom: 3rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .sections {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .section-card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-align: center;
+        }
+        
+        .section-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 16px 64px rgba(0, 0, 0, 0.15);
+        }
+        
+        .section-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+        
+        .section-card h2 {
+            color: #333;
+            margin-bottom: 1rem;
+            font-size: 1.8rem;
+        }
+        
+        .section-card p {
+            color: #666;
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin: 0.5rem;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);
+        }
+        
+        .btn-secondary {
+            background: #f8f9fa;
+            color: #333;
+            border: 2px solid #e9ecef;
+        }
+        
+        .btn-secondary:hover {
+            background: #e9ecef;
+            transform: translateY(-2px);
+        }
+        
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 3rem 0;
+        }
+        
+        .feature {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1.5rem;
+            border-radius: 8px;
+            color: white;
+            text-align: center;
+        }
+        
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .stats {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 2rem;
+            border-radius: 12px;
+            margin: 3rem 0;
+            text-align: center;
+            color: #333;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-top: 1.5rem;
+        }
+        
+        .stat {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #667eea;
+            display: block;
+        }
+        
+        .stat-label {
+            font-size: 1.1rem;
+            color: #666;
+            margin-top: 0.5rem;
+        }
+        
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .sections {
+                grid-template-columns: 1fr;
+            }
+            
+            .features {
+                grid-template-columns: 1fr;
+            }
+            
+            .container {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="hero">
+            <h1>🌐 Graphty Algorithms</h1>
+            <p>Comprehensive TypeScript library with interactive examples and performance analysis for graph algorithms</p>
+            
+            <div class="features">
+                <div class="feature">
+                    <div class="feature-icon">⚡</div>
+                    <h3>High Performance</h3>
+                    <p>Optimized implementations with detailed benchmarks</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">🎯</div>
+                    <h3>Interactive</h3>
+                    <p>Visual demonstrations with step-by-step execution</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">📚</div>
+                    <h3>Educational</h3>
+                    <p>Learn algorithms through hands-on examples</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">🔬</div>
+                    <h3>Research-Ready</h3>
+                    <p>Modern algorithms from cutting-edge research</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="stats">
+            <h2>Library Statistics</h2>
+            <div class="stats-grid">
+                <div class="stat">
+                    <span class="stat-number">50+</span>
+                    <div class="stat-label">Algorithms Implemented</div>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">12</span>
+                    <div class="stat-label">Algorithm Categories</div>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">100%</span>
+                    <div class="stat-label">TypeScript Coverage</div>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">30+</span>
+                    <div class="stat-label">Interactive Examples</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="sections">
+            <div class="section-card">
+                <div class="section-icon">🎮</div>
+                <h2>Interactive Examples</h2>
+                <p>Explore algorithms through visual, interactive demonstrations. Watch step-by-step execution, adjust parameters, and understand how each algorithm works.</p>
+                <a href="examples/" class="btn btn-primary">Try Examples</a>
+                <a href="https://github.com/graphty-org/algorithms" class="btn btn-secondary">View Source</a>
+            </div>
+            
+            <div class="section-card">
+                <div class="section-icon">📊</div>
+                <h2>Performance Analysis</h2>
+                <p>Detailed benchmark reports with performance metrics, complexity analysis, and comparative studies across different graph sizes and types.</p>
+                <a href="benchmarks/" class="btn btn-primary">View Benchmarks</a>
+                <a href="https://www.npmjs.com/package/@graphty/algorithms" class="btn btn-secondary">Install Package</a>
+            </div>
+        </div>
+        
+        <div style="background: rgba(255, 255, 255, 0.95); padding: 2rem; border-radius: 12px; margin-top: 3rem; text-align: center; color: #333;">
+            <h3>Quick Start</h3>
+            <p style="margin: 1rem 0;">Install the package and start using graph algorithms in your projects:</p>
+            <div style="background: #f8f9fa; padding: 1rem; border-radius: 8px; font-family: 'Courier New', monospace; margin: 1rem 0;">
+                npm install @graphty/algorithms
+            </div>
+            <p>
+                <a href="https://github.com/graphty-org/algorithms#readme" style="color: #667eea;">Documentation</a> • 
+                <a href="https://github.com/graphty-org/algorithms/issues" style="color: #667eea;">Issues</a> • 
+                <a href="https://github.com/graphty-org/algorithms/blob/main/CONTRIBUTING.md" style="color: #667eea;">Contributing</a>
+            </p>
+        </div>
+    </div>
+</body>
+</html>

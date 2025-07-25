@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- MANDATORY: Eruda Mobile Console (exact code) -->
+    <script src="https://cdn.jsdelivr.net/npm/eruda@3/eruda.min.js"></script>
+    <script>
+      if (typeof eruda !== "undefined") {
+        eruda.init();
+        if (/mobile|android|ios|iphone|ipad|ipod/i.test(navigator.userAgent.toLowerCase())) {
+          eruda.show();
+        }
+      }
+    </script>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Label Propagation - Simple Visual Explanation</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
+    <style>
+        /* MANDATORY STYLES - DO NOT MODIFY */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5; /* Light gray background */
+        }
+        
+        h1 {
+            color: #2c5aa0; /* Blue header */
+            text-align: center;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        #graph {
+            width: 100%;
+            height: 400px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        button {
+            background: #4CAF50; /* Green button */
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        
+        .explanation {
+            background: #e8f0fe;
+            border-left: 4px solid #2c5aa0;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        
+        /* Additional algorithm-specific styles */
+        .back-link {
+            text-decoration: none;
+            color: #2c5aa0;
+            display: inline-block;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        
+        .intro {
+            margin-bottom: 20px;
+        }
+        
+        .intro p {
+            margin: 10px 0;
+            line-height: 1.6;
+        }
+        
+        .intro strong {
+            color: #333;
+        }
+        
+        .community-info {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .community-stat {
+            text-align: center;
+            flex: 1;
+            min-width: 150px;
+        }
+        
+        .community-stat .value {
+            font-size: 28px;
+            font-weight: bold;
+            color: #2c5aa0;
+        }
+        
+        .community-stat .label {
+            font-size: 14px;
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        .step-info {
+            margin: 20px 0;
+            padding: 15px;
+            background: #f0f7ff;
+            border-radius: 6px;
+            font-size: 16px;
+            text-align: center;
+        }
+        
+        .legend {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 6px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid #333;
+        }
+        
+        button:hover {
+            background: #45a049;
+        }
+        
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .controls {
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .algorithm-settings {
+            display: flex;
+            gap: 20px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .setting-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            align-items: center;
+        }
+        
+        .setting-group label {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .setting-group input[type="range"] {
+            width: 150px;
+        }
+        
+        .setting-group span {
+            font-weight: bold;
+            color: #2c5aa0;
+        }
+        
+        .explanation h3 {
+            color: #2c5aa0;
+            margin-top: 0;
+        }
+        
+        .code-section {
+            margin-top: 30px;
+            border-top: 1px solid #e0e0e0;
+            padding-top: 20px;
+        }
+        
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .code-header h3 {
+            margin: 0;
+            color: #2c5aa0;
+        }
+        
+        .code-toggle {
+            background: none;
+            border: 1px solid #2c5aa0;
+            color: #2c5aa0;
+            padding: 6px 12px;
+            font-size: 14px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        
+        .code-toggle:hover {
+            background: #2c5aa0;
+            color: white;
+        }
+        
+        .code-content {
+            background: #f8f9fa;
+            border-radius: 6px;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+        
+        .code-content.collapsed {
+            max-height: 0;
+        }
+        
+        pre {
+            margin: 0;
+            overflow-x: auto;
+        }
+        
+        text {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        
+        /* Community colors */
+        .community-0 { fill: #ff6b6b; }
+        .community-1 { fill: #4ecdc4; }
+        .community-2 { fill: #45b7d1; }
+        .community-3 { fill: #f9ca24; }
+        .community-4 { fill: #f0932b; }
+        .community-5 { fill: #eb4d4b; }
+        .community-6 { fill: #6ab04c; }
+        .community-7 { fill: #130f40; }
+        .community-8 { fill: #be2edd; }
+        .community-9 { fill: #4834d4; }
+    </style>
+</head>
+<body>
+    <a href="../../index.html" class="back-link">← Back to Examples</a>
+    
+    <h1>Label Propagation Explained</h1>
+    
+    <div class="container">
+        <div class="intro">
+            <p><strong>Like voting for class president - nodes adopt the most popular label among their neighbors!</strong></p>
+            <p>Label Propagation detects communities by having each node adopt the label that most of its neighbors have. It's fast, simple, and works well for many types of networks.</p>
+        </div>
+        
+        <svg id="graph"></svg>
+        
+        <div class="community-info">
+            <div class="community-stat">
+                <div class="value" id="num-communities">0</div>
+                <div class="label">Communities Found</div>
+            </div>
+            <div class="community-stat">
+                <div class="value" id="iteration-count">0</div>
+                <div class="label">Iterations</div>
+            </div>
+            <div class="community-stat">
+                <div class="value" id="converged-status">-</div>
+                <div class="label">Status</div>
+            </div>
+        </div>
+        
+        <div class="step-info" id="step-info">Click "Start" to see how Label Propagation works</div>
+        
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-color" style="background: #ff6b6b"></div>
+                <span>Community 1</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #4ecdc4"></div>
+                <span>Community 2</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #45b7d1"></div>
+                <span>Community 3</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #f9ca24"></div>
+                <span>Community 4</span>
+            </div>
+        </div>
+        
+        <div class="algorithm-settings">
+            <div class="setting-group">
+                <label for="animation-speed">Animation Speed</label>
+                <input type="range" id="animation-speed" min="500" max="3000" value="1500" step="100">
+                <span id="speed-value">1.5s</span>
+            </div>
+            <div class="setting-group">
+                <label for="max-iterations">Max Iterations</label>
+                <input type="range" id="max-iterations" min="5" max="50" value="20" step="5">
+                <span id="iterations-value">20</span>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <button id="start-btn" onclick="startAlgorithm()">Start Label Propagation</button>
+        </div>
+        
+        <div class="explanation">
+            <h3>Key Concept:</h3>
+            <p>Label Propagation is based on the simple idea that nodes in the same community should have the same label. Each node looks at its neighbors and adopts the label that appears most frequently. This process continues until the labels stabilize, revealing the community structure.</p>
+            <p>The algorithm is very fast (near-linear time) and doesn't require any prior knowledge about the number of communities.</p>
+        </div>
+        
+        <div class="code-section">
+            <div class="code-header">
+                <h3>Code Example</h3>
+                <button class="code-toggle" id="code-toggle">Hide Code ▲</button>
+            </div>
+            <div class="code-content" id="code-content">
+                <pre><code class="language-javascript" id="code-display">Loading code...</code></pre>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    
+    <script type="module">
+        // Import the algorithm functions
+        import { labelPropagation } from './algorithms.js';
+        
+        // Community colors
+        const communityColors = [
+            '#ff6b6b', '#4ecdc4', '#45b7d1', '#f9ca24', 
+            '#f0932b', '#eb4d4b', '#6ab04c', '#130f40',
+            '#be2edd', '#4834d4'
+        ];
+        
+        // Load and display the actual code
+        async function loadCodeExample() {
+            try {
+                const response = await fetch('./label-propagation.js');
+                const code = await response.text();
+                document.getElementById('code-display').textContent = code;
+                Prism.highlightElement(document.getElementById('code-display'));
+            } catch (error) {
+                document.getElementById('code-display').textContent = 
+`import { labelPropagation } from '@graphty/algorithms';
+
+// Create a graph with community structure
+const graph = new Map([
+    ['A', new Map([['B', 1], ['C', 1], ['D', 1]])],
+    ['B', new Map([['A', 1], ['C', 1]])],
+    ['C', new Map([['A', 1], ['B', 1], ['D', 1]])],
+    ['D', new Map([['A', 1], ['C', 1], ['E', 1]])],
+    ['E', new Map([['D', 1], ['F', 1], ['G', 1]])],
+    ['F', new Map([['E', 1], ['G', 1]])],
+    ['G', new Map([['E', 1], ['F', 1]])]
+]);
+
+// Run Label Propagation
+const result = labelPropagation(graph, {
+    maxIterations: 20,
+    randomSeed: 42
+});
+
+console.log('Communities:', result.communities);
+console.log('Iterations:', result.iterations);
+console.log('Converged:', result.converged);`;
+                Prism.highlightElement(document.getElementById('code-display'));
+            }
+        }
+        
+        // Graph structure for visualization - karate club-like structure
+        const nodes = [
+            // Community 1
+            {id: 'A', x: 150, y: 100},
+            {id: 'B', x: 100, y: 150},
+            {id: 'C', x: 200, y: 150},
+            {id: 'D', x: 150, y: 200},
+            
+            // Bridge
+            {id: 'E', x: 300, y: 200},
+            
+            // Community 2
+            {id: 'F', x: 450, y: 150},
+            {id: 'G', x: 500, y: 100},
+            {id: 'H', x: 550, y: 150},
+            {id: 'I', x: 500, y: 200},
+            
+            // Community 3
+            {id: 'J', x: 100, y: 300},
+            {id: 'K', x: 150, y: 350},
+            {id: 'L', x: 200, y: 300},
+            {id: 'M', x: 250, y: 350},
+            
+            // Community 4
+            {id: 'N', x: 400, y: 300},
+            {id: 'O', x: 450, y: 350},
+            {id: 'P', x: 500, y: 300},
+            {id: 'Q', x: 550, y: 350}
+        ];
+        
+        const edges = [
+            // Community 1 - tightly connected
+            {source: 'A', target: 'B'}, {source: 'A', target: 'C'}, {source: 'A', target: 'D'},
+            {source: 'B', target: 'C'}, {source: 'B', target: 'D'}, {source: 'C', target: 'D'},
+            
+            // Bridge connections
+            {source: 'D', target: 'E'}, {source: 'E', target: 'F'},
+            
+            // Community 2 - tightly connected
+            {source: 'F', target: 'G'}, {source: 'F', target: 'H'}, {source: 'F', target: 'I'},
+            {source: 'G', target: 'H'}, {source: 'G', target: 'I'}, {source: 'H', target: 'I'},
+            
+            // Community 3 - chain-like
+            {source: 'J', target: 'K'}, {source: 'K', target: 'L'}, {source: 'L', target: 'M'},
+            {source: 'J', target: 'L'}, {source: 'K', target: 'M'},
+            
+            // Community 4 - star-like
+            {source: 'N', target: 'O'}, {source: 'N', target: 'P'}, {source: 'N', target: 'Q'},
+            {source: 'O', target: 'P'}, {source: 'P', target: 'Q'},
+            
+            // Inter-community connections
+            {source: 'D', target: 'J'}, {source: 'E', target: 'N'}, {source: 'M', target: 'N'}
+        ];
+        
+        // Convert to adjacency list format for the algorithm
+        function createGraph() {
+            const graph = new Map();
+            
+            // Initialize all nodes
+            nodes.forEach(node => {
+                graph.set(node.id, new Map());
+            });
+            
+            // Add edges (undirected)
+            edges.forEach(edge => {
+                graph.get(edge.source).set(edge.target, 1);
+                graph.get(edge.target).set(edge.source, 1);
+            });
+            
+            return graph;
+        }
+        
+        // Animation state
+        let isAnimating = false;
+        let nodeLabels = new Map();
+        let animationSpeed = 1500;
+        
+        // Initialize graph visualization
+        function initGraph() {
+            const svg = document.getElementById('graph');
+            
+            // Clear existing content
+            svg.innerHTML = '';
+            
+            // Draw edges
+            edges.forEach(edge => {
+                const sourceNode = nodes.find(n => n.id === edge.source);
+                const targetNode = nodes.find(n => n.id === edge.target);
+                
+                const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                line.setAttribute('x1', sourceNode.x);
+                line.setAttribute('y1', sourceNode.y);
+                line.setAttribute('x2', targetNode.x);
+                line.setAttribute('y2', targetNode.y);
+                line.setAttribute('stroke', '#ccc');
+                line.setAttribute('stroke-width', '2');
+                svg.appendChild(line);
+            });
+            
+            // Draw nodes
+            nodes.forEach((node, index) => {
+                const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+                
+                const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                circle.setAttribute('cx', node.x);
+                circle.setAttribute('cy', node.y);
+                circle.setAttribute('r', '20');
+                circle.setAttribute('fill', '#e0e0e0');
+                circle.setAttribute('stroke', '#333');
+                circle.setAttribute('stroke-width', '2');
+                circle.setAttribute('id', `node-${node.id}`);
+                
+                const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                text.setAttribute('x', node.x);
+                text.setAttribute('y', node.y + 5);
+                text.setAttribute('text-anchor', 'middle');
+                text.setAttribute('font-size', '14');
+                text.setAttribute('font-weight', 'bold');
+                text.textContent = node.id;
+                
+                g.appendChild(circle);
+                g.appendChild(text);
+                svg.appendChild(g);
+                
+                // Initialize with unique labels
+                nodeLabels.set(node.id, index);
+            });
+            
+            // Initialize UI
+            updateSpeedDisplay();
+            updateIterationsDisplay();
+            loadCodeExample();
+            
+            // Code toggle functionality
+            document.getElementById('code-toggle').addEventListener('click', function() {
+                const codeContent = document.getElementById('code-content');
+                const toggle = document.getElementById('code-toggle');
+                
+                if (codeContent.classList.contains('collapsed')) {
+                    codeContent.classList.remove('collapsed');
+                    codeContent.style.maxHeight = codeContent.scrollHeight + 'px';
+                    toggle.textContent = 'Hide Code ▲';
+                } else {
+                    codeContent.classList.add('collapsed');
+                    codeContent.style.maxHeight = '0';
+                    toggle.textContent = 'Show Code ▼';
+                }
+            });
+            
+            // Initially show code
+            const codeContent = document.getElementById('code-content');
+            codeContent.style.maxHeight = codeContent.scrollHeight + 'px';
+        }
+        
+        // Update speed display
+        function updateSpeedDisplay() {
+            const speed = document.getElementById('animation-speed').value;
+            document.getElementById('speed-value').textContent = (speed / 1000).toFixed(1) + 's';
+            animationSpeed = parseInt(speed);
+        }
+        
+        // Update iterations display
+        function updateIterationsDisplay() {
+            const iterations = document.getElementById('max-iterations').value;
+            document.getElementById('iterations-value').textContent = iterations;
+        }
+        
+        // Event listeners for settings
+        document.getElementById('animation-speed').addEventListener('input', updateSpeedDisplay);
+        document.getElementById('max-iterations').addEventListener('input', updateIterationsDisplay);
+        
+        // Visualize current labels
+        function visualizeLabels(labels, message) {
+            // Update node colors based on labels
+            labels.forEach((label, nodeId) => {
+                const circle = document.getElementById(`node-${nodeId}`);
+                if (circle) {
+                    const communityColor = communityColors[label % communityColors.length];
+                    circle.setAttribute('fill', communityColor);
+                }
+            });
+            
+            // Count communities
+            const uniqueLabels = new Set(labels.values());
+            document.getElementById('num-communities').textContent = uniqueLabels.size;
+            
+            // Update step info
+            if (message) {
+                document.getElementById('step-info').textContent = message;
+            }
+        }
+        
+        // Run label propagation with animation
+        async function animateLabelPropagation() {
+            const graph = createGraph();
+            const maxIterations = parseInt(document.getElementById('max-iterations').value);
+            
+            // Initialize labels - each node gets its own label
+            const labels = new Map();
+            nodes.forEach((node, i) => labels.set(node.id, i));
+            
+            visualizeLabels(labels, 'Starting with each node having its own label...');
+            await new Promise(resolve => setTimeout(resolve, animationSpeed));
+            
+            let iterations = 0;
+            let converged = false;
+            
+            // Create random number generator with seed
+            let seed = 42;
+            const random = () => {
+                seed = ((seed * 1664525) + 1013904223) % 2147483647;
+                return seed / 2147483647;
+            };
+            
+            // Main loop
+            while (iterations < maxIterations && !converged) {
+                iterations++;
+                converged = true;
+                
+                document.getElementById('iteration-count').textContent = iterations;
+                document.getElementById('step-info').textContent = `Iteration ${iterations}: Nodes voting for labels...`;
+                
+                // Create random order for node updates
+                const nodeOrder = [...nodes.map(n => n.id)];
+                // Fisher-Yates shuffle
+                for (let i = nodeOrder.length - 1; i > 0; i--) {
+                    const j = Math.floor(random() * (i + 1));
+                    [nodeOrder[i], nodeOrder[j]] = [nodeOrder[j], nodeOrder[i]];
+                }
+                
+                // Update each node's label
+                for (const nodeId of nodeOrder) {
+                    const neighbors = graph.get(nodeId);
+                    if (!neighbors || neighbors.size === 0) continue;
+                    
+                    // Highlight current node
+                    const circle = document.getElementById(`node-${nodeId}`);
+                    circle.setAttribute('stroke', '#ff9800');
+                    circle.setAttribute('stroke-width', '4');
+                    
+                    // Count label frequencies among neighbors
+                    const labelCounts = new Map();
+                    let maxCount = 0;
+                    const candidateLabels = [];
+                    
+                    for (const [neighbor, weight] of neighbors) {
+                        const neighborLabel = labels.get(neighbor);
+                        if (neighborLabel === undefined) continue;
+                        
+                        const count = (labelCounts.get(neighborLabel) || 0) + weight;
+                        labelCounts.set(neighborLabel, count);
+                        
+                        if (count > maxCount) {
+                            maxCount = count;
+                            candidateLabels.length = 0;
+                            candidateLabels.push(neighborLabel);
+                        } else if (count === maxCount) {
+                            candidateLabels.push(neighborLabel);
+                        }
+                    }
+                    
+                    // Choose label (break ties randomly)
+                    const currentLabel = labels.get(nodeId);
+                    let newLabel = currentLabel;
+                    
+                    if (candidateLabels.length > 0) {
+                        // Include current label if it has max count
+                        if (labelCounts.get(currentLabel) === maxCount) {
+                            candidateLabels.push(currentLabel);
+                        }
+                        
+                        // Random selection from candidates
+                        const index = Math.floor(random() * candidateLabels.length);
+                        newLabel = candidateLabels[index];
+                    }
+                    
+                    // Update label if changed
+                    if (newLabel !== currentLabel) {
+                        labels.set(nodeId, newLabel);
+                        converged = false;
+                        
+                        // Animate the change
+                        await new Promise(resolve => setTimeout(resolve, animationSpeed / 10));
+                        visualizeLabels(labels, `Node ${nodeId} adopted label from its neighbors`);
+                    }
+                    
+                    // Remove highlight
+                    circle.setAttribute('stroke', '#333');
+                    circle.setAttribute('stroke-width', '2');
+                }
+                
+                await new Promise(resolve => setTimeout(resolve, animationSpeed));
+            }
+            
+            // Renumber communities consecutively
+            const uniqueLabels = new Set(labels.values());
+            const labelMap = new Map();
+            let communityId = 0;
+            
+            for (const label of uniqueLabels) {
+                labelMap.set(label, communityId++);
+            }
+            
+            const finalLabels = new Map();
+            for (const [node, label] of labels) {
+                finalLabels.set(node, labelMap.get(label));
+            }
+            
+            visualizeLabels(finalLabels, converged ? 'Algorithm converged!' : 'Maximum iterations reached');
+            document.getElementById('converged-status').textContent = converged ? 'Converged' : 'Max Iter';
+            
+            return {
+                communities: finalLabels,
+                iterations,
+                converged
+            };
+        }
+        
+        // Start algorithm
+        window.startAlgorithm = async function() {
+            if (isAnimating) return;
+            
+            const button = document.getElementById('start-btn');
+            button.disabled = true;
+            button.textContent = 'Running...';
+            isAnimating = true;
+            
+            try {
+                // Reset display
+                document.getElementById('num-communities').textContent = '0';
+                document.getElementById('iteration-count').textContent = '0';
+                document.getElementById('converged-status').textContent = '-';
+                
+                // Run actual algorithm for console output
+                const graph = createGraph();
+                const result = labelPropagation(graph, {
+                    maxIterations: parseInt(document.getElementById('max-iterations').value),
+                    randomSeed: 42
+                });
+                console.log('Label Propagation Result:', result);
+                
+                // Animate the algorithm
+                await animateLabelPropagation();
+                
+            } finally {
+                button.disabled = false;
+                button.textContent = 'Start Label Propagation';
+                isAnimating = false;
+            }
+        };
+        
+        // Initialize on load
+        window.onload = initGraph;
+    </script>
+</body>
+</html>

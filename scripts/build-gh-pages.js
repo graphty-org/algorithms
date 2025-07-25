@@ -60,6 +60,7 @@ async function copyDirectory(src, dest) {
 async function buildGitHubPages() {
   const rootDir = path.resolve(__dirname, '..');
   const examplesDir = path.join(rootDir, 'examples', 'html');
+  const benchmarkDir = path.join(rootDir, 'benchmark-results');
   const distDir = path.join(rootDir, 'dist');
   const ghPagesDir = path.join(rootDir, 'gh-pages');
   
@@ -79,21 +80,43 @@ async function buildGitHubPages() {
       process.exit(1);
     }
     
-    // 3. Copy shared directory
+    // 3. Copy main landing page
+    const mainIndexSrc = path.join(rootDir, 'gh-pages-index.html');
+    const mainIndexDest = path.join(ghPagesDir, 'index.html');
+    await copyFile(mainIndexSrc, mainIndexDest);
+    console.log('Copied main landing page');
+    
+    // 4. Create examples subdirectory and copy examples
+    const examplesDestDir = path.join(ghPagesDir, 'examples');
+    await ensureDirectoryExists(examplesDestDir);
+    
+    // Copy shared directory to examples
     const sharedSrcDir = path.join(examplesDir, 'shared');
-    const sharedDestDir = path.join(ghPagesDir, 'shared');
+    const sharedDestDir = path.join(examplesDestDir, 'shared');
     await copyDirectory(sharedSrcDir, sharedDestDir);
-    console.log('Copied shared/ directory');
+    console.log('Copied examples/shared/ directory');
     
-    // 4. Process and copy index.html
-    const indexSrc = path.join(examplesDir, 'index.html');
-    const indexDest = path.join(ghPagesDir, 'index.html');
-    await processExampleHtml(indexSrc, indexDest);
-    console.log('Copied index.html');
+    // Copy examples index.html
+    const examplesIndexSrc = path.join(examplesDir, 'index.html');
+    const examplesIndexDest = path.join(examplesDestDir, 'index.html');
+    await processExampleHtml(examplesIndexSrc, examplesIndexDest);
+    console.log('Copied examples/index.html');
     
-    // 5. Copy algorithms.js to each algorithm directory
+    // 5. Create benchmarks subdirectory and copy benchmark reports
+    const benchmarksDestDir = path.join(ghPagesDir, 'benchmarks');
+    await ensureDirectoryExists(benchmarksDestDir);
+    
+    // Copy all benchmark HTML files
+    try {
+      await copyDirectory(benchmarkDir, benchmarksDestDir);
+      console.log('Copied benchmark reports to benchmarks/');
+    } catch (error) {
+      console.log('No benchmark results found, skipping benchmarks directory');
+    }
+    
+    // 6. Copy algorithms.js to each algorithm directory in examples
     const algorithmsHtmlDir = path.join(examplesDir, 'algorithms');
-    const algorithmsDestDir = path.join(ghPagesDir, 'algorithms');
+    const algorithmsDestDir = path.join(examplesDestDir, 'algorithms');
     
     // Process traversal algorithms
     const traversalSrcDir = path.join(algorithmsHtmlDir, 'traversal');
@@ -165,26 +188,49 @@ async function buildGitHubPages() {
       }
     }
     
-    // 6. Copy all other algorithm directories (empty for now, but structure is there)
+    // 7. Copy all other algorithm directories (with their HTML/JS files)
     const algorithmCategories = [
       'components', 'mst', 'community', 'pathfinding',
       'flow', 'clustering', 'matching', 'link-prediction', 'research'
     ];
     
     for (const category of algorithmCategories) {
-      const categoryDir = path.join(algorithmsDestDir, category);
-      await ensureDirectoryExists(categoryDir);
-      // Copy algorithms.js to each category directory for future use
-      await copyFile(algorithmsJsPath, path.join(categoryDir, 'algorithms.js'));
+      const categorySrcDir = path.join(algorithmsHtmlDir, category);
+      const categoryDestDir = path.join(algorithmsDestDir, category);
+      
+      try {
+        // Check if source directory exists
+        await fs.access(categorySrcDir);
+        await copyDirectory(categorySrcDir, categoryDestDir);
+        // Copy algorithms.js to each category directory
+        await copyFile(algorithmsJsPath, path.join(categoryDestDir, 'algorithms.js'));
+        console.log(`Copied algorithms/${category}/ directory`);
+      } catch (error) {
+        // Create empty directory structure for future use
+        await ensureDirectoryExists(categoryDestDir);
+        await copyFile(algorithmsJsPath, path.join(categoryDestDir, 'algorithms.js'));
+        console.log(`Created placeholder for algorithms/${category}/`);
+      }
     }
     
-    // 7. Create a .nojekyll file to prevent GitHub Pages from processing files
+    // 8. Create a .nojekyll file to prevent GitHub Pages from processing files
     await fs.writeFile(path.join(ghPagesDir, '.nojekyll'), '');
     
-    // 8. Create a simple deployment instruction file
+    // 9. Create a simple deployment instruction file
     const deployInstructions = `# GitHub Pages Deployment
 
-This directory contains the built static site for GitHub Pages.
+This directory contains the built static site for GitHub Pages with:
+
+- Main landing page (index.html)
+- Interactive examples (/examples/)
+- Performance benchmarks (/benchmarks/)
+
+## Structure:
+\`\`\`
+/                    → Main landing page
+/examples/           → Interactive algorithm examples  
+/benchmarks/         → Performance reports and charts
+\`\`\`
 
 ## To deploy:
 

@@ -4,6 +4,214 @@
 
 This document outlines the plan for creating interactive HTML examples for the @graphty/algorithms package, similar to the [graphty/layout examples](https://graphty-org.github.io/layout/examples/index.html). The examples will demonstrate each algorithm's functionality with interactive visualizations.
 
+## Current Approach and Design Principles
+
+Based on our existing HTML examples (particularly BFS and DFS), our approach emphasizes:
+
+### **Educational Focus**
+- **Simple, intuitive metaphors**: Algorithms explained with clear analogies (BFS as "ripples in water", DFS as "exploring a maze")
+- **Visual progression**: Step-by-step animations with deliberate 1.5-2 second timing for comprehension
+- **Color-coded states**: Consistent visual indicators (unvisited/current/visited) with legends
+- **Progressive disclosure**: Context-appropriate explanations appear alongside visualizations
+
+### **Package Integration**
+- **Direct usage**: Examples must demonstrate actual usage of @graphty/algorithms package
+- **Module pattern**: Each algorithm pairs `.html` with `.js` using clean ES6 imports/exports
+- **Bundled dependencies**: Package bundled into category-specific files (e.g., `traversal-algorithms.js`)
+- **Standard graph format**: Consistent nodes/edges array structure across all examples
+
+### **Interactive Learning**
+- **Single-button simplicity**: Clear "Start" button to initiate algorithm visualization
+- **Real-time feedback**: Step-by-step status updates ("Starting at node A", "Visiting node B")
+- **Algorithm mechanics**: Internal state visualization (BFS queue, DFS stack) for educational transparency
+- **Code transparency**: Collapsible sections showing actual implementation with syntax highlighting
+
+### **Consistency Standards** (Based on BFS/DFS Examples)
+- **Visual timing**: 1.5-2 second intervals between algorithm steps
+- **Color scheme**: Blue (#2c5aa0) headers, green (#4CAF50) actions, consistent state colors
+- **SVG rendering**: Direct SVG manipulation for clarity and educational value
+- **Mobile support**: Responsive design with Eruda console for debugging
+- **Navigation**: Clear "Back to Index" links and disabled controls during animation
+- **Educational enhancements**: Visit order numbers, complexity information, use case descriptions
+
+## Strict HTML Structure Requirements
+
+### **1. HTML Document Structure**
+Each algorithm HTML file MUST follow this exact structure:
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- MANDATORY: Eruda Mobile Console (exact code) -->
+    <script src="https://cdn.jsdelivr.net/npm/eruda@3/eruda.min.js"></script>
+    <script>
+      if (typeof eruda !== "undefined") {
+        eruda.init();
+        if (/mobile|android|ios|iphone|ipad|ipod/i.test(navigator.userAgent.toLowerCase())) {
+          eruda.show();
+        }
+      }
+    </script>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[Algorithm Name] - Simple Visual Explanation</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
+    <style>
+        /* MANDATORY STYLES - DO NOT MODIFY */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5; /* Light gray background */
+        }
+        
+        h1 {
+            color: #2c5aa0; /* Blue header */
+            text-align: center;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        #graph {
+            width: 100%;
+            height: 400px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        button {
+            background: #4CAF50; /* Green button */
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        
+        .explanation {
+            background: #e8f0fe;
+            border-left: 4px solid #2c5aa0;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        
+        /* Additional algorithm-specific styles here */
+    </style>
+</head>
+<body>
+    <a href="../../index.html" class="back-link">← Back to Examples</a>
+    
+    <h1>[Algorithm Name] Explained</h1>
+    
+    <div class="container">
+        <div class="intro">
+            <p><strong>[Simple one-line metaphor]</strong></p>
+            <p>[Additional explanation in simple terms]</p>
+        </div>
+        
+        <svg id="graph"></svg>
+        
+        <!-- Algorithm-specific info displays (queue, priority queue, etc.) -->
+        
+        <div class="step-info" id="step-info">Click "Start" to see how [Algorithm] works</div>
+        
+        <div class="legend">
+            <!-- Legend items -->
+        </div>
+        
+        <div class="controls">
+            <button id="start-btn" onclick="startAlgorithm()">Start [Algorithm]</button>
+        </div>
+        
+        <div class="explanation">
+            <h3>Key Concept:</h3>
+            <p>[Educational explanation]</p>
+        </div>
+        
+        <div class="code-section">
+            <div class="code-header">
+                <h3>Code Example</h3>
+                <button class="code-toggle" id="code-toggle">Hide Code ▲</button>
+            </div>
+            <div class="code-content" id="code-content">
+                <pre><code class="language-javascript" id="code-display">Loading code...</code></pre>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    
+    <script type="module">
+        // EMBEDDED JavaScript code here
+    </script>
+</body>
+</html>
+```
+
+### **2. Critical Style Requirements**
+- **Background**: Body MUST have `background: #f5f5f5` (light gray)
+- **Container**: White background with shadow: `background: white; box-shadow: 0 2px 4px rgba(0,0,0,0.1)`
+- **Headers**: MUST use `color: #2c5aa0` (blue)
+- **Buttons**: MUST use `background: #4CAF50` (green) with white text
+- **Graph**: MUST have `border: 2px solid #e0e0e0` and `border-radius: 8px`
+- **NO DARK COLORS**: Do not use dark backgrounds or themes
+
+### **3. JavaScript Structure**
+JavaScript MUST be embedded in the HTML file within a `<script type="module">` tag, NOT in a separate file for the main logic. The structure should be:
+
+```javascript
+// Import the algorithm function
+import { runAlgorithmName } from './algorithm.js';
+
+// Load and display the actual code
+async function loadCodeExample() {
+    // Fetch and display the .js file content
+}
+
+// Graph structure for visualization
+const nodes = [...];
+const edges = [...];
+
+// Animation functions
+window.startAlgorithm = function() {
+    // Run algorithm
+    const result = runAlgorithmName();
+    console.log('[Algorithm] Result:', result);
+    // Animate results
+}
+
+// Initialize on load
+window.onload = initGraph;
+```
+
+### **4. Educational Requirements**
+- **Simple metaphor**: Each algorithm MUST have a simple, relatable metaphor
+- **Step-by-step messages**: Clear status messages during animation
+- **Console logging**: Results MUST be logged for educational purposes
+- **Code display**: The actual algorithm code MUST be loaded and displayed
+- **Collapsible code section**: With toggle button functionality
+
+### **5. Visual Requirements**
+- **Node colors**: 
+  - Unvisited: `#e0e0e0` (light gray)
+  - Current/Active: `#ff9800` (orange)
+  - Visited/Complete: `#4CAF50` (green)
+  - Special states: Use light pastels, NOT dark colors
+- **Animation timing**: 1500ms (1.5 seconds) between steps
+- **SVG size**: `width="100%" height="400px"`
+
 ## Project Structure
 
 ```

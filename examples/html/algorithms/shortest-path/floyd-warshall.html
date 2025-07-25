@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Eruda Mobile Console -->
+    <script src="https://cdn.jsdelivr.net/npm/eruda@3/eruda.min.js"></script>
+    <script>
+      // Initialize Eruda console for mobile debugging
+      if (typeof eruda !== "undefined") {
+        eruda.init();
+        // Auto-show on mobile devices
+        if (/mobile|android|ios|iphone|ipad|ipod/i.test(navigator.userAgent.toLowerCase())) {
+          eruda.show();
+        }
+      }
+    </script>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Floyd-Warshall Algorithm - Simple Visual Explanation</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        
+        h1 {
+            color: #2c5aa0;
+            text-align: center;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        #graph {
+            width: 100%;
+            height: 400px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .controls {
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin: 0 5px;
+        }
+        
+        button:hover {
+            background: #45a049;
+        }
+        
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .explanation {
+            background: #e8f0fe;
+            border-left: 4px solid #2c5aa0;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        
+        .step-info {
+            text-align: center;
+            font-size: 18px;
+            color: #333;
+            margin: 20px 0;
+            min-height: 30px;
+        }
+        
+        .matrix-display {
+            background: #f0f0f0;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 20px 0;
+            overflow-x: auto;
+        }
+        
+        .matrix-display h4 {
+            margin: 0 0 10px 0;
+            color: #666;
+            text-align: center;
+        }
+        
+        .distance-matrix {
+            margin: 0 auto;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .distance-matrix th,
+        .distance-matrix td {
+            border: 1px solid #ddd;
+            padding: 4px 8px;
+            text-align: center;
+            min-width: 35px;
+            font-size: 13px;
+        }
+        
+        .distance-matrix th {
+            background: #2c5aa0;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .distance-matrix td {
+            font-family: monospace;
+            font-size: 14px;
+        }
+        
+        .distance-matrix td.infinity {
+            color: #999;
+        }
+        
+        .distance-matrix td.updated {
+            background: #4CAF50;
+            color: white;
+            font-weight: bold;
+            animation: highlight 1s ease;
+            border: 2px solid #2e7d32;
+        }
+        
+        .distance-matrix td.comparing {
+            background: #ff9800;
+            color: white;
+            font-weight: bold;
+            border: 2px solid #ef6c00;
+        }
+        
+        .distance-matrix td.intermediate {
+            background: #e91e63;
+            color: white;
+            font-weight: bold;
+            border: 2px solid #ad1457;
+        }
+        
+        @keyframes highlight {
+            0% { 
+                background: #ff9800; 
+                transform: scale(1.1);
+            }
+            50% { 
+                background: #4CAF50; 
+                transform: scale(1.1);
+            }
+            100% { 
+                background: #4CAF50;
+                transform: scale(1);
+            }
+        }
+        
+        .intro {
+            text-align: center;
+            color: #666;
+            margin: 20px 0;
+        }
+        
+        .back-link {
+            color: #2c5aa0;
+            text-decoration: none;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        
+        .code-section {
+            margin-top: 30px;
+            border-top: 2px solid #e0e0e0;
+            padding-top: 20px;
+        }
+        
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .code-toggle {
+            background: #2c5aa0;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .code-toggle:hover {
+            background: #1e3f73;
+        }
+        
+        .code-content {
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            max-height: 1000px;
+        }
+        
+        .code-content.collapsed {
+            max-height: 0;
+        }
+        
+        pre {
+            background: #f4f4f4;
+            border-radius: 4px;
+            padding: 15px;
+            overflow: auto;
+            margin: 0;
+            max-height: 400px;
+        }
+        
+        code {
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+        }
+    </style>
+</head>
+<body>
+    <a href="../../index.html" class="back-link">← Back to Examples</a>
+    
+    <h1>Floyd-Warshall Algorithm Explained</h1>
+    
+    <div class="container">
+        <div class="intro">
+            <p><strong>Floyd-Warshall finds the shortest paths between every pair of nodes in the graph.</strong></p>
+            <p>It asks: "Can I get from A to B faster by going through C first?"</p>
+            <p>Watch the orange and pink paths light up as the algorithm compares direct routes vs. detours!</p>
+            <p>Green cells in the matrix show when a shorter path is found.</p>
+        </div>
+        
+        <svg id="graph"></svg>
+        
+        <div class="matrix-display">
+            <h4>Distance Matrix (Iteration <span id="iteration">0</span>):</h4>
+            <table class="distance-matrix" id="matrix"></table>
+        </div>
+        
+        <div class="step-info" id="step-info">Click "Start Floyd-Warshall" to see how it works</div>
+        
+        <div class="formula-display" id="formula-display" style="background: #fff3cd; border: 2px solid #ffc107; border-radius: 8px; padding: 15px; margin: 20px 0; text-align: center; display: none;">
+            <h4 style="margin: 0 0 10px 0; color: #856404;">Current Calculation:</h4>
+            <div id="formula-text" style="font-family: monospace; font-size: 16px; font-weight: bold; color: #856404;"></div>
+        </div>
+        
+        <div class="legend" style="display: flex; justify-content: center; gap: 15px; margin: 20px 0; flex-wrap: wrap;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <div style="width: 20px; height: 20px; border-radius: 50%; background: #ff6b6b; border: 2px solid #333;"></div>
+                <span>Middle Point Being Tested</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <div style="width: 20px; height: 20px; background: #ff9800; border: 2px solid #ef6c00;"></div>
+                <span>Path Being Evaluated</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <div style="width: 20px; height: 20px; background: #e91e63; border: 2px solid #ad1457;"></div>
+                <span>Route Through Middle</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <div style="width: 20px; height: 20px; background: #4CAF50; border: 2px solid #2e7d32;"></div>
+                <span>Shorter Path Found!</span>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <button id="start-btn" onclick="startFloydWarshall()">Start Floyd-Warshall</button>
+            <button id="reset-btn" onclick="resetVisualization()">Reset</button>
+        </div>
+        
+        <div class="speed-control" style="display: flex; align-items: center; justify-content: center; gap: 10px; margin: 15px 0;">
+            <label for="speed-slider" style="font-weight: bold;">Animation Speed:</label>
+            <span style="font-size: 12px; color: #666;">Slow</span>
+            <input type="range" id="speed-slider" min="500" max="4000" value="2000" step="250" 
+                   style="width: 200px;" oninput="updateSpeedDisplay()">
+            <span style="font-size: 12px; color: #666;">Fast</span>
+            <span id="speed-display" style="margin-left: 10px; font-weight: bold; color: #2c5aa0;">2.0s</span>
+        </div>
+        
+        <div class="explanation">
+            <h3>How Floyd-Warshall Works:</h3>
+            <p>The algorithm uses dynamic programming with three nested loops:</p>
+            <ul>
+                <li>For each vertex k as an intermediate point</li>
+                <li>For each pair of vertices (i, j)</li>
+                <li>Check if going through k gives a shorter path: distance[i][j] = min(distance[i][j], distance[i][k] + distance[k][j])</li>
+                <li>After considering all vertices, the matrix contains all shortest distances</li>
+            </ul>
+            <p>Time complexity: O(V³), but finds ALL shortest paths at once.</p>
+        </div>
+        
+        <div class="code-section">
+            <div class="code-header">
+                <h3>Code Example</h3>
+                <button class="code-toggle" id="code-toggle">Hide Code ▲</button>
+            </div>
+            <div class="code-content" id="code-content">
+                <pre><code class="language-javascript" id="code-display">Loading code...</code></pre>
+            </div>
+        </div>
+    </div>
+
+    <!-- Load Prism for syntax highlighting -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    
+    <script type="module">
+        // Import our Floyd-Warshall implementation
+        import { runFloydWarshallAlgorithm } from './floyd-warshall.js';
+        
+        // Load and display the actual code
+        async function loadCodeExample() {
+            try {
+                const response = await fetch('./floyd-warshall.js');
+                const code = await response.text();
+                const codeDisplay = document.getElementById('code-display');
+                codeDisplay.textContent = code;
+                
+                // Re-highlight the code with Prism
+                if (typeof Prism !== 'undefined') {
+                    Prism.highlightElement(codeDisplay);
+                }
+            } catch (error) {
+                console.error('Failed to load code example:', error);
+                document.getElementById('code-display').textContent = '// Failed to load code example';
+            }
+        }
+        
+        // Load code on page load
+        loadCodeExample();
+        
+        // Graph structure for visualization (5 nodes in circular layout)
+        const nodes = [
+            {id: 'A', x: 300, y: 80, label: 'A'},   // Top
+            {id: 'B', x: 450, y: 150, label: 'B'},  // Top-right
+            {id: 'C', x: 400, y: 280, label: 'C'},  // Bottom-right
+            {id: 'D', x: 200, y: 280, label: 'D'},  // Bottom-left
+            {id: 'E', x: 150, y: 150, label: 'E'}   // Top-left
+        ];
+        
+        const edges = [
+            // Direct connections forming a network
+            {from: 'A', to: 'B', weight: 3},
+            {from: 'A', to: 'E', weight: 8},
+            {from: 'B', to: 'C', weight: 2},
+            {from: 'B', to: 'E', weight: 5},
+            {from: 'C', to: 'D', weight: 1},
+            {from: 'D', to: 'E', weight: 2},
+            {from: 'E', to: 'C', weight: 6}
+        ];
+        
+        let currentIteration = 0;
+        let animationTimer = null;
+        let distanceMatrix = {};
+        
+        // Code toggle functionality
+        document.getElementById('code-toggle').addEventListener('click', function() {
+            const codeContent = document.getElementById('code-content');
+            const toggle = document.getElementById('code-toggle');
+            
+            codeContent.classList.toggle('collapsed');
+            toggle.textContent = codeContent.classList.contains('collapsed') 
+                ? 'Show Code ▼' 
+                : 'Hide Code ▲';
+        });
+        
+        // Initialize SVG
+        function initGraph() {
+            const svg = document.getElementById('graph');
+            svg.innerHTML = '';
+            
+            // Add edges with weights
+            edges.forEach(edge => {
+                const fromNode = nodes.find(n => n.id === edge.from);
+                const toNode = nodes.find(n => n.id === edge.to);
+                
+                // Add arrow marker definition
+                if (!svg.querySelector('#arrowhead')) {
+                    const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+                    const marker = document.createElementNS('http://www.w3.org/2000/svg', 'marker');
+                    marker.setAttribute('id', 'arrowhead');
+                    marker.setAttribute('markerWidth', '10');
+                    marker.setAttribute('markerHeight', '7');
+                    marker.setAttribute('refX', '18');
+                    marker.setAttribute('refY', '3.5');
+                    marker.setAttribute('orient', 'auto');
+                    
+                    const polygon = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+                    polygon.setAttribute('points', '0 0, 10 3.5, 0 7');
+                    polygon.setAttribute('fill', '#666');
+                    
+                    marker.appendChild(polygon);
+                    defs.appendChild(marker);
+                    svg.appendChild(defs);
+                }
+                
+                const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                line.setAttribute('x1', fromNode.x);
+                line.setAttribute('y1', fromNode.y);
+                line.setAttribute('x2', toNode.x);
+                line.setAttribute('y2', toNode.y);
+                line.setAttribute('stroke', '#666');
+                line.setAttribute('stroke-width', '2');
+                line.setAttribute('marker-end', 'url(#arrowhead)');
+                
+                // Add data attributes for easier finding
+                line.setAttribute('data-from', edge.from);
+                line.setAttribute('data-to', edge.to);
+                line.setAttribute('id', `edge-${edge.from}-${edge.to}`);
+                
+                svg.appendChild(line);
+                
+                // Add weight label
+                const midX = (fromNode.x + toNode.x) / 2;
+                const midY = (fromNode.y + toNode.y) / 2;
+                
+                const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                text.setAttribute('x', midX);
+                text.setAttribute('y', midY - 10);
+                text.setAttribute('text-anchor', 'middle');
+                text.setAttribute('font-size', '14');
+                text.setAttribute('font-weight', 'bold');
+                text.setAttribute('fill', '#2c5aa0');
+                text.textContent = edge.weight;
+                svg.appendChild(text);
+            });
+            
+            // Add nodes
+            nodes.forEach(node => {
+                const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+                
+                const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                circle.setAttribute('cx', node.x);
+                circle.setAttribute('cy', node.y);
+                circle.setAttribute('r', '25');
+                circle.setAttribute('fill', '#e0e0e0');
+                circle.setAttribute('stroke', '#333');
+                circle.setAttribute('stroke-width', '2');
+                circle.setAttribute('id', 'node-' + node.id);
+                
+                const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                text.setAttribute('x', node.x);
+                text.setAttribute('y', node.y + 5);
+                text.setAttribute('text-anchor', 'middle');
+                text.setAttribute('font-size', '18');
+                text.setAttribute('font-weight', 'bold');
+                text.setAttribute('fill', '#333');
+                text.textContent = node.label;
+                
+                g.appendChild(circle);
+                g.appendChild(text);
+                svg.appendChild(g);
+            });
+            
+            initializeMatrix();
+        }
+        
+        // Initialize distance matrix
+        function initializeMatrix() {
+            const result = runFloydWarshallAlgorithm();
+            distanceMatrix = result.initialMatrix;
+            updateMatrixDisplay();
+        }
+        
+        // Update matrix display
+        function updateMatrixDisplay(highlightUpdates = []) {
+            const matrix = document.getElementById('matrix');
+            matrix.innerHTML = '';
+            
+            // Create header row
+            const headerRow = matrix.insertRow();
+            headerRow.insertCell().textContent = '';
+            nodes.forEach(node => {
+                const cell = headerRow.insertCell();
+                cell.textContent = node.id;
+            });
+            
+            // Create data rows
+            nodes.forEach(fromNode => {
+                const row = matrix.insertRow();
+                const headerCell = row.insertCell();
+                headerCell.textContent = fromNode.id;
+                headerCell.style.background = '#2c5aa0';
+                headerCell.style.color = 'white';
+                headerCell.style.fontWeight = 'bold';
+                
+                nodes.forEach(toNode => {
+                    const cell = row.insertCell();
+                    const distance = distanceMatrix[fromNode.id][toNode.id];
+                    cell.textContent = distance === Infinity ? '∞' : distance;
+                    cell.className = distance === Infinity ? 'infinity' : '';
+                    cell.id = `cell-${fromNode.id}-${toNode.id}`;
+                    
+                    // Highlight updated cells
+                    const isUpdated = highlightUpdates.some(update => 
+                        update.from === fromNode.id && update.to === toNode.id);
+                    if (isUpdated) {
+                        cell.classList.add('updated');
+                    }
+                });
+            });
+        }
+        
+        // Highlight intermediate vertex in graph
+        function highlightIntermediateVertex(vertexId) {
+            // Reset all node colors
+            nodes.forEach(node => {
+                const circle = document.getElementById('node-' + node.id);
+                if (circle) {
+                    circle.setAttribute('fill', '#e0e0e0');
+                }
+            });
+            
+            // Highlight the intermediate vertex
+            if (vertexId) {
+                const circle = document.getElementById('node-' + vertexId);
+                if (circle) {
+                    circle.setAttribute('fill', '#ff6b6b');
+                }
+            }
+        }
+        
+        let detailedSteps = [];
+        let currentStepIndex = 0;
+        let animationSpeed = 2000; // Default 2 seconds
+        
+        // Update speed display when slider changes
+        window.updateSpeedDisplay = function() {
+            const slider = document.getElementById('speed-slider');
+            const display = document.getElementById('speed-display');
+            animationSpeed = parseInt(slider.value);
+            display.textContent = (animationSpeed / 1000).toFixed(1) + 's';
+        }
+        
+        // Helper functions for matrix highlighting
+        function clearMatrixHighlights() {
+            document.querySelectorAll('.distance-matrix td').forEach(cell => {
+                cell.classList.remove('updated', 'comparing', 'intermediate');
+            });
+        }
+        
+        // Helper functions for path highlighting in graph
+        function clearPathHighlights() {
+            // Reset all edges to default color
+            document.querySelectorAll('#graph line').forEach(line => {
+                line.setAttribute('stroke', '#666');
+                line.setAttribute('stroke-width', '2');
+                line.removeAttribute('stroke-dasharray');
+                line.removeAttribute('stroke-dashoffset');
+                
+                // Clear any animation interval
+                if (line.dashAnimation) {
+                    clearInterval(line.dashAnimation);
+                    line.dashAnimation = null;
+                }
+            });
+        }
+        
+        function highlightPath(from, to, color = '#ff9800', width = '4') {
+            // Skip self-loops - they don't make sense to highlight
+            if (from === to) {
+                console.log(`Skipping self-loop ${from} → ${to}`);
+                return;
+            }
+            
+            // Check if this edge exists in our original graph
+            const edgeExists = edges.some(edge => edge.from === from && edge.to === to);
+            if (!edgeExists) {
+                console.log(`Edge ${from} → ${to} doesn't exist in graph, skipping highlight`);
+                return;
+            }
+            
+            // Find and highlight the edge between two nodes
+            const edge = findEdge(from, to);
+            if (edge) {
+                console.log(`✓ Successfully highlighting ${from} → ${to} in ${color}`);
+                
+                // Clear any existing animation
+                if (edge.dashAnimation) {
+                    clearInterval(edge.dashAnimation);
+                }
+                
+                edge.setAttribute('stroke', color);
+                edge.setAttribute('stroke-width', width);
+                edge.setAttribute('stroke-dasharray', '5,5');
+                
+                // Animate the dash
+                let offset = 0;
+                const animateDash = setInterval(() => {
+                    offset -= 1;
+                    edge.setAttribute('stroke-dashoffset', offset);
+                    if (offset < -10) offset = 0;
+                }, 50);
+                
+                // Store animation for cleanup
+                edge.dashAnimation = animateDash;
+            } else {
+                console.log(`Warning: Could not find SVG element for ${from} → ${to}`);
+            }
+        }
+        
+        function findEdge(from, to) {
+            console.log(`\n=== Looking for edge ${from} → ${to} ===`);
+            
+            // Find the edge by ID (much more reliable)
+            const edgeId = `edge-${from}-${to}`;
+            console.log(`Searching for ID: ${edgeId}`);
+            const edge = document.getElementById(edgeId);
+            if (edge) {
+                console.log(`✓ Found edge by ID!`);
+                return edge;
+            } else {
+                console.log(`✗ No edge found with ID: ${edgeId}`);
+            }
+            
+            // Fallback: search by data attributes
+            console.log(`Trying fallback search by data attributes...`);
+            const lines = document.querySelectorAll('#graph line');
+            console.log(`Found ${lines.length} total line elements`);
+            
+            for (const line of lines) {
+                const dataFrom = line.getAttribute('data-from');
+                const dataTo = line.getAttribute('data-to');
+                console.log(`  Line: ${dataFrom} → ${dataTo}`);
+                if (dataFrom === from && dataTo === to) {
+                    console.log(`✓ Found edge by data attributes!`);
+                    return line;
+                }
+            }
+            
+            // Debug: log if we can't find the edge
+            console.log(`✗ Could not find edge from ${from} to ${to}`);
+            console.log('All available edges:', Array.from(document.querySelectorAll('#graph line')).map(l => 
+                `${l.getAttribute('data-from')}→${l.getAttribute('data-to')}`));
+            console.log('All element IDs in graph:', Array.from(document.querySelectorAll('#graph *[id]')).map(el => el.id));
+            return null;
+        }
+        
+        function highlightMatrixCell(i, j, cssClass) {
+            const cell = document.getElementById(`cell-${i}-${j}`);
+            if (cell) {
+                cell.classList.add(cssClass);
+            }
+        }
+        
+        function updateMatrixCell(i, j, newValue, cssClass) {
+            const cell = document.getElementById(`cell-${i}-${j}`);
+            if (cell) {
+                cell.textContent = newValue === Infinity ? '∞' : newValue;
+                cell.classList.remove('comparing', 'intermediate');
+                cell.classList.add(cssClass);
+            }
+        }
+        
+        // Animate detailed step-by-step Floyd-Warshall
+        function animateDetailedStep() {
+            if (currentStepIndex >= detailedSteps.length) {
+                // Animation complete
+                clearInterval(animationTimer);
+                document.getElementById('start-btn').disabled = false;
+                document.getElementById('step-info').textContent = 'Algorithm completed! All shortest distances computed.';
+                document.getElementById('formula-display').style.display = 'none';
+                highlightIntermediateVertex(null);
+                clearMatrixHighlights();
+                
+                // Show final result
+                const result = runFloydWarshallAlgorithm();
+                distanceMatrix = result.finalMatrix;
+                updateMatrixDisplay();
+                return;
+            }
+            
+            const step = detailedSteps[currentStepIndex];
+            
+            if (step.type === 'compare') {
+                // Clear previous highlights
+                clearMatrixHighlights();
+                clearPathHighlights();
+                
+                // Highlight intermediate vertex in graph
+                highlightIntermediateVertex(step.intermediate);
+                
+                // Highlight the paths being compared in the graph
+                console.log(`\n--- Path Highlighting for ${step.from}→${step.to} through ${step.intermediate} ---`);
+                
+                // Direct path (if it exists)
+                console.log(`Direct path ${step.from}→${step.to}: distance=${step.directDistance}`);
+                if (step.directDistance !== Infinity) {
+                    console.log(`Attempting to highlight direct path ${step.from}→${step.to} in ORANGE`);
+                    highlightPath(step.from, step.to, '#ff9800', '3');
+                } else {
+                    console.log(`Skipping direct path ${step.from}→${step.to} (no direct edge)`);
+                }
+                
+                // Path through intermediate (if both segments exist)
+                console.log(`Path through intermediate:`);
+                console.log(`  ${step.from}→${step.intermediate}: distance=${step.distanceToIntermediate}`);
+                console.log(`  ${step.intermediate}→${step.to}: distance=${step.distanceFromIntermediate}`);
+                
+                if (step.distanceToIntermediate !== Infinity && step.distanceFromIntermediate !== Infinity) {
+                    console.log(`Attempting to highlight path segments in PINK:`);
+                    
+                    // Only highlight if it's not a self-loop and the edge actually exists
+                    if (step.from !== step.intermediate) {
+                        console.log(`  ${step.from}→${step.intermediate}`);
+                        highlightPath(step.from, step.intermediate, '#e91e63', '4');
+                    } else {
+                        console.log(`  Skipping ${step.from}→${step.intermediate} (self-loop)`);
+                    }
+                    
+                    if (step.intermediate !== step.to) {
+                        console.log(`  ${step.intermediate}→${step.to}`);
+                        highlightPath(step.intermediate, step.to, '#e91e63', '4');
+                    } else {
+                        console.log(`  Skipping ${step.intermediate}→${step.to} (self-loop)`);
+                    }
+                } else {
+                    console.log(`Skipping intermediate path (missing segments)`);
+                }
+                
+                // Highlight cells being compared in matrix
+                highlightMatrixCell(step.from, step.to, 'comparing');
+                highlightMatrixCell(step.from, step.intermediate, 'intermediate');
+                highlightMatrixCell(step.intermediate, step.to, 'intermediate');
+                
+                // Show formula with friendly language
+                document.getElementById('formula-display').style.display = 'block';
+                document.getElementById('formula-text').textContent = step.friendlyFormula;
+                
+                // Update step info with plain English
+                if (step.improved) {
+                    document.getElementById('step-info').textContent = 
+                        `Testing path from ${step.from} to ${step.to} through ${step.intermediate}: Found a SHORTER path! (${step.pathViaIntermediate} is better than ${step.directDistance === Infinity ? 'no direct path' : step.directDistance})`;
+                    
+                    // Update the matrix cell with new value
+                    setTimeout(() => {
+                        distanceMatrix[step.from][step.to] = step.pathViaIntermediate;
+                        updateMatrixCell(step.from, step.to, step.pathViaIntermediate, 'updated');
+                    }, 1000);
+                } else {
+                    document.getElementById('step-info').textContent = 
+                        `Testing path from ${step.from} to ${step.to} through ${step.intermediate}: Current path is still shorter (${step.directDistance === Infinity ? 'no path' : step.directDistance} is better than ${step.pathViaIntermediate === Infinity ? 'no path' : step.pathViaIntermediate})`;
+                }
+                
+            } else if (step.type === 'iteration_complete') {
+                // Clear highlights and update iteration counter
+                clearMatrixHighlights();
+                clearPathHighlights();
+                document.getElementById('iteration').textContent = nodes.indexOf(step.intermediate) + 1;
+                document.getElementById('step-info').textContent = `Finished checking all paths through ${step.intermediate}. Moving to next middle point...`;
+                document.getElementById('formula-display').style.display = 'none';
+            }
+            
+            currentStepIndex++;
+        }
+        
+        // Run Floyd-Warshall algorithm step by step
+        window.startFloydWarshall = function() {
+            const result = runFloydWarshallAlgorithm();
+            detailedSteps = result.detailedSteps;
+            
+            console.log('Floyd-Warshall Result:', result);
+            console.log('Detailed Steps:', detailedSteps);
+            
+            // Disable button during animation
+            document.getElementById('start-btn').disabled = true;
+            currentStepIndex = 0;
+            
+            // Reset matrix and graph
+            distanceMatrix = result.initialMatrix;
+            updateMatrixDisplay();
+            highlightIntermediateVertex(null);
+            document.getElementById('iteration').textContent = '0';
+            
+            // Start detailed animation using current speed setting
+            setTimeout(() => {
+                animationTimer = setInterval(animateDetailedStep, animationSpeed);
+            }, 1000);
+        }
+        
+        // Reset visualization
+        window.resetVisualization = function() {
+            clearInterval(animationTimer);
+            currentStepIndex = 0;
+            document.getElementById('iteration').textContent = '0';
+            document.getElementById('step-info').textContent = 'Click "Start Floyd-Warshall" to see how it works';
+            document.getElementById('start-btn').disabled = false;
+            document.getElementById('formula-display').style.display = 'none';
+            
+            // Clear all highlights
+            clearMatrixHighlights();
+            
+            // Reset graph highlighting
+            highlightIntermediateVertex(null);
+            
+            // Reset to initial matrix
+            initializeMatrix();
+        }
+        
+        // Initialize on load
+        window.onload = initGraph;
+    </script>
+</body>
+</html>

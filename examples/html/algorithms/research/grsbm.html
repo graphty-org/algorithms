@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- MANDATORY: Eruda Mobile Console (exact code) -->
+    <script src="https://cdn.jsdelivr.net/npm/eruda@3/eruda.min.js"></script>
+    <script>
+      if (typeof eruda !== "undefined") {
+        eruda.init();
+        if (/mobile|android|ios|iphone|ipad|ipod/i.test(navigator.userAgent.toLowerCase())) {
+          eruda.show();
+        }
+      }
+    </script>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GRSBM Algorithm - Simple Visual Explanation</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
+    <style>
+        /* MANDATORY STYLES - DO NOT MODIFY */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5; /* Light gray background */
+        }
+        
+        h1 {
+            color: #2c5aa0; /* Blue header */
+            text-align: center;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        #graph {
+            width: 100%;
+            height: 400px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        button {
+            background: #4CAF50; /* Green button */
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        
+        .explanation {
+            background: #e8f0fe;
+            border-left: 4px solid #2c5aa0;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        
+        /* Additional algorithm-specific styles */
+        .back-link {
+            text-decoration: none;
+            color: #2c5aa0;
+            display: inline-block;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        
+        .intro {
+            margin-bottom: 20px;
+        }
+        
+        .intro p {
+            margin: 10px 0;
+            line-height: 1.6;
+        }
+        
+        .intro strong {
+            color: #333;
+        }
+        
+        .scenario-selector {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        
+        .scenario-btn {
+            background: #e0e0e0;
+            color: #333;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .scenario-btn.active {
+            background: #2c5aa0;
+            color: white;
+        }
+        
+        .scenario-btn:hover {
+            background: #2196F3;
+            color: white;
+        }
+        
+        .algorithm-info {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            flex-wrap: wrap;
+        }
+        
+        .info-item {
+            text-align: center;
+            min-width: 100px;
+        }
+        
+        .info-label {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        
+        .info-value {
+            font-size: 18px;
+            font-weight: bold;
+            color: #2c5aa0;
+        }
+        
+        .step-info {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 15px 0;
+            font-size: 16px;
+            text-align: center;
+        }
+        
+        .legend {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin: 15px 0;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 6px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid #333;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+        
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .parameter-controls {
+            margin: 20px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 6px;
+        }
+        
+        .parameter-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 10px 0;
+            flex-wrap: wrap;
+        }
+        
+        .parameter-group label {
+            font-weight: 500;
+            min-width: 120px;
+        }
+        
+        .parameter-group input[type="range"] {
+            flex: 1;
+            min-width: 100px;
+        }
+        
+        .parameter-group .value-display {
+            min-width: 40px;
+            text-align: center;
+            font-weight: bold;
+            color: #2c5aa0;
+        }
+        
+        .hierarchy-display {
+            margin: 20px 0;
+            padding: 15px;
+            background: #f0f8ff;
+            border-radius: 6px;
+            border-left: 4px solid #2c5aa0;
+        }
+        
+        .hierarchy-level {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 4px;
+            background: white;
+            border: 1px solid #ddd;
+        }
+        
+        .hierarchy-level.current {
+            border-color: #4CAF50;
+            background: #e8f5e8;
+        }
+        
+        .explanation-display {
+            margin: 20px 0;
+            padding: 15px;
+            background: #fff9c4;
+            border-radius: 6px;
+            border-left: 4px solid #fbc02d;
+        }
+        
+        .explanation-item {
+            margin: 10px 0;
+            padding: 10px;
+            background: white;
+            border-radius: 4px;
+            border: 1px solid #f9a825;
+        }
+        
+        .key-nodes {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin: 5px 0;
+        }
+        
+        .key-node {
+            background: #ff9800;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .modularity-chart {
+            margin: 15px 0;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 4px;
+            text-align: center;
+        }
+        
+        .modularity-bar {
+            height: 20px;
+            background: linear-gradient(to right, #f44336 0%, #ffeb3b 50%, #4CAF50 100%);
+            border-radius: 10px;
+            position: relative;
+            margin: 10px 0;
+        }
+        
+        .modularity-marker {
+            position: absolute;
+            top: -5px;
+            width: 4px;
+            height: 30px;
+            background: #333;
+            border-radius: 2px;
+        }
+        
+        .code-section {
+            margin: 30px 0;
+        }
+        
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .code-toggle {
+            background: #666;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .code-content {
+            background: #f8f8f8;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        #code-display {
+            margin: 0;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <a href="../../index.html" class="back-link">← Back to Examples</a>
+    
+    <h1>GRSBM Algorithm Explained</h1>
+    
+    <div class="container">
+        <div class="intro">
+            <p><strong>Like a skilled botanist carefully pruning a tree to reveal its natural structure!</strong></p>
+            <p>GRSBM (Greedy Recursive Spectral Bisection with Modularity) is a cutting-edge algorithm that finds communities by recursively splitting the network using spectral analysis, while providing clear explanations for each decision.</p>
+        </div>
+        
+        <div class="scenario-selector">
+            <button class="scenario-btn active" onclick="selectScenario('academic')">Academic Network</button>
+            <button class="scenario-btn" onclick="selectScenario('social')">Social Communities</button>
+            <button class="scenario-btn" onclick="selectScenario('biological')">Protein Network</button>
+            <button class="scenario-btn" onclick="selectScenario('tech')">Tech Companies</button>
+        </div>
+        
+        <div class="parameter-controls">
+            <h4>Algorithm Parameters</h4>
+            <div class="parameter-group">
+                <label>Max Depth:</label>
+                <input type="range" id="maxDepth-slider" min="1" max="10" step="1" value="6">
+                <span class="value-display" id="maxDepth-display">6</span>
+            </div>
+            <div class="parameter-group">
+                <label>Min Cluster Size:</label>
+                <input type="range" id="minClusterSize-slider" min="1" max="8" step="1" value="2">
+                <span class="value-display" id="minClusterSize-display">2</span>
+            </div>
+            <div class="parameter-group">
+                <label>Random Seed:</label>
+                <input type="range" id="seed-slider" min="1" max="100" step="1" value="42">
+                <span class="value-display" id="seed-display">42</span>
+            </div>
+        </div>
+        
+        <svg id="graph"></svg>
+        
+        <div class="algorithm-info" id="algorithm-info">
+            <div class="info-item">
+                <div class="info-label">Clusters</div>
+                <div class="info-value" id="cluster-count">-</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Modularity</div>
+                <div class="info-value" id="modularity-score">-</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Hierarchy Depth</div>
+                <div class="info-value" id="hierarchy-depth">-</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Splits Made</div>
+                <div class="info-value" id="splits-count">-</div>
+            </div>
+        </div>
+        
+        <div class="step-info" id="step-info">Choose a scenario and click "Start GRSBM" to see explainable community detection in action</div>
+        
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-color" style="background: #e0e0e0;"></div>
+                <span>Original Network</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #ff6b6b;"></div>
+                <span>Cluster 1</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #4ecdc4;"></div>
+                <span>Cluster 2</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #45b7d1;"></div>
+                <span>Cluster 3</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #96ceb4;"></div>
+                <span>Cluster 4</span>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <button id="start-btn" onclick="startAlgorithm()">Start GRSBM</button>
+            <button id="animate-btn" onclick="animateHierarchy()" disabled>Animate Hierarchy</button>
+            <button id="explain-btn" onclick="showExplanations()" disabled>Show Explanations</button>
+            <button id="reset-btn" onclick="resetVisualization()">Reset</button>
+        </div>
+        
+        <div class="modularity-chart" id="modularity-chart" style="display: none;">
+            <h4>Modularity Progress</h4>
+            <div class="modularity-bar">
+                <div class="modularity-marker" id="modularity-marker"></div>
+            </div>
+            <p>Current: <span id="current-modularity">0.000</span> | Best: <span id="best-modularity">0.000</span></p>
+        </div>
+        
+        <div class="hierarchy-display" id="hierarchy-display" style="display: none;">
+            <h4>Hierarchical Structure</h4>
+            <div id="hierarchy-levels"></div>
+        </div>
+        
+        <div class="explanation-display" id="explanation-display" style="display: none;">
+            <h4>Split Explanations</h4>
+            <div id="explanation-items"></div>
+        </div>
+        
+        <div class="explanation">
+            <h3>Key Concept:</h3>
+            <p>GRSBM combines <strong>spectral graph theory</strong> with <strong>modularity optimization</strong> to find natural community boundaries. Unlike traditional methods, it provides detailed explanations for each split decision, identifies key nodes that drive the clustering, and creates a hierarchical structure that reveals communities at multiple scales.</p>
+        </div>
+        
+        <div class="code-section">
+            <div class="code-header">
+                <h3>Code Example</h3>
+                <button class="code-toggle" id="code-toggle">Hide Code ▲</button>
+            </div>
+            <div class="code-content" id="code-content">
+                <pre><code class="language-javascript" id="code-display">Loading code...</code></pre>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    
+    <script type="module">
+        // Import the algorithm function
+        import { Graph, grsbm } from './algorithms.js';
+
+        // Load and display the actual code
+        async function loadCodeExample() {
+            try {
+                const response = await fetch('./grsbm.js');
+                const code = await response.text();
+                document.getElementById('code-display').textContent = code;
+                if (window.Prism) {
+                    window.Prism.highlightAll();
+                }
+            } catch (error) {
+                document.getElementById('code-display').textContent = 'Error loading code example';
+            }
+        }
+
+        // Community colors for visualization
+        const clusterColors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#feca57', '#ff9ff3', '#54a0ff', '#5f27cd', '#ff6b9d', '#c44569'];
+        
+        // Current state
+        let currentScenario = 'academic';
+        let currentGraph = null;
+        let currentResult = null;
+        let isAnimating = false;
+        let animationStep = 0;
+        
+        // Scenario definitions
+        const scenarios = {
+            academic: {
+                name: "Academic Collaboration Network",
+                description: "Research collaborations between different departments",
+                nodes: [
+                    {id: 'Prof_AI', x: 100, y: 100, field: 'ai'},
+                    {id: 'Dr_ML', x: 150, y: 80, field: 'ai'},
+                    {id: 'PhD_NLP', x: 120, y: 150, field: 'ai'},
+                    {id: 'Prof_Bio', x: 400, y: 100, field: 'bio'},
+                    {id: 'Dr_Genetics', x: 450, y: 80, field: 'bio'},
+                    {id: 'PhD_Protein', x: 420, y: 150, field: 'bio'},
+                    {id: 'Prof_Math', x: 250, y: 250, field: 'math'},
+                    {id: 'Dr_Stats', x: 300, y: 230, field: 'math'},
+                    {id: 'PhD_Analysis', x: 270, y: 300, field: 'math'},
+                    {id: 'Prof_Physics', x: 500, y: 250, field: 'physics'},
+                    {id: 'Dr_Quantum', x: 520, y: 200, field: 'physics'},
+                    {id: 'PhD_Optics', x: 470, y: 300, field: 'physics'}
+                ],
+                edges: [
+                    // AI Department - tight collaboration
+                    ['Prof_AI', 'Dr_ML'], ['Prof_AI', 'PhD_NLP'], ['Dr_ML', 'PhD_NLP'],
+                    // Biology Department - tight collaboration
+                    ['Prof_Bio', 'Dr_Genetics'], ['Prof_Bio', 'PhD_Protein'], ['Dr_Genetics', 'PhD_Protein'],
+                    // Math Department - tight collaboration
+                    ['Prof_Math', 'Dr_Stats'], ['Prof_Math', 'PhD_Analysis'], ['Dr_Stats', 'PhD_Analysis'],
+                    // Physics Department - tight collaboration
+                    ['Prof_Physics', 'Dr_Quantum'], ['Prof_Physics', 'PhD_Optics'], ['Dr_Quantum', 'PhD_Optics'],
+                    // Interdisciplinary collaborations (weak ties)
+                    ['Dr_ML', 'Dr_Stats'], ['PhD_Protein', 'Prof_Physics'], ['Prof_AI', 'Prof_Math']
+                ]
+            },
+            social: {
+                name: "Social Media Communities",
+                description: "Friend groups in an online social network",
+                nodes: [
+                    {id: 'Alice', x: 120, y: 100, group: 'college'},
+                    {id: 'Bob', x: 80, y: 150, group: 'college'},
+                    {id: 'Carol', x: 160, y: 150, group: 'college'},
+                    {id: 'Dave', x: 120, y: 200, group: 'college'},
+                    {id: 'Emma', x: 380, y: 100, group: 'work'},
+                    {id: 'Frank', x: 340, y: 150, group: 'work'},
+                    {id: 'Grace', x: 420, y: 150, group: 'work'},
+                    {id: 'Henry', x: 380, y: 200, group: 'work'},
+                    {id: 'Ivy', x: 250, y: 300, group: 'hobby'},
+                    {id: 'Jack', x: 200, y: 350, group: 'hobby'},
+                    {id: 'Kate', x: 300, y: 350, group: 'hobby'}
+                ],
+                edges: [
+                    // College friends
+                    ['Alice', 'Bob'], ['Alice', 'Carol'], ['Bob', 'Carol'], ['Bob', 'Dave'], ['Carol', 'Dave'],
+                    // Work colleagues
+                    ['Emma', 'Frank'], ['Emma', 'Grace'], ['Frank', 'Grace'], ['Frank', 'Henry'], ['Grace', 'Henry'],
+                    // Hobby group
+                    ['Ivy', 'Jack'], ['Ivy', 'Kate'], ['Jack', 'Kate'],
+                    // Cross-group connections
+                    ['Dave', 'Ivy'], ['Emma', 'Ivy']
+                ]
+            },
+            biological: {
+                name: "Protein Interaction Network",
+                description: "Functional modules in a biological protein network",
+                nodes: [
+                    {id: 'p53', x: 150, y: 100, module: 'apoptosis'},
+                    {id: 'MDM2', x: 100, y: 150, module: 'apoptosis'},
+                    {id: 'PUMA', x: 200, y: 150, module: 'apoptosis'},
+                    {id: 'BAX', x: 150, y: 200, module: 'apoptosis'},
+                    {id: 'CDK1', x: 400, y: 100, module: 'cell_cycle'},
+                    {id: 'Cyclin_B', x: 350, y: 150, module: 'cell_cycle'},
+                    {id: 'WEE1', x: 450, y: 150, module: 'cell_cycle'},
+                    {id: 'CDC25', x: 400, y: 200, module: 'cell_cycle'},
+                    {id: 'ATM', x: 275, y: 250, module: 'dna_repair'},
+                    {id: 'BRCA1', x: 225, y: 300, module: 'dna_repair'},
+                    {id: 'BRCA2', x: 325, y: 300, module: 'dna_repair'}
+                ],
+                edges: [
+                    // Apoptosis module
+                    ['p53', 'MDM2'], ['p53', 'PUMA'], ['MDM2', 'PUMA'], ['PUMA', 'BAX'],
+                    // Cell cycle module
+                    ['CDK1', 'Cyclin_B'], ['CDK1', 'WEE1'], ['Cyclin_B', 'WEE1'], ['WEE1', 'CDC25'],
+                    // DNA repair module
+                    ['ATM', 'BRCA1'], ['ATM', 'BRCA2'], ['BRCA1', 'BRCA2'],
+                    // Cross-module interactions
+                    ['p53', 'ATM'], ['CDK1', 'p53']
+                ]
+            },
+            tech: {
+                name: "Tech Company Ecosystem",
+                description: "Business relationships between tech companies",
+                nodes: [
+                    {id: 'Google', x: 120, y: 100, sector: 'search'},
+                    {id: 'Meta', x: 80, y: 150, sector: 'social'},
+                    {id: 'Twitter', x: 160, y: 150, sector: 'social'},
+                    {id: 'LinkedIn', x: 120, y: 200, sector: 'social'},
+                    {id: 'Amazon', x: 380, y: 100, sector: 'cloud'},
+                    {id: 'Microsoft', x: 340, y: 150, sector: 'cloud'},
+                    {id: 'Oracle', x: 420, y: 150, sector: 'cloud'},
+                    {id: 'Salesforce', x: 380, y: 200, sector: 'cloud'},
+                    {id: 'Apple', x: 250, y: 300, sector: 'hardware'},
+                    {id: 'Samsung', x: 200, y: 350, sector: 'hardware'},
+                    {id: 'TSMC', x: 300, y: 350, sector: 'hardware'}
+                ],
+                edges: [
+                    // Search & Social
+                    ['Google', 'Meta'], ['Meta', 'Twitter'], ['Twitter', 'LinkedIn'], ['Meta', 'LinkedIn'],
+                    // Cloud providers
+                    ['Amazon', 'Microsoft'], ['Microsoft', 'Oracle'], ['Oracle', 'Salesforce'], ['Amazon', 'Salesforce'],
+                    // Hardware
+                    ['Apple', 'Samsung'], ['Samsung', 'TSMC'], ['Apple', 'TSMC'],
+                    // Cross-sector partnerships
+                    ['Google', 'Samsung'], ['Microsoft', 'Apple'], ['Amazon', 'Apple']
+                ]
+            }
+        };
+
+        // Parameter control setup
+        function setupParameterControls() {
+            ['maxDepth', 'minClusterSize', 'seed'].forEach(param => {
+                const slider = document.getElementById(`${param}-slider`);
+                const display = document.getElementById(`${param}-display`);
+                
+                slider.addEventListener('input', () => {
+                    display.textContent = slider.value;
+                });
+            });
+        }
+
+        function getParameters() {
+            return {
+                maxDepth: parseInt(document.getElementById('maxDepth-slider').value),
+                minClusterSize: parseInt(document.getElementById('minClusterSize-slider').value),
+                seed: parseInt(document.getElementById('seed-slider').value)
+            };
+        }
+
+        // Graph setup and visualization
+        function initGraph() {
+            setupParameterControls();
+            selectScenario(currentScenario);
+            loadCodeExample();
+            setupCodeToggle();
+        }
+
+        function setupCodeToggle() {
+            const toggle = document.getElementById('code-toggle');
+            const content = document.getElementById('code-content');
+            
+            toggle.addEventListener('click', () => {
+                if (content.style.display === 'none') {
+                    content.style.display = 'block';
+                    toggle.textContent = 'Hide Code ▲';
+                } else {
+                    content.style.display = 'none';
+                    toggle.textContent = 'Show Code ▼';
+                }
+            });
+        }
+
+        // Convert scenario to Graph object
+        function createGraph(scenario) {
+            const graph = new Graph();
+            
+            // Add nodes
+            scenario.nodes.forEach(node => {
+                graph.addNode(node.id);
+            });
+            
+            // Add edges
+            scenario.edges.forEach(([source, target]) => {
+                if (graph.hasNode(source) && graph.hasNode(target)) {
+                    graph.addEdge(source, target);
+                }
+            });
+            
+            return graph;
+        }
+
+        window.selectScenario = function(scenarioKey) {
+            currentScenario = scenarioKey;
+            const scenario = scenarios[scenarioKey];
+            
+            // Update active button
+            document.querySelectorAll('.scenario-btn').forEach(btn => btn.classList.remove('active'));
+            event?.target?.classList.add('active') || document.querySelector(`[onclick="selectScenario('${scenarioKey}')"]`).classList.add('active');
+            
+            // Create new graph
+            currentGraph = createGraph(scenario);
+            currentResult = null;
+            
+            // Update UI
+            document.getElementById('step-info').textContent = `Scenario: ${scenario.name} - ${scenario.description}`;
+            updateInfo('-', '-', '-', '-');
+            
+            // Render initial graph
+            drawGraph(scenario.nodes, scenario.edges, []);
+            
+            // Reset UI state
+            document.getElementById('start-btn').disabled = false;
+            document.getElementById('animate-btn').disabled = true;
+            document.getElementById('explain-btn').disabled = true;
+            document.getElementById('hierarchy-display').style.display = 'none';
+            document.getElementById('explanation-display').style.display = 'none';
+            document.getElementById('modularity-chart').style.display = 'none';
+        };
+
+        function drawGraph(nodes, edges, clusters = []) {
+            const svg = document.getElementById('graph');
+            svg.innerHTML = '';
+            
+            const width = 600;
+            const height = 400;
+            svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
+            
+            // Create cluster color mapping
+            const nodeToColor = new Map();
+            if (clusters.length > 0) {
+                clusters.forEach((cluster, index) => {
+                    const color = clusterColors[index % clusterColors.length];
+                    cluster.forEach(nodeId => nodeToColor.set(nodeId, color));
+                });
+            }
+            
+            // Draw edges
+            edges.forEach(([source, target]) => {
+                const sourceNode = nodes.find(n => n.id === source);
+                const targetNode = nodes.find(n => n.id === target);
+                if (sourceNode && targetNode) {
+                    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                    line.setAttribute('x1', sourceNode.x);
+                    line.setAttribute('y1', sourceNode.y);
+                    line.setAttribute('x2', targetNode.x);
+                    line.setAttribute('y2', targetNode.y);
+                    line.setAttribute('stroke', '#999');
+                    line.setAttribute('stroke-width', '2');
+                    svg.appendChild(line);
+                }
+            });
+            
+            // Draw nodes
+            nodes.forEach(node => {
+                const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                circle.setAttribute('cx', node.x);
+                circle.setAttribute('cy', node.y);
+                circle.setAttribute('r', '15');
+                circle.setAttribute('fill', nodeToColor.get(node.id) || '#e0e0e0');
+                circle.setAttribute('stroke', '#333');
+                circle.setAttribute('stroke-width', '2');
+                svg.appendChild(circle);
+                
+                // Node label
+                const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                text.setAttribute('x', node.x);
+                text.setAttribute('y', node.y + 5);
+                text.setAttribute('text-anchor', 'middle');
+                text.setAttribute('font-size', '10');
+                text.setAttribute('font-weight', 'bold');
+                text.setAttribute('fill', nodeToColor.get(node.id) ? 'white' : '#333');
+                text.textContent = node.id.substring(0, 5);
+                svg.appendChild(text);
+            });
+        }
+
+        function updateInfo(clusters, modularity, depth, splits) {
+            document.getElementById('cluster-count').textContent = clusters;
+            document.getElementById('modularity-score').textContent = modularity;
+            document.getElementById('hierarchy-depth').textContent = depth;
+            document.getElementById('splits-count').textContent = splits;
+        }
+
+        function updateModularityChart(modularityScores, currentIndex = -1) {
+            const chart = document.getElementById('modularity-chart');
+            const marker = document.getElementById('modularity-marker');
+            const currentSpan = document.getElementById('current-modularity');
+            const bestSpan = document.getElementById('best-modularity');
+            
+            chart.style.display = 'block';
+            
+            const maxModularity = Math.max(...modularityScores);
+            const currentModularity = currentIndex >= 0 ? modularityScores[currentIndex] : modularityScores[modularityScores.length - 1];
+            
+            // Update marker position (0-100%)
+            const position = modularityScores.length > 1 ? 
+                (currentIndex >= 0 ? currentIndex : modularityScores.length - 1) / (modularityScores.length - 1) * 100 : 50;
+            marker.style.left = `${position}%`;
+            
+            currentSpan.textContent = currentModularity.toFixed(3);
+            bestSpan.textContent = maxModularity.toFixed(3);
+        }
+
+        function displayHierarchy(root) {
+            const hierarchyDisplay = document.getElementById('hierarchy-display');
+            const levelsContainer = document.getElementById('hierarchy-levels');
+            
+            levelsContainer.innerHTML = '';
+            
+            // Traverse hierarchy and group by depth
+            const levelNodes = new Map();
+            
+            function traverse(node) {
+                if (!levelNodes.has(node.depth)) {
+                    levelNodes.set(node.depth, []);
+                }
+                levelNodes.get(node.depth).push(node);
+                
+                if (node.left) traverse(node.left);
+                if (node.right) traverse(node.right);
+            }
+            
+            traverse(root);
+            
+            // Create level displays
+            for (const [depth, nodes] of levelNodes) {
+                const levelDiv = document.createElement('div');
+                levelDiv.className = 'hierarchy-level';
+                levelDiv.innerHTML = `
+                    <strong>Level ${depth}:</strong> 
+                    ${nodes.map(n => `${n.id} (${n.members.size} nodes, mod: ${n.modularity.toFixed(3)})`).join(', ')}
+                `;
+                levelsContainer.appendChild(levelDiv);
+            }
+            
+            hierarchyDisplay.style.display = 'block';
+        }
+
+        function displayExplanations(explanations) {
+            const explanationDisplay = document.getElementById('explanation-display');
+            const itemsContainer = document.getElementById('explanation-items');
+            
+            itemsContainer.innerHTML = '';
+            
+            explanations.forEach((explanation, index) => {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'explanation-item';
+                
+                const keyNodesHtml = explanation.keyNodes.map(node => 
+                    `<span class="key-node">${node}</span>`
+                ).join('');
+                
+                itemDiv.innerHTML = `
+                    <strong>Split ${index + 1}:</strong> ${explanation.clusterId}<br>
+                    <strong>Reason:</strong> ${explanation.reason}<br>
+                    <strong>Modularity Improvement:</strong> ${explanation.modularityImprovement.toFixed(4)}<br>
+                    <strong>Key Nodes:</strong> <div class="key-nodes">${keyNodesHtml}</div>
+                `;
+                
+                itemsContainer.appendChild(itemDiv);
+            });
+            
+            explanationDisplay.style.display = 'block';
+        }
+
+        window.startAlgorithm = function() {
+            if (!currentGraph) return;
+            
+            const params = getParameters();
+            
+            try {
+                // Run GRSBM algorithm
+                console.log('GRSBM Algorithm Result:');
+                currentResult = grsbm(currentGraph, params);
+                console.log('Result:', currentResult);
+                
+                // Convert clusters map to arrays
+                const clusterArrays = [];
+                const clusterMap = new Map();
+                
+                for (const [nodeId, clusterId] of currentResult.clusters) {
+                    if (!clusterMap.has(clusterId)) {
+                        clusterMap.set(clusterId, []);
+                    }
+                    clusterMap.get(clusterId).push(nodeId);
+                }
+                
+                for (const cluster of clusterMap.values()) {
+                    clusterArrays.push(cluster);
+                }
+                
+                // Calculate hierarchy depth
+                function getMaxDepth(node) {
+                    if (!node.left && !node.right) return node.depth;
+                    let maxDepth = node.depth;
+                    if (node.left) maxDepth = Math.max(maxDepth, getMaxDepth(node.left));
+                    if (node.right) maxDepth = Math.max(maxDepth, getMaxDepth(node.right));
+                    return maxDepth;
+                }
+                
+                const hierarchyDepth = getMaxDepth(currentResult.root);
+                
+                // Update visualization
+                const scenario = scenarios[currentScenario];
+                drawGraph(scenario.nodes, scenario.edges, clusterArrays);
+                
+                // Update info
+                updateInfo(
+                    currentResult.numClusters,
+                    currentResult.modularityScores[currentResult.modularityScores.length - 1].toFixed(4),
+                    hierarchyDepth,
+                    currentResult.explanation.length
+                );
+                
+                // Update displays
+                updateModularityChart(currentResult.modularityScores);
+                displayHierarchy(currentResult.root);
+                displayExplanations(currentResult.explanation);
+                
+                // Update UI
+                document.getElementById('start-btn').disabled = true;
+                document.getElementById('animate-btn').disabled = false;
+                document.getElementById('explain-btn').disabled = false;
+                
+                document.getElementById('step-info').textContent = 
+                    `GRSBM found ${currentResult.numClusters} clusters using ${currentResult.explanation.length} splits with modularity ${currentResult.modularityScores[currentResult.modularityScores.length - 1].toFixed(4)}`;
+                
+            } catch (error) {
+                console.error('GRSBM algorithm error:', error);
+                document.getElementById('step-info').textContent = 'Error running algorithm. Check console for details.';
+            }
+        };
+
+        window.animateHierarchy = function() {
+            if (!currentResult || isAnimating) return;
+            
+            isAnimating = true;
+            document.getElementById('animate-btn').disabled = true;
+            
+            const modularityScores = currentResult.modularityScores;
+            animationStep = 0;
+            
+            function animateStep() {
+                if (animationStep >= modularityScores.length) {
+                    isAnimating = false;
+                    document.getElementById('animate-btn').disabled = false;
+                    return;
+                }
+                
+                // Update modularity chart
+                updateModularityChart(modularityScores, animationStep);
+                
+                // Update step info
+                const modularity = modularityScores[animationStep];
+                document.getElementById('step-info').textContent = 
+                    `Step ${animationStep + 1}: Modularity = ${modularity.toFixed(4)}`;
+                
+                // Highlight current level in hierarchy
+                const levelElements = document.querySelectorAll('.hierarchy-level');
+                levelElements.forEach((el, index) => {
+                    el.classList.toggle('current', index === animationStep);
+                });
+                
+                animationStep++;
+                setTimeout(animateStep, 1500);
+            }
+            
+            animateStep();
+        };
+
+        window.showExplanations = function() {
+            if (!currentResult) return;
+            
+            const explanationDisplay = document.getElementById('explanation-display');
+            explanationDisplay.style.display = explanationDisplay.style.display === 'none' ? 'block' : 'none';
+            
+            const button = document.getElementById('explain-btn');
+            button.textContent = explanationDisplay.style.display === 'none' ? 'Show Explanations' : 'Hide Explanations';
+        };
+
+        window.resetVisualization = function() {
+            isAnimating = false;
+            animationStep = 0;
+            selectScenario(currentScenario);
+        };
+
+        // Initialize on load
+        window.onload = initGraph;
+    </script>
+</body>
+</html>
