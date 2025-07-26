@@ -75,10 +75,22 @@ async function runAPathfindingBenchmark(configType: 'quick' | 'comprehensive') {
   // Add benchmark tests
   console.log('\nAdding benchmark tests...')
   for (const [key, testData] of testGraphs.entries()) {
+    // Convert Graph to adjacency list format expected by astar
+    const adjacencyList = new Map<number, Map<number, number>>()
+    for (let i = 0; i < testData.graphSize; i++) {
+      adjacencyList.set(i, new Map())
+    }
+    for (const edge of testData.graph.edges()) {
+      const neighbors = adjacencyList.get(edge.source)
+      if (neighbors) {
+        neighbors.set(edge.target, edge.weight)
+      }
+    }
+    
     benchmark.addTest(
       `A* Pathfinding ${testData.graphSize} vertices (${testData.graphType})`,
       () => {
-        const result = astar(testData.graph, 0, testData.graphSize - 1, () => 1)
+        const result = astar(adjacencyList, 0, testData.graphSize - 1, () => 1)
         // Verify result to prevent dead code elimination
         if (!result || !result.path) { throw new Error("A* returned invalid result") }
       },

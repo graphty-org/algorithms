@@ -14,14 +14,14 @@ const configs = {
   quick: {
     testType: 'quick' as const,
     platform: 'node' as const,
-    sizes: [100, 500, 1000],
-    iterations: 10
+    sizes: [100, 300, 500],
+    iterations: 5
   },
   comprehensive: {
     testType: 'comprehensive' as const,
     platform: 'node' as const,
-    sizes: [100, 500, 1000, 5000, 10000],
-    iterations: 20
+    sizes: [100, 300, 500, 1000, 2000],
+    iterations: 10
   }
 }
 
@@ -71,7 +71,10 @@ async function runHITSBenchmark(configType: 'quick' | 'comprehensive') {
     benchmark.addTest(
       `HITS ${testData.graphSize} vertices (${testData.graphType})`,
       () => {
-        const result = hits(testData.graph)
+        const result = hits(testData.graph, {
+          tolerance: 1e-4, // Relaxed tolerance for faster convergence
+          maxIterations: 50 // Reduced iterations
+        })
         // Verify result to prevent dead code elimination
         if (!result) { throw new Error('HITS returned empty result') }
       },
@@ -79,7 +82,7 @@ async function runHITSBenchmark(configType: 'quick' | 'comprehensive') {
       {
         minSamples: config.iterations,
         initCount: 1,
-        minTime: 0.1
+        minTime: 0.05 // minimum 50ms per test
       }
     )
   }

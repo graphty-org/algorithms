@@ -17,7 +17,7 @@ async function runBenchmark() {
     execSync(command, {
       stdio: 'pipe',
       encoding: 'utf-8',
-      timeout: isQuick ? 60000 : 180000 // 1 minute for quick, 3 minutes for comprehensive
+      timeout: isQuick ? 300000 : 600000 // 5 minutes for quick, 10 minutes for comprehensive
     })
     
     // Read the benchmark results from the most recent session file

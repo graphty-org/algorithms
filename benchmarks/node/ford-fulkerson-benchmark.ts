@@ -76,10 +76,22 @@ async function runFordFulkersonBenchmark(configType: 'quick' | 'comprehensive') 
   // Add benchmark tests
   console.log('\nAdding benchmark tests...')
   for (const [key, testData] of testGraphs.entries()) {
+    // Convert Graph to adjacency list format with string keys expected by fordFulkerson
+    const adjacencyList = new Map<string, Map<string, number>>()
+    for (let i = 0; i < testData.graphSize; i++) {
+      adjacencyList.set(String(i), new Map())
+    }
+    for (const edge of testData.graph.edges()) {
+      const neighbors = adjacencyList.get(String(edge.source))
+      if (neighbors) {
+        neighbors.set(String(edge.target), edge.weight)
+      }
+    }
+    
     benchmark.addTest(
       `Ford-Fulkerson ${testData.graphSize} vertices (${testData.graphType})`,
       () => {
-        const result = fordFulkerson(testData.graph, 0, testData.graphSize - 1)
+        const result = fordFulkerson(adjacencyList, '0', String(testData.graphSize - 1))
         // Verify result to prevent dead code elimination
         if (result.maxFlow === undefined) { throw new Error("Ford-Fulkerson returned invalid result") }
       },

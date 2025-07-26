@@ -35,7 +35,18 @@ const algorithms = [
   { name: 'Hierarchical Clustering', file: 'hierarchical-clustering-benchmark.ts' }, // Now with tiny graphs
   { name: 'MCL', file: 'mcl-benchmark.ts' }, // Now with small graphs and fewer iterations
   { name: 'Min-Cut', file: 'min-cut-benchmark.ts' },
-  { name: 'Adamic-Adar', file: 'adamic-adar-benchmark.ts' }
+  { name: 'Adamic-Adar', file: 'adamic-adar-benchmark.ts' },
+  // Additional algorithms to reach 32 total
+  { name: 'A* Pathfinding', file: 'a--pathfinding-benchmark.ts' },
+  { name: 'Ford-Fulkerson', file: 'ford-fulkerson-benchmark.ts' },
+  { name: 'Graph Isomorphism', file: 'graph-isomorphism-benchmark.ts' },
+  { name: 'GRSBM', file: 'grsbm-benchmark.ts' },
+  { name: 'Label Propagation', file: 'label-propagation-benchmark.ts' },
+  { name: 'Louvain', file: 'louvain-benchmark.ts' },
+  { name: 'Prim MST', file: 'prim-s-mst-benchmark.ts' },
+  { name: 'Spectral Clustering', file: 'spectral-clustering-benchmark.ts' },
+  { name: 'Sync', file: 'sync-benchmark.ts' },
+  { name: 'Terahac', file: 'terahac-benchmark.ts' }
 ]
 
 interface WorkerResult {

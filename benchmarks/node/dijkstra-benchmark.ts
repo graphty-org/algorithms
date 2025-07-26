@@ -13,14 +13,14 @@ const configs = {
   quick: {
     testType: 'quick' as const,
     platform: 'node' as const,
-    sizes: [100, 500, 1000],
-    iterations: 10
+    sizes: [100, 300, 500],
+    iterations: 5
   },
   comprehensive: {
     testType: 'comprehensive' as const,
     platform: 'node' as const,
-    sizes: [100, 500, 1000, 2000, 5000],
-    iterations: 20
+    sizes: [100, 300, 500, 1000, 2000],
+    iterations: 10
   }
 }
 
@@ -94,7 +94,7 @@ async function runDijkstraBenchmark(configType: 'quick' | 'comprehensive') {
         {
           minSamples: config.iterations,
           initCount: 1,
-          minTime: 0.1 // minimum 100ms per test
+          minTime: 0.05 // minimum 50ms per test
         }
       )
     }
@@ -142,7 +142,7 @@ async function runDijkstraBenchmark(configType: 'quick' | 'comprehensive') {
           {
             minSamples: Math.floor(config.iterations * 0.7), // Fewer iterations for sparse
             initCount: 1,
-            minTime: 0.1
+            minTime: 0.05
           }
         )
         

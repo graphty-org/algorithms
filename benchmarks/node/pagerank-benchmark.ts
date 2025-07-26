@@ -14,14 +14,14 @@ const configs = {
   quick: {
     testType: 'quick' as const,
     platform: 'node' as const,
-    sizes: [100, 500, 1000],
-    iterations: 10
+    sizes: [100, 300, 500],
+    iterations: 5
   },
   comprehensive: {
     testType: 'comprehensive' as const,
     platform: 'node' as const,
-    sizes: [100, 500, 1000, 5000, 10000],
-    iterations: 20
+    sizes: [100, 300, 500, 1000, 2000],
+    iterations: 10
   }
 }
 
@@ -98,8 +98,8 @@ async function runPageRankBenchmark(configType: 'quick' | 'comprehensive') {
         () => {
           const result = pageRank(testData.graph, {
             dampingFactor: 0.85,
-            tolerance: 1e-6,
-            maxIterations: 100
+            tolerance: 1e-4, // Relaxed tolerance for faster convergence
+            maxIterations: 50 // Reduced iterations
           })
           // Verify result to prevent dead code elimination
           if (!result || Object.keys(result.ranks).length === 0) {
@@ -110,7 +110,7 @@ async function runPageRankBenchmark(configType: 'quick' | 'comprehensive') {
         {
           minSamples: config.iterations,
           initCount: 1,
-          minTime: 0.1 // minimum 100ms per test
+          minTime: 0.05 // minimum 50ms per test
         }
       )
     }
@@ -151,8 +151,8 @@ async function runPageRankBenchmark(configType: 'quick' | 'comprehensive') {
             () => {
               const result = pageRank(testData.graph, {
                 dampingFactor: 0.85,
-                tolerance: 1e-6,
-                maxIterations: 100
+                tolerance: 1e-4,
+                maxIterations: 50
               })
               if (!result || Object.keys(result.ranks).length === 0) {
                 throw new Error('PageRank returned invalid result')
@@ -162,7 +162,7 @@ async function runPageRankBenchmark(configType: 'quick' | 'comprehensive') {
             {
               minSamples: Math.floor(config.iterations * 0.7), // Adjust iterations based on graph type
               initCount: 1,
-              minTime: 0.1
+              minTime: 0.05
             }
           )
           

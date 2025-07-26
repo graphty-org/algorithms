@@ -213,16 +213,27 @@ function findAllShortestPaths(graph: Graph, source: NodeId): {
     let queueIndex = 0;
     while (queueIndex < queue.length) {
         const current = queue[queueIndex++];
-        
-        if (visited.has(current)) continue;
+        if (!current) {
+            continue;
+        }
+
+        if (visited.has(current)) {
+            continue;
+        }
+
         visited.add(current);
 
-        const currentDistance = distances.get(current)!;
+        const currentDistance = distances.get(current);
+        if (currentDistance === undefined) {
+            continue;
+        }
 
         for (const neighbor of graph.neighbors(current)) {
             // Skip if already processed
-            if (visited.has(neighbor)) continue;
-            
+            if (visited.has(neighbor)) {
+                continue;
+            }
+
             const edgeWeight = 1; // Unweighted for community detection
             const newDistance = currentDistance + edgeWeight;
             const neighborDistance = distances.get(neighbor) ?? Infinity;
@@ -231,15 +242,21 @@ function findAllShortestPaths(graph: Graph, source: NodeId): {
                 // Found shorter path
                 distances.set(neighbor, newDistance);
                 predecessors.set(neighbor, [current]);
-                pathCounts.set(neighbor, pathCounts.get(current)!);
+                const currentPathCount = pathCounts.get(current);
+                if (currentPathCount !== undefined) {
+                    pathCounts.set(neighbor, currentPathCount);
+                }
+
                 queue.push(neighbor);
             } else if (newDistance === neighborDistance) {
                 // Found alternative shortest path
                 const neighborPredecessors = predecessors.get(neighbor);
                 if (neighborPredecessors) {
                     neighborPredecessors.push(current);
-                    pathCounts.set(neighbor, 
-                        (pathCounts.get(neighbor) ?? 0) + pathCounts.get(current)!);
+                    const currentPathCount = pathCounts.get(current);
+                    if (currentPathCount !== undefined) {
+                        pathCounts.set(neighbor, (pathCounts.get(neighbor) ?? 0) + currentPathCount);
+                    }
                 }
             }
         }
@@ -277,7 +294,7 @@ function calculateModularity(
 
     let modularity = 0;
     const degrees = new Map<NodeId, number>();
-    
+
     // Pre-calculate all degrees
     for (const node of graph.nodes()) {
         degrees.set(node.id, getNodeDegree(graph, node.id));
@@ -287,12 +304,15 @@ function calculateModularity(
     for (const edge of graph.edges()) {
         const communityI = communityMap.get(edge.source);
         const communityJ = communityMap.get(edge.target);
-        
+
         if (communityI === communityJ) {
             const edgeWeight = edge.weight ?? 1;
-            const degreeI = degrees.get(edge.source)!;
-            const degreeJ = degrees.get(edge.target)!;
-            
+            const degreeI = degrees.get(edge.source);
+            const degreeJ = degrees.get(edge.target);
+            if (degreeI === undefined || degreeJ === undefined) {
+                continue;
+            }
+
             modularity += edgeWeight - ((degreeI * degreeJ) / (2 * totalEdgeWeight));
         }
     }
