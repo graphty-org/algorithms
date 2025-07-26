@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Graphty Algorithms</title>
+    <link rel="stylesheet" href="shared/design-system.css">
+    <style>
+        body {
+            background-color: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+        
+        .header {
+            background: var(--bg-primary);
+            border-bottom: 1px solid var(--border-color-light);
+            padding: var(--spacing-2xl) 0;
+        }
+        
+        .header h1 {
+            color: var(--primary-blue);
+            font-size: var(--font-size-3xl);
+            font-weight: var(--font-weight-semibold);
+            margin: 0 0 var(--spacing-sm) 0;
+        }
+        
+        .header p {
+            color: var(--text-secondary);
+            font-size: var(--font-size-lg);
+            margin: 0;
+        }
+        
+        .content-section {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color-light);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-xl);
+            margin: var(--spacing-xl) 0;
+        }
+        
+        .links-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--spacing-xl);
+        }
+        
+        .link-card {
+            border: 1px solid var(--border-color-light);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-lg);
+            transition: border-color var(--transition-base);
+        }
+        
+        .link-card:hover {
+            border-color: var(--primary-blue);
+        }
+        
+        .link-card h3 {
+            color: var(--primary-blue);
+            font-size: var(--font-size-xl);
+            margin: 0 0 var(--spacing-sm) 0;
+        }
+        
+        .link-card p {
+            color: var(--text-secondary);
+            margin: 0 0 var(--spacing-md) 0;
+        }
+        
+        .link-card a {
+            color: var(--primary-blue);
+            font-weight: var(--font-weight-medium);
+        }
+        
+        .installation {
+            background: var(--gray-100);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-md);
+            font-family: var(--font-mono);
+            margin: var(--spacing-md) 0;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: var(--spacing-xl);
+            color: var(--text-muted);
+            font-size: var(--font-size-sm);
+        }
+        
+        .footer a {
+            color: var(--primary-blue);
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="container">
+            <h1>Graphty Algorithms</h1>
+            <p>TypeScript library for graph algorithms</p>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="content-section">
+            <div class="links-grid">
+                <div class="link-card">
+                    <h3>Examples</h3>
+                    <p>Interactive visualizations of graph algorithms</p>
+                    <a href="examples/">View Examples →</a>
+                </div>
+                <div class="link-card">
+                    <h3>Benchmarks</h3>
+                    <p>Performance metrics and algorithm comparisons</p>
+                    <a href="benchmarks/">View Benchmarks →</a>
+                </div>
+                <div class="link-card">
+                    <h3>Documentation</h3>
+                    <p>API reference and usage guides</p>
+                    <a href="https://github.com/graphty-org/algorithms#readme">View Docs →</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="content-section">
+            <h2>Installation</h2>
+            <div class="installation">npm install @graphty/algorithms</div>
+        </div>
+    </div>
+    
+    <footer class="footer">
+        <a href="https://github.com/graphty-org/algorithms">GitHub</a> &middot;
+        <a href="https://www.npmjs.com/package/@graphty/algorithms">npm</a> &middot;
+        <a href="https://github.com/graphty-org/algorithms/issues">Issues</a>
+    </footer>
+</body>
+</html>

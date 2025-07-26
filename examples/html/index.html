@@ -16,378 +16,339 @@
     
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Graph Algorithms - Interactive Examples</title>
+    <title>Graph Algorithm Examples</title>
     <link rel="stylesheet" href="../shared/design-system.css">
-    <link rel="stylesheet" href="shared/styles.css">
     <style>
-        /* Page-specific styles - clean professional design */
         body {
             background-color: var(--bg-tertiary);
-        }
-        
-        .hero {
-            background: var(--bg-primary);
             color: var(--text-primary);
-            text-align: center;
-            padding: var(--spacing-2xl) var(--spacing-md);
-            margin-bottom: var(--spacing-xl);
-            border-bottom: 1px solid var(--border-color-light);
         }
         
-        .hero h1 {
-            font-size: var(--font-size-4xl);
-            margin: 0 0 var(--spacing-md) 0;
-            color: var(--primary-blue);
-            font-weight: var(--font-weight-semibold);
-        }
-        
-        .hero p {
-            font-size: var(--font-size-lg);
-            max-width: 800px;
-            margin: 0 auto;
-            color: var(--text-secondary);
-        }
-        
-        .nav {
+        .header {
             background: var(--bg-primary);
-            box-shadow: var(--shadow-md);
-            padding: var(--spacing-md);
+            border-bottom: 1px solid var(--border-color-light);
+            padding: var(--spacing-xl) 0;
         }
         
-        .nav .container {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+        .header h1 {
+            color: var(--primary-blue);
+            font-size: var(--font-size-2xl);
+            font-weight: var(--font-weight-semibold);
+            margin: 0 0 var(--spacing-sm) 0;
+        }
+        
+        .header p {
+            color: var(--text-secondary);
+            margin: 0;
+        }
+        
+        .breadcrumb {
+            padding: var(--spacing-md) 0;
+        }
+        
+        .breadcrumb a {
+            color: var(--primary-blue);
+            text-decoration: none;
+        }
+        
+        .algorithms-container {
+            padding: var(--spacing-xl) 0;
         }
         
         .category-section {
-            margin-bottom: var(--spacing-2xl);
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color-light);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
         }
         
         .category-section h2 {
             color: var(--primary-blue);
-            border-bottom: 2px solid var(--primary-blue);
-            padding-bottom: var(--spacing-sm);
-            margin-bottom: var(--spacing-md);
-            font-size: var(--font-size-2xl);
+            font-size: var(--font-size-xl);
+            margin: 0 0 var(--spacing-sm) 0;
         }
         
-        .algorithms-grid {
+        .category-section > p {
+            color: var(--text-secondary);
+            margin: 0 0 var(--spacing-md) 0;
+        }
+        
+        .algorithm-list {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: var(--spacing-lg);
-            margin-top: var(--spacing-lg);
+            gap: var(--spacing-sm);
+        }
+        
+        .algorithm-link {
+            display: block;
+            padding: var(--spacing-sm) var(--spacing-md);
+            background-color: var(--bg-secondary);
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color-light);
+            transition: all var(--transition-base);
+            text-decoration: none;
+            color: var(--text-primary);
+        }
+        
+        .algorithm-link:hover {
+            background-color: var(--bg-primary);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-sm);
+            text-decoration: none;
+            border-color: var(--primary-blue);
+        }
+        
+        .algorithm-link strong {
+            color: var(--primary-blue);
+            display: block;
+            margin-bottom: 2px;
+        }
+        
+        .algorithm-link small {
+            color: var(--text-secondary);
+            font-size: var(--font-size-sm);
         }
         
         .footer {
             text-align: center;
-            margin-top: var(--spacing-3xl);
-            padding-top: var(--spacing-xl);
-            border-top: 1px solid var(--border-color-light);
+            padding: var(--spacing-xl);
             color: var(--text-muted);
             font-size: var(--font-size-sm);
-            background: var(--bg-primary);
-            padding: var(--spacing-xl);
+        }
+        
+        .footer a {
+            color: var(--primary-blue);
         }
     </style>
 </head>
 <body>
-    <nav class="nav">
+    <div class="header">
         <div class="container">
-            <a href="../../" class="nav-brand">🌐 Graphty Algorithms</a>
-            <div class="nav-links">
-                <a href="../../" class="nav-link">Home</a>
-                <a href="./" class="nav-link active">Examples</a>
-                <a href="../../benchmarks/" class="nav-link">Benchmarks</a>
+            <div class="breadcrumb">
+                <a href="../">← Home</a>
             </div>
+            <h1>Algorithm Examples</h1>
+            <p>Interactive visualizations of graph algorithm implementations</p>
         </div>
-    </nav>
-    
-    <div class="hero">
-        <h1>Graph Algorithms</h1>
-        <p>Interactive demonstrations of fundamental graph algorithms implemented in TypeScript. 
-           Explore, learn, and visualize how these algorithms work on different graph structures.</p>
     </div>
 
     <main class="container">
-        <div class="algorithms-grid">
+        <div class="algorithms-container">
             <!-- Traversal Algorithms -->
-            <div class="card category-section">
-                <h2>🔍 Graph Traversal</h2>
-                <p>Fundamental algorithms for visiting nodes in a graph systematically.</p>
+            <div class="category-section">
+                <h2>Graph Traversal</h2>
+                <p>Algorithms for visiting nodes in a graph systematically.</p>
                 <div class="algorithm-list">
                     <a href="algorithms/traversal/bfs.html" class="algorithm-link">
-                        <strong>Breadth-First Search (BFS)</strong><br>
+                        <strong>Breadth-First Search (BFS)</strong>
                         <small>Level-by-level graph exploration</small>
                     </a>
                     <a href="algorithms/traversal/dfs.html" class="algorithm-link">
-                        <strong>Depth-First Search (DFS)</strong><br>
+                        <strong>Depth-First Search (DFS)</strong>
                         <small>Deep exploration before backtracking</small>
                     </a>
                 </div>
             </div>
 
             <!-- Shortest Path Algorithms -->
-            <div class="card category-section">
-                <h2>🛣️ Shortest Path</h2>
+            <div class="category-section">
+                <h2>Shortest Path</h2>
                 <p>Find the optimal path between nodes with minimum cost or distance.</p>
                 <div class="algorithm-list">
                     <a href="algorithms/shortest-path/dijkstra.html" class="algorithm-link">
-                        <strong>Dijkstra's Algorithm</strong><br>
+                        <strong>Dijkstra's Algorithm</strong>
                         <small>Single-source shortest paths</small>
                     </a>
                     <a href="algorithms/shortest-path/bellman-ford.html" class="algorithm-link">
-                        <strong>Bellman-Ford Algorithm</strong><br>
+                        <strong>Bellman-Ford Algorithm</strong>
                         <small>Handles negative weights and cycles</small>
                     </a>
                     <a href="algorithms/shortest-path/floyd-warshall.html" class="algorithm-link">
-                        <strong>Floyd-Warshall Algorithm</strong><br>
+                        <strong>Floyd-Warshall Algorithm</strong>
                         <small>All-pairs shortest paths</small>
                     </a>
                 </div>
             </div>
 
             <!-- Centrality Algorithms -->
-            <div class="card category-section">
-                <h2>⭐ Centrality Measures</h2>
+            <div class="category-section">
+                <h2>Centrality Measures</h2>
                 <p>Identify the most important nodes in a network based on different criteria.</p>
                 <div class="algorithm-list">
                     <a href="algorithms/centrality/degree.html" class="algorithm-link">
-                        <strong>Degree Centrality</strong><br>
+                        <strong>Degree Centrality</strong>
                         <small>Node importance by connection count</small>
                     </a>
                     <a href="algorithms/centrality/pagerank.html" class="algorithm-link">
-                        <strong>PageRank</strong><br>
+                        <strong>PageRank</strong>
                         <small>Link-based importance ranking</small>
                     </a>
                     <a href="algorithms/centrality/betweenness.html" class="algorithm-link">
-                        <strong>Betweenness Centrality</strong><br>
+                        <strong>Betweenness Centrality</strong>
                         <small>Nodes that bridge network parts</small>
                     </a>
                     <a href="algorithms/centrality/closeness.html" class="algorithm-link">
-                        <strong>Closeness Centrality</strong><br>
+                        <strong>Closeness Centrality</strong>
                         <small>Nodes with shortest paths to all others</small>
                     </a>
                     <a href="algorithms/centrality/eigenvector.html" class="algorithm-link">
-                        <strong>Eigenvector Centrality</strong><br>
+                        <strong>Eigenvector Centrality</strong>
                         <small>Influence based on neighbor importance</small>
                     </a>
                     <a href="algorithms/centrality/katz.html" class="algorithm-link">
-                        <strong>Katz Centrality</strong><br>
+                        <strong>Katz Centrality</strong>
                         <small>Eigenvector with base influence guarantee</small>
                     </a>
                     <a href="algorithms/centrality/hits.html" class="algorithm-link">
-                        <strong>HITS Algorithm</strong><br>
+                        <strong>HITS Algorithm</strong>
                         <small>Hub and authority scores for directed graphs</small>
                     </a>
                 </div>
             </div>
             
             <!-- Components Algorithms -->
-            <div class="card category-section">
-                <h2>🔗 Graph Components</h2>
+            <div class="category-section">
+                <h2>Graph Components</h2>
                 <p>Analyze the connectivity and structure of graphs.</p>
                 <div class="algorithm-list">
                     <a href="algorithms/components/connected-components.html" class="algorithm-link">
-                        <strong>Connected Components</strong><br>
+                        <strong>Connected Components</strong>
                         <small>Find isolated subgraphs</small>
                     </a>
                 </div>
             </div>
 
             <!-- Minimum Spanning Tree Algorithms -->
-            <div class="card category-section">
-                <h2>🌳 Minimum Spanning Tree</h2>
+            <div class="category-section">
+                <h2>Minimum Spanning Tree</h2>
                 <p>Find the minimum weight tree that connects all vertices.</p>
                 <div class="algorithm-list">
                     <a href="algorithms/mst/kruskal.html" class="algorithm-link">
-                        <strong>Kruskal's Algorithm</strong><br>
+                        <strong>Kruskal's Algorithm</strong>
                         <small>Build MST by sorting edges</small>
                     </a>
                     <a href="algorithms/mst/prim.html" class="algorithm-link">
-                        <strong>Prim's Algorithm</strong><br>
+                        <strong>Prim's Algorithm</strong>
                         <small>Grow MST from a starting vertex</small>
                     </a>
                 </div>
             </div>
 
             <!-- Pathfinding Algorithms -->
-            <div class="card category-section">
-                <h2>🗺️ Pathfinding</h2>
-                <p>Intelligent algorithms for finding optimal paths in graphs.</p>
+            <div class="category-section">
+                <h2>Pathfinding</h2>
+                <p>Algorithms for finding optimal paths in graphs.</p>
                 <div class="algorithm-list">
                     <a href="algorithms/pathfinding/astar.html" class="algorithm-link">
-                        <strong>A* Algorithm</strong><br>
+                        <strong>A* Algorithm</strong>
                         <small>Smart pathfinding with heuristics</small>
                     </a>
                 </div>
             </div>
 
             <!-- Community Detection Algorithms -->
-            <div class="card category-section">
-                <h2>👥 Community Detection</h2>
+            <div class="category-section">
+                <h2>Community Detection</h2>
                 <p>Discover groups and clusters within networks.</p>
                 <div class="algorithm-list">
                     <a href="algorithms/community/louvain.html" class="algorithm-link">
-                        <strong>Louvain Method</strong><br>
+                        <strong>Louvain Method</strong>
                         <small>Fast community detection via modularity</small>
                     </a>
                     <a href="algorithms/community/label-propagation.html" class="algorithm-link">
-                        <strong>Label Propagation</strong><br>
+                        <strong>Label Propagation</strong>
                         <small>Nodes adopt neighbors' most common label</small>
                     </a>
                     <a href="algorithms/community/girvan-newman.html" class="algorithm-link">
-                        <strong>Girvan-Newman Algorithm</strong><br>
+                        <strong>Girvan-Newman Algorithm</strong>
                         <small>Hierarchical community detection via edge betweenness</small>
                     </a>
                     <a href="algorithms/community/leiden.html" class="algorithm-link">
-                        <strong>Leiden Algorithm</strong><br>
+                        <strong>Leiden Algorithm</strong>
                         <small>Improved Louvain with well-connected communities</small>
                     </a>
                 </div>
             </div>
 
             <!-- Clustering Algorithms -->
-            <div class="card category-section">
-                <h2>🔬 Clustering</h2>
+            <div class="category-section">
+                <h2>Clustering</h2>
                 <p>Decompose and analyze graph structure through clustering techniques.</p>
                 <div class="algorithm-list">
                     <a href="algorithms/clustering/k-core.html" class="algorithm-link">
-                        <strong>K-Core Decomposition</strong><br>
+                        <strong>K-Core Decomposition</strong>
                         <small>Find densely connected cores</small>
                     </a>
                     <a href="algorithms/clustering/hierarchical.html" class="algorithm-link">
-                        <strong>Hierarchical Clustering</strong><br>
+                        <strong>Hierarchical Clustering</strong>
                         <small>Build tree of clusters by merging closest pairs</small>
                     </a>
                     <a href="algorithms/clustering/spectral.html" class="algorithm-link">
-                        <strong>Spectral Clustering</strong><br>
+                        <strong>Spectral Clustering</strong>
                         <small>Use eigenvectors to find non-convex clusters</small>
                     </a>
                     <a href="algorithms/clustering/mcl.html" class="algorithm-link">
-                        <strong>MCL (Markov Clustering)</strong><br>
+                        <strong>MCL (Markov Clustering)</strong>
                         <small>Flow-based clustering via random walks</small>
                     </a>
                 </div>
             </div>
 
             <!-- Flow Algorithms -->
-            <div class="card category-section">
-                <h2>💧 Network Flow</h2>
+            <div class="category-section">
+                <h2>Network Flow</h2>
                 <p>Analyze flow capacity and optimization in networks.</p>
                 <div class="algorithm-list">
                     <a href="algorithms/flow/ford-fulkerson.html" class="algorithm-link">
-                        <strong>Ford-Fulkerson</strong><br>
+                        <strong>Ford-Fulkerson</strong>
                         <small>Maximum flow through a network</small>
                     </a>
                     <a href="algorithms/flow/min-cut.html" class="algorithm-link">
-                        <strong>Min-Cut Algorithms</strong><br>
+                        <strong>Min-Cut Algorithms</strong>
                         <small>Find minimum cuts using S-T, Stoer-Wagner, and Karger</small>
                     </a>
                 </div>
             </div>
 
             <!-- Link Prediction Algorithms -->
-            <div class="card category-section">
-                <h2>🔮 Link Prediction</h2>
+            <div class="category-section">
+                <h2>Link Prediction</h2>
                 <p>Predict future connections based on network structure and similarity measures.</p>
                 <div class="algorithm-list">
                     <a href="algorithms/link-prediction/common-neighbors.html" class="algorithm-link">
-                        <strong>Common Neighbors</strong><br>
+                        <strong>Common Neighbors</strong>
                         <small>Predict links based on mutual connections</small>
                     </a>
                     <a href="algorithms/link-prediction/adamic-adar.html" class="algorithm-link">
-                        <strong>Adamic-Adar Index</strong><br>
+                        <strong>Adamic-Adar Index</strong>
                         <small>Weighted similarity emphasizing rare connections</small>
                     </a>
                 </div>
             </div>
 
             <!-- Matching Algorithms -->
-            <div class="card category-section">
-                <h2>🔄 Graph Matching</h2>
+            <div class="category-section">
+                <h2>Graph Matching</h2>
                 <p>Find optimal assignments and structural equivalences in graphs.</p>
                 <div class="algorithm-list">
                     <a href="algorithms/matching/bipartite.html" class="algorithm-link">
-                        <strong>Bipartite Matching</strong><br>
+                        <strong>Bipartite Matching</strong>
                         <small>Maximum matching between two disjoint sets</small>
                     </a>
                     <a href="algorithms/matching/isomorphism.html" class="algorithm-link">
-                        <strong>Graph Isomorphism</strong><br>
+                        <strong>Graph Isomorphism</strong>
                         <small>Test if two graphs have identical structure</small>
                     </a>
                 </div>
             </div>
 
-            <!-- Coming Soon Section -->
-            <div class="card category-section">
-                <h2>🚧 Coming Soon</h2>
-                <p>Additional algorithms are being implemented. Check back soon for updates!</p>
-                <div class="algorithm-list">
-                    <div style="padding: 1rem; background: #f0f8ff; border-radius: 8px; border-left: 4px solid #2c5aa0;">
-                        <strong>Planned Algorithms:</strong><br>
-                        <small>
-                            • More Flow Algorithms (Max Bipartite Matching)<br>
-                            • More Link Prediction (Resource Allocation, Jaccard Coefficient)<br>
-                            • Advanced Research Algorithms (GRSBM, Sync, TeraHAC)<br>
-                            • And many more...
-                        </small>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="card" style="margin-top: 3rem; text-align: center;">
-            <h3>About This Project</h3>
-            <p>
-                These interactive examples demonstrate the algorithms implemented in the 
-                <strong>@graphty/algorithms</strong> TypeScript library. Each example provides:
-            </p>
-            <ul style="text-align: left; max-width: 600px; margin: 1rem auto;">
-                <li>Interactive visualization with SVG graphics</li>
-                <li>Step-by-step algorithm execution</li>
-                <li>Parameter adjustment and different graph types</li>
-                <li>Educational information about complexity and applications</li>
-                <li>Real-time results and performance metrics</li>
-            </ul>
-            <p>
-                <a href="https://github.com/graphty-org/algorithms" style="color: var(--primary-blue);">
-                    View on GitHub
-                </a> | 
-                <a href="https://www.npmjs.com/package/@graphty/algorithms" style="color: var(--primary-blue);">
-                    Install via npm
-                </a>
-            </p>
         </div>
     </main>
-
-    <script>
-        // Add some interactivity to the index page
-        document.addEventListener('DOMContentLoaded', () => {
-            // Count total algorithms
-            const algorithmLinks = document.querySelectorAll('.algorithm-link');
-            const totalAlgorithms = algorithmLinks.length;
-            
-            // Update the stats (already set to correct value)
-            // Stats are now hardcoded to show 3 algorithms, 2 categories
-            
-            // Add hover effects to category cards
-            const categoryCards = document.querySelectorAll('.category-section');
-            categoryCards.forEach(card => {
-                card.addEventListener('mouseenter', () => {
-                    card.style.transform = 'translateY(-5px)';
-                });
-                
-                card.addEventListener('mouseleave', () => {
-                    card.style.transform = 'translateY(0)';
-                });
-            });
-            
-        });
-    </script>
     
     <footer class="footer">
-        <p>Interactive Examples • <a href="https://github.com/graphty-org/algorithms">GitHub</a> • <a href="https://www.npmjs.com/package/@graphty/algorithms">npm</a></p>
+        <a href="https://github.com/graphty-org/algorithms">GitHub</a> &middot;
+        <a href="https://www.npmjs.com/package/@graphty/algorithms">npm</a> &middot;
+        <a href="https://github.com/graphty-org/algorithms/issues">Issues</a>
     </footer>
 </body>
 </html>
