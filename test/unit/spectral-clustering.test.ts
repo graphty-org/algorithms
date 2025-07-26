@@ -294,7 +294,7 @@ describe("Spectral Clustering", () => {
             // for disconnected components due to k-means initialization randomness
             // We should expect at least 2 communities but may get 2 or 3
             expect(result.communities.length).toBeGreaterThanOrEqual(2);
-            expect(result.communities.length).toBeLessThanOrEqualTo(3);
+            expect(result.communities.length).toBeLessThanOrEqual(3);
             expect(result.clusterAssignments.size).toBe(9);
 
             // Verify all nodes are assigned to clusters
