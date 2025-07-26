@@ -6,15 +6,30 @@
     <title>Graphty Algorithms - Interactive Examples & Performance Analysis</title>
     <link rel="stylesheet" href="shared/design-system.css">
     <style>
-        /* Page-specific styles */
+        /* Clean professional styling to match BFS and Performance Report pages */
         body {
-            background: var(--gradient-hero);
-            min-height: 100vh;
+            background-color: var(--bg-tertiary);
         }
         
         .hero {
-            background: none;
+            background: var(--bg-primary);
             padding: var(--spacing-3xl) 0;
+            text-align: center;
+            border-bottom: 1px solid var(--border-color-light);
+        }
+        
+        .hero h1 {
+            color: var(--primary-blue);
+            font-size: var(--font-size-5xl);
+            font-weight: var(--font-weight-semibold);
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .hero p {
+            color: var(--text-secondary);
+            font-size: var(--font-size-xl);
+            max-width: 800px;
+            margin: 0 auto;
         }
         
         .features {
@@ -25,12 +40,12 @@
         }
         
         .feature {
-            background: rgba(255, 255, 255, 0.1);
+            background: var(--bg-primary);
             padding: var(--spacing-lg);
             border-radius: var(--radius-lg);
-            color: var(--white);
             text-align: center;
-            backdrop-filter: blur(10px);
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-color-light);
         }
         
         .feature-icon {
@@ -39,22 +54,29 @@
         }
         
         .feature h3 {
-            color: var(--white);
+            color: var(--primary-blue);
             font-size: var(--font-size-xl);
             margin-bottom: var(--spacing-sm);
         }
         
         .feature p {
-            color: rgba(255, 255, 255, 0.9);
+            color: var(--text-secondary);
             margin: 0;
         }
         
         .stats-section {
-            background: rgba(255, 255, 255, 0.95);
+            background: var(--bg-primary);
             padding: var(--spacing-2xl);
             border-radius: var(--radius-lg);
             margin: var(--spacing-2xl) 0;
             text-align: center;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-color-light);
+        }
+        
+        .stats-section h2 {
+            color: var(--primary-blue);
+            margin-bottom: var(--spacing-xl);
         }
         
         .stats-grid {
@@ -69,15 +91,15 @@
         }
         
         .stat-number {
-            font-size: var(--font-size-5xl);
+            font-size: var(--font-size-4xl);
             font-weight: var(--font-weight-bold);
-            color: var(--primary-purple);
+            color: var(--primary-blue);
             display: block;
             line-height: 1;
         }
         
         .stat-label {
-            font-size: var(--font-size-lg);
+            font-size: var(--font-size-base);
             color: var(--text-secondary);
             margin-top: var(--spacing-sm);
         }
@@ -91,16 +113,17 @@
         
         .section-card {
             text-align: center;
-            background: rgba(255, 255, 255, 0.98);
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color-light);
         }
         
         .section-card:hover {
-            transform: translateY(-4px);
-            box-shadow: var(--shadow-2xl);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
         }
         
         .section-icon {
-            font-size: 4rem;
+            font-size: 3rem;
             margin-bottom: var(--spacing-md);
         }
         
@@ -124,11 +147,13 @@
         }
         
         .quick-start {
-            background: rgba(255, 255, 255, 0.95);
+            background: var(--bg-primary);
             padding: var(--spacing-2xl);
             border-radius: var(--radius-lg);
             margin-top: var(--spacing-2xl);
             text-align: center;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-color-light);
         }
         
         .quick-start h3 {
@@ -137,12 +162,13 @@
         }
         
         .code-block {
-            background: var(--gray-900);
-            color: var(--white);
+            background: var(--gray-100);
+            color: var(--text-primary);
             padding: var(--spacing-md);
             border-radius: var(--radius-md);
             font-family: var(--font-mono);
             margin: var(--spacing-lg) 0;
+            border: 1px solid var(--border-color);
         }
         
         .links {
@@ -154,23 +180,12 @@
         }
         
         .links a {
-            color: var(--primary-purple);
+            color: var(--primary-blue);
             font-weight: var(--font-weight-medium);
         }
         
         .links a:hover {
-            color: var(--primary-blue);
-        }
-        
-        /* Override gradient button for this page */
-        .btn-gradient {
-            background: linear-gradient(135deg, var(--primary-purple) 0%, #764ba2 100%);
-            color: var(--white);
-        }
-        
-        .btn-gradient:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);
+            color: var(--primary-green);
         }
     </style>
 </head>
@@ -232,8 +247,8 @@
                 <h2>Interactive Examples</h2>
                 <p>Explore algorithms through visual, interactive demonstrations. Watch step-by-step execution, adjust parameters, and understand how each algorithm works.</p>
                 <div class="button-group">
-                    <a href="examples/" class="btn btn-gradient">Try Examples</a>
-                    <a href="https://github.com/graphty-org/algorithms" class="btn btn-outline">View Source</a>
+                    <a href="examples/" class="btn-primary">Try Examples</a>
+                    <a href="https://github.com/graphty-org/algorithms" class="btn-secondary">View Source</a>
                 </div>
             </div>
             
@@ -242,8 +257,8 @@
                 <h2>Performance Analysis</h2>
                 <p>Detailed benchmark reports with performance metrics, complexity analysis, and comparative studies across different graph sizes and types.</p>
                 <div class="button-group">
-                    <a href="benchmarks/" class="btn btn-gradient">View Benchmarks</a>
-                    <a href="https://www.npmjs.com/package/@graphty/algorithms" class="btn btn-outline">Install Package</a>
+                    <a href="benchmarks/" class="btn-primary">View Benchmarks</a>
+                    <a href="https://www.npmjs.com/package/@graphty/algorithms" class="btn-secondary">Install Package</a>
                 </div>
             </div>
         </div>
