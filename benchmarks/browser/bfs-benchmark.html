@@ -208,19 +208,71 @@
 
         let currentResults = null;
 
+        // Warmup function for browser benchmarks
+        async function performWarmup(name, testFn, warmupConfig) {
+            if (!warmupConfig?.enabled) {
+                return;
+            }
+
+            log(`  Warming up ${name}...`);
+            const startTime = Date.now();
+            const minTimeMs = (warmupConfig.minTime || 0.1) * 1000;
+
+            // Run warmup iterations
+            for (let i = 0; i < warmupConfig.iterations; i++) {
+                try {
+                    testFn();
+                } catch (error) {
+                    log(`  Warmup iteration ${i + 1} failed: ${error.message}`);
+                }
+            }
+
+            // Ensure minimum warmup time
+            const elapsedTime = Date.now() - startTime;
+            if (elapsedTime < minTimeMs) {
+                const remainingTime = minTimeMs - elapsedTime;
+                log(`  Extending warmup for ${remainingTime}ms...`);
+                
+                const additionalStart = Date.now();
+                while (Date.now() - additionalStart < remainingTime) {
+                    try {
+                        testFn();
+                    } catch (error) {
+                        // Continue warmup despite errors
+                    }
+                }
+            }
+
+            // Force garbage collection after warmup if available
+            if (window.gc) {
+                window.gc();
+            }
+            log(`  Warmup completed for ${name}`);
+        }
+
         // Benchmark configurations
         const configs = {
             quick: {
                 testType: 'quick',
                 platform: 'browser',
                 sizes: [100, 500, 2000],
-                iterations: 5
+                iterations: 5,
+                warmup: {
+                    enabled: true,
+                    iterations: 3,
+                    minTime: 0.05 // 50ms minimum warmup
+                }
             },
             comprehensive: {
                 testType: 'comprehensive',
                 platform: 'browser',
                 sizes: [100, 500, 2000, 5000],
-                iterations: 10
+                iterations: 10,
+                warmup: {
+                    enabled: true,
+                    iterations: 5,
+                    minTime: 0.1 // 100ms minimum warmup
+                }
             }
         };
 
@@ -266,17 +318,22 @@
 
             // Add benchmark tests
             log('\nAdding benchmark tests...');
+            const testFunctions = new Map();
             for (const size of config.sizes) {
                 const testKey = `sparse-${size}`;
                 if (testGraphs.has(testKey)) {
                     const testData = testGraphs.get(testKey);
-                    
-                    suite.add(`BFS ${size} vertices (sparse)`, function() {
+                    const testName = `BFS ${size} vertices (sparse)`;
+                    const testFn = function() {
                         const result = breadthFirstSearch(testData.graph, 0);
                         if (result.visited.size === 0) {
                             throw new Error('BFS returned empty result');
                         }
-                    }, {
+                    };
+
+                    testFunctions.set(testName, testFn);
+                    
+                    suite.add(testName, testFn, {
                         minSamples: config.iterations,
                         setup: function() {
                             // Browser GC hint (if available)
@@ -288,8 +345,17 @@
                 }
             }
 
+            // Perform warmup if enabled
+            if (config.warmup?.enabled) {
+                log('\nStarting warmup phase...');
+                for (const [testName, testFn] of testFunctions) {
+                    await performWarmup(testName, testFn, config.warmup);
+                }
+                log('Warmup phase completed. Starting benchmarks...\n');
+            }
+
             // Run benchmarks
-            log(`\nRunning ${configType} benchmarks...\n`);
+            log(`Running ${configType} benchmarks...\n`);
             
             return new Promise((resolve) => {
                 suite

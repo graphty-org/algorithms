@@ -5,6 +5,7 @@ import Benchmark from 'benchmark'
 import { hierarchicalClustering, modularityHierarchicalClustering } from '../../src/clustering/hierarchical.js'
 import { saveBenchmarkResult, initBenchmarkSession } from '../utils/benchmark-result.js'
 import { BenchmarkResult } from '../benchmark-result.js'
+import { getGraphSizes, getAlgorithmConfig } from '../algorithm-complexity.js'
 
 // Make functions available globally for Benchmark.js
 ;(globalThis as any).hierarchicalClustering = hierarchicalClustering
@@ -72,14 +73,14 @@ function createTestGraphs(isQuick: boolean) {
     quick: {
       testType: 'quick' as const,
       platform: 'node' as const,
-      sizes: [20, 30, 50], // Small graphs for O(n³) hierarchical clustering
-      iterations: 3
+      sizes: getGraphSizes('Hierarchical Clustering', true), // Adaptive sizing
+      iterations: 1 // Minimal iterations for O(n³) algorithm
     },
     comprehensive: {
       testType: 'comprehensive' as const,
       platform: 'node' as const,
-      sizes: [20, 30, 50, 80], // Hierarchical clustering is computationally expensive
-      iterations: 2
+      sizes: getGraphSizes('Hierarchical Clustering', false), // Adaptive sizing
+      iterations: 1 // Minimal iterations for expensive algorithm
     }
   }
   
@@ -99,6 +100,10 @@ function createTestGraphs(isQuick: boolean) {
     
     console.log(`📊 Created hierarchical-structured graph: ${size} nodes, ${edgeCount} edges`)
   })
+  
+  const algConfig = getAlgorithmConfig('Hierarchical Clustering', isQuick)
+  console.log(`\n⚠️  Note: Hierarchical Clustering has O(n³) complexity`)
+  console.log(`   Using adaptive sizing: ${config.sizes.join(', ')} vertices`)
   
   return config
 }

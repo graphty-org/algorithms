@@ -8,6 +8,11 @@ export interface BenchmarkConfig {
   sizes: number[]
   iterations?: number
   async?: boolean
+  warmup?: {
+    enabled: boolean
+    iterations: number
+    minTime?: number // minimum warmup time in seconds
+  }
 }
 
 export interface PlatformMemoryInfo {
@@ -24,10 +29,67 @@ export class CrossPlatformBenchmark {
   private suite: Benchmark.Suite
   private results: BenchmarkResult[] = []
   private sessionId: string
+  private testFunctions: Map<string, () => void | Promise<void>> = new Map()
 
   constructor(private config: BenchmarkConfig, suiteName?: string) {
     this.suite = new Benchmark.Suite(suiteName || `${config.testType} Performance Tests`)
     this.sessionId = Math.random().toString(36).substring(7)
+    
+    // Set default warmup configuration if not provided
+    if (!this.config.warmup) {
+      this.config.warmup = {
+        enabled: true,
+        iterations: 5,
+        minTime: 0.1
+      }
+    }
+  }
+
+  private async performWarmup(name: string, testFn: () => void | Promise<void>): Promise<void> {
+    if (!this.config.warmup?.enabled) {
+      return
+    }
+
+    console.log(`  Warming up ${name}...`)
+    const startTime = Date.now()
+    const minTimeMs = (this.config.warmup.minTime || 0.1) * 1000
+
+    // Run warmup iterations
+    for (let i = 0; i < this.config.warmup.iterations; i++) {
+      try {
+        if (this.config.async) {
+          await testFn()
+        } else {
+          testFn()
+        }
+      } catch (error) {
+        console.warn(`  Warmup iteration ${i + 1} failed:`, error)
+      }
+    }
+
+    // Ensure minimum warmup time
+    const elapsedTime = Date.now() - startTime
+    if (elapsedTime < minTimeMs) {
+      const remainingTime = minTimeMs - elapsedTime
+      console.log(`  Extending warmup for ${remainingTime}ms...`)
+      
+      const additionalStart = Date.now()
+      while (Date.now() - additionalStart < remainingTime) {
+        try {
+          if (this.config.async) {
+            await testFn()
+          } else {
+            testFn()
+          }
+        } catch (error) {
+          // Continue warmup despite errors
+        }
+      }
+    }
+
+    // Force garbage collection after warmup
+    this.setupFunction()
+    console.log(`  Warmup completed for ${name}`)
   }
 
   addTest(
@@ -37,6 +99,9 @@ export class CrossPlatformBenchmark {
     options: Benchmark.Options = {}
   ) {
     const memoryBefore = this.getMemoryInfo()
+    
+    // Store test function for warmup
+    this.testFunctions.set(name, testFn)
     
     this.suite.add(name, testFn, {
       async: this.config.async || false,
@@ -144,6 +209,15 @@ export class CrossPlatformBenchmark {
   }
 
   async run(): Promise<BenchmarkSession> {
+    // Perform warmup for all tests if enabled
+    if (this.config.warmup?.enabled) {
+      console.log('Starting warmup phase...')
+      for (const [name, testFn] of this.testFunctions) {
+        await this.performWarmup(name, testFn)
+      }
+      console.log('Warmup phase completed. Starting benchmarks...\n')
+    }
+
     return new Promise((resolve, reject) => {
       this.suite
         .on('cycle', (event: Benchmark.Event) => {

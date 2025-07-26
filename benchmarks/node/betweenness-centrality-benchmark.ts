@@ -7,6 +7,7 @@ import { convertToLibraryGraph } from '../utils/graph-adapter'
 import { betweennessCentrality } from '../../src/algorithms/centrality/betweenness'
 import { saveBenchmarkSession } from '../utils/benchmark-result'
 import { formatSystemInfo, getSystemInfo } from '../utils/system-info'
+import { getGraphSizes, getAlgorithmConfig } from '../algorithm-complexity'
 
 // Configuration for Node.js benchmarks
 // Betweenness centrality is O(V*E) for unweighted graphs, O(V*E + V^2 log V) for weighted
@@ -14,14 +15,14 @@ const configs = {
   quick: {
     testType: 'quick' as const,
     platform: 'node' as const,
-    sizes: [50, 100, 200], // Smaller sizes due to O(V*E) complexity
-    iterations: 5 // Fewer iterations due to longer runtime
+    sizes: getGraphSizes('Betweenness Centrality', true), // Adaptive sizing
+    iterations: 3 // Fewer iterations for O(V*E) complexity
   },
   comprehensive: {
     testType: 'comprehensive' as const,
     platform: 'node' as const,
-    sizes: [50, 100, 200, 500, 1000],
-    iterations: 10
+    sizes: getGraphSizes('Betweenness Centrality', false), // Adaptive sizing
+    iterations: 5
   }
 }
 
@@ -30,11 +31,14 @@ async function runBetweennessCentralityBenchmark(configType: 'quick' | 'comprehe
   console.log('=' + '='.repeat(50))
   console.log(formatSystemInfo(getSystemInfo()))
   console.log('')
-  console.log('⚠️  Note: Betweenness Centrality has O(V*E) complexity, using smaller graphs')
-  console.log('')
-
+  
   const config = configs[configType]
   const benchmark = new CrossPlatformBenchmark(config, `Betweenness Centrality ${configType} Performance`)
+  
+  const algConfig = getAlgorithmConfig('Betweenness Centrality', configType === 'quick')
+  console.log(`⚠️  Note: Betweenness Centrality has O(V*E) complexity`)
+  console.log(`   Using adaptive sizing: ${config.sizes.join(', ')} vertices`)
+  console.log('')
 
   // Pre-generate test graphs to avoid memory issues
   console.log('Pre-generating test graphs...')
@@ -90,7 +94,7 @@ async function runBetweennessCentralityBenchmark(configType: 'quick' | 'comprehe
 
   // For comprehensive tests, also test with small-world graphs
   if (configType === 'comprehensive') {
-    const smallWorldSizes = config.sizes.filter(s => s <= 200) // Even smaller for small-world
+    const smallWorldSizes = config.sizes.filter(s => s <= 100) // Even smaller for small-world
     
     console.log('\nGenerating small-world graphs for comprehensive testing...')
     for (const size of smallWorldSizes) {

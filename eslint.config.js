@@ -14,6 +14,7 @@ export default tseslint.config(
             "coverage/**",
             "node_modules/**",
             "examples/**/*.js",
+            "gh-pages/**",
         ],
     },
     // Configuration for source files (with type checking)

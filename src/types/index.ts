@@ -103,4 +103,5 @@ export interface LouvainOptions {
 export interface GirvanNewmanOptions {
     maxCommunities?: number; // Stop when this many communities reached
     minCommunitySize?: number; // Minimum size for valid community
+    maxIterations?: number; // Maximum iterations to prevent infinite loops
 }

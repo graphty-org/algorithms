@@ -18,9 +18,9 @@ const algorithms = [
   { name: 'Dijkstra', file: 'dijkstra-benchmark.ts' },
   { name: 'PageRank', file: 'pagerank-benchmark.ts' },
   { name: 'Bellman-Ford', file: 'bellman-ford-benchmark.ts' },
-  { name: 'Floyd-Warshall', file: 'floyd-warshall-benchmark.ts' },
+  { name: 'Floyd-Warshall', file: 'floyd-warshall-benchmark.ts' }, // Now with adaptive sizing
   { name: 'Degree Centrality', file: 'degree-centrality-benchmark.ts' },
-  { name: 'Betweenness Centrality', file: 'betweenness-centrality-benchmark.ts' },
+  { name: 'Betweenness Centrality', file: 'betweenness-centrality-benchmark.ts' }, // Now with smaller graphs
   { name: 'Closeness Centrality', file: 'closeness-centrality-benchmark.ts' },
   { name: 'Eigenvector Centrality', file: 'eigenvector-centrality-benchmark.ts' },
   { name: 'HITS', file: 'hits-benchmark.ts' },
@@ -30,10 +30,10 @@ const algorithms = [
   { name: 'K-Core', file: 'k-core-benchmark.ts' },
   { name: 'Common Neighbors', file: 'common-neighbors-benchmark.ts' },
   { name: 'Bipartite Matching', file: 'bipartite-matching-benchmark.ts' },
-  { name: 'Girvan-Newman', file: 'girvan-newman-benchmark.ts' },
+  { name: 'Girvan-Newman', file: 'girvan-newman-benchmark.ts' }, // Now with very small graphs
   { name: 'Leiden', file: 'leiden-benchmark.ts' },
-  { name: 'Hierarchical Clustering', file: 'hierarchical-clustering-benchmark.ts' },
-  { name: 'MCL', file: 'mcl-benchmark.ts' },
+  { name: 'Hierarchical Clustering', file: 'hierarchical-clustering-benchmark.ts' }, // Now with tiny graphs
+  { name: 'MCL', file: 'mcl-benchmark.ts' }, // Now with small graphs and fewer iterations
   { name: 'Min-Cut', file: 'min-cut-benchmark.ts' },
   { name: 'Adamic-Adar', file: 'adamic-adar-benchmark.ts' }
 ]

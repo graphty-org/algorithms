@@ -6,6 +6,7 @@ import { Graph } from '../../src/core/graph.js'
 import { markovClustering } from '../../src/clustering/mcl.js'
 import { saveBenchmarkResult, initBenchmarkSession } from '../utils/benchmark-result.js'
 import { BenchmarkResult } from '../benchmark-result.js'
+import { getGraphSizes, getMaxIterations, getAlgorithmConfig } from '../algorithm-complexity.js'
 
 // Make markovClustering available globally for Benchmark.js
 ;(globalThis as any).markovClustering = markovClustering
@@ -18,14 +19,14 @@ function createTestGraphs(isQuick: boolean) {
     quick: {
       testType: 'quick' as const,
       platform: 'node' as const,
-      sizes: [20, 30, 40], // Small graphs for O(V³) MCL algorithm  
-      iterations: 3
+      sizes: getGraphSizes('MCL', true), // Adaptive sizing
+      iterations: 1 // Minimal iterations for O(V³) algorithm
     },
     comprehensive: {
       testType: 'comprehensive' as const,
       platform: 'node' as const,
-      sizes: [20, 30, 40, 60], // MCL is computationally expensive (matrix operations)
-      iterations: 2
+      sizes: getGraphSizes('MCL', false), // Adaptive sizing
+      iterations: 1 // Minimal iterations for expensive algorithm
     }
   }
   
@@ -82,6 +83,12 @@ function createTestGraphs(isQuick: boolean) {
     console.log(`📊 Created clustered graph: ${size} nodes, ${edgeCount} edges`)
   })
   
+  const algConfig = getAlgorithmConfig('MCL', isQuick)
+  const maxIter = getMaxIterations('MCL') || 50
+  console.log(`\n⚠️  Note: MCL has O(V³) complexity`)
+  console.log(`   Using adaptive sizing: ${config.sizes.join(', ')} vertices`)
+  console.log(`   Max iterations limited to: ${maxIter} (from ${50})`)
+  
   return config
 }
 
@@ -100,7 +107,7 @@ function runBenchmarks(config: ReturnType<typeof createTestGraphs>) {
       markovClustering(testData.graph, {
         expansion: 2,
         inflation: 2,
-        maxIterations: 50,
+        maxIterations: getMaxIterations('MCL') || 50,
         tolerance: 1e-6,
         pruningThreshold: 1e-5
       })
@@ -115,7 +122,7 @@ function runBenchmarks(config: ReturnType<typeof createTestGraphs>) {
         markovClustering(testData.graph, {
           expansion: 2,
           inflation: 2,
-          maxIterations: 50,
+          maxIterations: getMaxIterations('MCL') || 50,
           tolerance: 1e-6,
           pruningThreshold: 1e-5
         })
@@ -156,7 +163,7 @@ function runBenchmarks(config: ReturnType<typeof createTestGraphs>) {
       markovClustering(testData.graph, {
         expansion: 2,
         inflation: 3,
-        maxIterations: 50,
+        maxIterations: getMaxIterations('MCL') || 50,
         tolerance: 1e-6,
         pruningThreshold: 1e-5
       })
@@ -171,7 +178,7 @@ function runBenchmarks(config: ReturnType<typeof createTestGraphs>) {
         markovClustering(testData.graph, {
           expansion: 2,
           inflation: 3,
-          maxIterations: 50,
+          maxIterations: getMaxIterations('MCL') || 50,
           tolerance: 1e-6,
           pruningThreshold: 1e-5
         })

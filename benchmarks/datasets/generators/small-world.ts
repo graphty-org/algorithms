@@ -1,4 +1,4 @@
-import { GraphImpl } from '../../benchmark-graph'
+import { BenchmarkBenchmarkGraphImpl } from '../../types'
 
 /**
  * Generate Small-World Networks using the Watts-Strogatz model
@@ -14,7 +14,7 @@ export function generateSmallWorld(
   vertices: number, 
   k: number, // Initial nearest neighbors (must be even)
   p: number  // Rewiring probability
-): GraphImpl {
+): BenchmarkGraphImpl {
   if (k % 2 !== 0) {
     throw new Error('k must be even')
   }
@@ -132,7 +132,7 @@ export function generateSmallWorld(
  * Generate Small-World graph suitable for benchmarking
  * Uses parameters that create good small-world properties
  */
-export function generateSmallWorldBenchmark(vertices: number): GraphImpl {
+export function generateSmallWorldBenchmark(vertices: number): BenchmarkGraphImpl {
   // Choose k based on graph size
   // For smaller graphs, use smaller k to avoid overly dense graphs
   let k: number
@@ -164,7 +164,7 @@ export function generateNewmanWatts(
   vertices: number,
   k: number,
   p: number
-): GraphImpl {
+): BenchmarkGraphImpl {
   if (k % 2 !== 0) {
     throw new Error('k must be even')
   }

@@ -239,20 +239,34 @@ export class HtmlReportGenerator {
         .chart-container {
             position: relative;
             height: 400px;
-            margin: 30px 0;
+            margin: 15px 0;
+            padding-bottom: 20px;
         }
 
         .chart-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
-            gap: 30px;
-            margin-top: 20px;
+            gap: 20px;
+            margin-top: 10px;
+            margin-bottom: 20px;
+        }
+
+        section {
+            margin-bottom: 30px;
+        }
+
+        section.charts {
+            margin-bottom: 15px;
+        }
+
+        section.results {
+            margin-top: 15px;
         }
 
         footer {
             text-align: center;
             color: #666;
-            margin-top: 50px;
+            margin-top: 30px;
             padding: 20px;
         }
 
@@ -438,6 +452,11 @@ export class HtmlReportGenerator {
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
+                layout: {
+                    padding: {
+                        bottom: 20
+                    }
+                },
                 plugins: {
                     title: {
                         display: true,
@@ -449,7 +468,11 @@ export class HtmlReportGenerator {
                         type: 'logarithmic',
                         title: {
                             display: true,
-                            text: 'Number of Vertices'
+                            text: 'Graph Size (vertices)',
+                            padding: { top: 10 }
+                        },
+                        ticks: {
+                            padding: 5
                         }
                     },
                     y: {
@@ -483,6 +506,11 @@ export class HtmlReportGenerator {
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
+                layout: {
+                    padding: {
+                        bottom: 20
+                    }
+                },
                 plugins: {
                     title: {
                         display: true,
@@ -494,7 +522,11 @@ export class HtmlReportGenerator {
                         type: 'logarithmic',
                         title: {
                             display: true,
-                            text: 'Number of Vertices'
+                            text: 'Graph Size (vertices)',
+                            padding: { top: 10 }
+                        },
+                        ticks: {
+                            padding: 5
                         }
                     },
                     y: {
@@ -532,6 +564,11 @@ export class HtmlReportGenerator {
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
+                layout: {
+                    padding: {
+                        bottom: 20
+                    }
+                },
                 plugins: {
                     title: {
                         display: true,
@@ -539,6 +576,11 @@ export class HtmlReportGenerator {
                     }
                 },
                 scales: {
+                    x: {
+                        ticks: {
+                            padding: 5
+                        }
+                    },
                     y: {
                         beginAtZero: true,
                         title: {
@@ -572,6 +614,11 @@ export class HtmlReportGenerator {
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
+                layout: {
+                    padding: {
+                        bottom: 20
+                    }
+                },
                 plugins: {
                     title: {
                         display: true,
@@ -583,7 +630,11 @@ export class HtmlReportGenerator {
                         type: 'logarithmic',
                         title: {
                             display: true,
-                            text: 'Number of Edges'
+                            text: 'Number of Edges',
+                            padding: { top: 10 }
+                        },
+                        ticks: {
+                            padding: 5
                         }
                     },
                     y: {

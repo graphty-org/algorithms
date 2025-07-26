@@ -7,6 +7,7 @@ import { convertToLibraryGraph } from '../utils/graph-adapter'
 import { floydWarshall } from '../../src/algorithms/shortest-path/floyd-warshall'
 import { saveBenchmarkSession } from '../utils/benchmark-result'
 import { formatSystemInfo, getSystemInfo } from '../utils/system-info'
+import { getGraphSizes, getEdgeDensity, getAlgorithmConfig } from '../algorithm-complexity'
 
 // Store test data globally for Benchmark.js
 const globalTestData = new Map()
@@ -16,14 +17,14 @@ const configs = {
   quick: {
     testType: 'quick' as const,
     platform: 'node' as const,
-    sizes: [10, 25, 50], // O(V³) algorithm, very small graphs
-    iterations: 10
+    sizes: getGraphSizes('Floyd-Warshall', true),
+    iterations: 3 // Reduced for O(V³) algorithm
   },
   comprehensive: {
     testType: 'comprehensive' as const,
     platform: 'node' as const,
-    sizes: [10, 25, 50, 75, 100],
-    iterations: 20
+    sizes: getGraphSizes('Floyd-Warshall', false),
+    iterations: 5 // Reduced for O(V³) algorithm
   }
 }
 
@@ -32,10 +33,14 @@ async function runFloydWarshallBenchmark(configType: 'quick' | 'comprehensive') 
   console.log('='.repeat(51))
   console.log(formatSystemInfo(getSystemInfo()))
   console.log('')
-  console.log('⚠️  Note: Floyd-Warshall has O(V³) complexity, using smaller graphs')
-
+  
   const config = configs[configType]
   const benchmark = new CrossPlatformBenchmark(config, `Floyd-Warshall ${configType} Performance`)
+  
+  const algConfig = getAlgorithmConfig('Floyd-Warshall', configType === 'quick')
+  console.log(`⚠️  Note: Floyd-Warshall has O(V³) complexity`)
+  console.log(`   Using adaptive sizing: ${config.sizes.join(', ')} vertices`)
+  console.log(`   Edge density: ${getEdgeDensity('Floyd-Warshall')}`)
 
   // Pre-generate test graphs to avoid memory issues
   console.log('\nPre-generating test graphs...')
@@ -100,7 +105,7 @@ async function runFloydWarshallBenchmark(configType: 'quick' | 'comprehensive') 
 
   // For comprehensive tests, also test sparse graphs (more realistic)
   if (configType === 'comprehensive') {
-    const sparseSizes = config.sizes.filter(s => s <= 100) // Even smaller for sparse
+    const sparseSizes = config.sizes.filter(s => s <= 30) // Even smaller for sparse
     
     console.log('\nGenerating sparse graphs for comprehensive testing...')
     for (const size of sparseSizes) {
@@ -138,7 +143,7 @@ async function runFloydWarshallBenchmark(configType: 'quick' | 'comprehensive') 
           testFn,
           testData,
           {
-            minSamples: Math.floor(config.iterations * 0.7),
+            minSamples: Math.max(1, Math.floor(config.iterations * 0.7)),
             initCount: 1,
             minTime: 0.1
           }

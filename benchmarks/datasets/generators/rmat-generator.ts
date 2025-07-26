@@ -1,4 +1,4 @@
-import { GraphImpl } from '../../benchmark-graph'
+import { BenchmarkBenchmarkGraphImpl } from '../../types'
 
 /**
  * Generate RMAT (Recursive Matrix) graphs
@@ -21,7 +21,7 @@ export function generateRMAT(
   b = 0.19, 
   c = 0.19, 
   d = 0.05
-): GraphImpl {
+): BenchmarkGraphImpl {
   // Validate probabilities sum to 1
   const probSum = a + b + c + d
   if (Math.abs(probSum - 1.0) > 0.001) {
@@ -114,7 +114,7 @@ export function generateRMAT(
  * Generate RMAT graph suitable for benchmarking
  * Uses default parameters that create realistic power-law distributions
  */
-export function generateRMATBenchmark(vertices: number): GraphImpl {
+export function generateRMATBenchmark(vertices: number): BenchmarkGraphImpl {
   // Calculate scale (round up to nearest power of 2)
   const scale = Math.ceil(Math.log2(vertices))
   const actualVertices = Math.pow(2, scale)

@@ -1,7 +1,7 @@
 [
   {
-    "sessionId": "lxhhs",
-    "timestamp": "2025-07-25T02:59:31.524Z",
+    "sessionId": "5mo06",
+    "timestamp": "2025-07-26T00:40:58.890Z",
     "systemInfo": {
       "platform": "linux",
       "arch": "x64",
@@ -26,15 +26,15 @@
     "testType": "quick",
     "results": [
       {
-        "algorithm": "Dijkstra",
-        "graphType": "grid",
-        "graphGenerationAlgorithm": "Grid Graph",
+        "algorithm": "BFS",
+        "graphType": "sparse",
+        "graphGenerationAlgorithm": "Erdős–Rényi Random Graph (Fixed Edges)",
         "graphSize": 100,
-        "edges": 180,
-        "executionTime": 2.9448946184170492,
-        "memoryUsage": 2382688,
-        "memoryPerVertex": 23826.88,
-        "timestamp": "2025-07-25T02:59:12.586Z",
+        "edges": 300,
+        "executionTime": 0.02172439374739204,
+        "memoryUsage": 3014240,
+        "memoryPerVertex": 30142.4,
+        "timestamp": "2025-07-26T00:40:44.620Z",
         "systemInfo": {
           "platform": "linux",
           "arch": "x64",
@@ -57,26 +57,26 @@
           }
         },
         "metrics": {
-          "opsPerSecond": 339.5707247879463,
-          "samples": 38,
-          "marginOfError": 11.902498059494972,
-          "standardDeviation": 0.0011024111691895712,
-          "variance": 0.0000012153103859539174,
+          "opsPerSecond": 46031.20398331243,
+          "samples": 48,
+          "marginOfError": 2.9023525490400996,
+          "standardDeviation": 0.0000022287552441808322,
+          "variance": 4.967349938463561e-12,
           "platform": "node",
           "testType": "quick",
-          "teps": 61122.73046183033
+          "teps": 13809361.194993727
         }
       },
       {
-        "algorithm": "Dijkstra",
-        "graphType": "grid",
-        "graphGenerationAlgorithm": "Grid Graph",
-        "graphSize": 484,
-        "edges": 924,
-        "executionTime": 66.79802395238094,
-        "memoryUsage": 15563352,
-        "memoryPerVertex": 32155.685950413223,
-        "timestamp": "2025-07-25T02:59:20.755Z",
+        "algorithm": "BFS",
+        "graphType": "sparse",
+        "graphGenerationAlgorithm": "Erdős–Rényi Random Graph (Fixed Edges)",
+        "graphSize": 1000,
+        "edges": 3000,
+        "executionTime": 0.4012324745593554,
+        "memoryUsage": 7880040,
+        "memoryPerVertex": 7880.04,
+        "timestamp": "2025-07-26T00:40:51.900Z",
         "systemInfo": {
           "platform": "linux",
           "arch": "x64",
@@ -99,26 +99,26 @@
           }
         },
         "metrics": {
-          "opsPerSecond": 14.970502730932298,
-          "samples": 28,
-          "marginOfError": 7.42507238248845,
-          "standardDeviation": 0.01278986516697865,
-          "variance": 0.00016358065098949384,
+          "opsPerSecond": 2492.3206953729946,
+          "samples": 42,
+          "marginOfError": 2.2253897009944446,
+          "standardDeviation": 0.000029523695939182617,
+          "variance": 8.716486219093082e-10,
           "platform": "node",
           "testType": "quick",
-          "teps": 13832.744523381443
+          "teps": 7476962.086118983
         }
       },
       {
-        "algorithm": "Dijkstra",
-        "graphType": "grid",
-        "graphGenerationAlgorithm": "Grid Graph",
-        "graphSize": 961,
-        "edges": 1860,
-        "executionTime": 255.98614928571422,
-        "memoryUsage": 32320472,
-        "memoryPerVertex": 33632.12486992716,
-        "timestamp": "2025-07-25T02:59:31.417Z",
+        "algorithm": "BFS",
+        "graphType": "sparse",
+        "graphGenerationAlgorithm": "Erdős–Rényi Random Graph (Fixed Edges)",
+        "graphSize": 5000,
+        "edges": 15000,
+        "executionTime": 4.945478721074013,
+        "memoryUsage": 18011984,
+        "memoryPerVertex": 3602.3968,
+        "timestamp": "2025-07-26T00:40:58.876Z",
         "systemInfo": {
           "platform": "linux",
           "arch": "x64",
@@ -141,14 +141,14 @@
           }
         },
         "metrics": {
-          "opsPerSecond": 3.9064613565629616,
-          "samples": 21,
-          "marginOfError": 11.848814832505287,
-          "standardDeviation": 0.06663259441139852,
-          "variance": 0.004439902637993937,
+          "opsPerSecond": 202.20489388392903,
+          "samples": 42,
+          "marginOfError": 6.3634620413622125,
+          "standardDeviation": 0.0010405677678275186,
+          "variance": 0.000001082781279441545,
           "platform": "node",
           "testType": "quick",
-          "teps": 7266.018123207108
+          "teps": 3033073.4082589354
         }
       }
     ]

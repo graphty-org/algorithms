@@ -14,13 +14,23 @@ const configs = {
     testType: 'quick' as const,
     platform: 'node' as const,
     sizes: [100, 1000, 5000],
-    iterations: 10
+    iterations: 10,
+    warmup: {
+      enabled: true,
+      iterations: 3,
+      minTime: 0.05 // 50ms minimum warmup
+    }
   },
   comprehensive: {
     testType: 'comprehensive' as const,
     platform: 'node' as const,
     sizes: [100, 1000, 5000, 10000, 50000],
-    iterations: 20
+    iterations: 20,
+    warmup: {
+      enabled: true,
+      iterations: 5,
+      minTime: 0.1 // 100ms minimum warmup
+    }
   }
 }
 

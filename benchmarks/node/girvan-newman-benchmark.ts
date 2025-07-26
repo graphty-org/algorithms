@@ -7,6 +7,7 @@ import { girvanNewman } from '../../src/algorithms/community/girvan-newman.js'
 import { generateGraph } from '../utils/graph-generator.js'
 import { saveBenchmarkResult, initBenchmarkSession } from '../utils/benchmark-result.js'
 import { BenchmarkResult } from '../benchmark-result.js'
+import { getGraphSizes, getEdgeDensity, getAlgorithmConfig } from '../algorithm-complexity.js'
 
 // Make girvanNewman available globally for Benchmark.js
 ;(globalThis as any).girvanNewman = girvanNewman
@@ -19,14 +20,14 @@ function createTestGraphs(isQuick: boolean) {
     quick: {
       testType: 'quick' as const,
       platform: 'node' as const,
-      sizes: [20, 50, 100], // Small graphs for O(V³) community detection
-      iterations: 5
+      sizes: getGraphSizes('Girvan-Newman', true), // Adaptive sizing
+      iterations: 2 // Very few iterations for O(V³) algorithm
     },
     comprehensive: {
       testType: 'comprehensive' as const,
       platform: 'node' as const,
-      sizes: [20, 50, 100, 200], // Community detection is computationally expensive
-      iterations: 3
+      sizes: getGraphSizes('Girvan-Newman', false), // Adaptive sizing
+      iterations: 1 // Single iteration for expensive algorithm
     }
   }
   
@@ -85,6 +86,10 @@ function createTestGraphs(isQuick: boolean) {
     console.log(`📊 Created community-structured graph: ${size} nodes, ${edgeCount} edges`)
   })
   
+  const algConfig = getAlgorithmConfig('Girvan-Newman', isQuick)
+  console.log(`\n⚠️  Note: Girvan-Newman has O(V³) complexity`)
+  console.log(`   Using adaptive sizing: ${config.sizes.join(', ')} vertices`)
+  
   return config
 }
 
@@ -99,8 +104,11 @@ function runBenchmarks(config: ReturnType<typeof createTestGraphs>) {
     const testName = `Girvan-Newman Community Detection - ${testData.graphType} (${size} nodes, ${testData.edges} edges)`
     
     suite.add(testName, () => {
-      // Run Girvan-Newman with limited communities to prevent excessive computation
-      girvanNewman(testData.graph, { maxCommunities: Math.min(10, Math.floor(size / 5)) })
+      // Run Girvan-Newman with limited communities and iterations to prevent excessive computation
+      girvanNewman(testData.graph, { 
+        maxCommunities: Math.min(10, Math.floor(size / 5)),
+        maxIterations: 50 // Prevent infinite loops
+      })
     }, {
       onComplete: (event: Benchmark.Event) => {
         const benchmark = event.target as Benchmark
@@ -109,7 +117,10 @@ function runBenchmarks(config: ReturnType<typeof createTestGraphs>) {
         
         // Memory measurement
         const beforeMemory = process.memoryUsage()
-        girvanNewman(testData.graph, { maxCommunities: Math.min(10, Math.floor(size / 5)) })
+        girvanNewman(testData.graph, { 
+          maxCommunities: Math.min(10, Math.floor(size / 5)),
+          maxIterations: 50
+        })
         const afterMemory = process.memoryUsage()
         const memoryUsed = afterMemory.heapUsed - beforeMemory.heapUsed
 

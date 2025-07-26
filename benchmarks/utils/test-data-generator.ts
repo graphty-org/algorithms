@@ -1,9 +1,9 @@
-import { GraphImpl, GraphMetadata } from '../../src/core/graph'
+import { BenchmarkBenchmarkGraphImpl, BenchmarkBenchmarkGraphMetadata } from '../types'
 import { generateRMATBenchmark } from '../datasets/generators/rmat-generator'
 import { generateSmallWorldBenchmark } from '../datasets/generators/small-world'
 
 // Erdős–Rényi random graph generator with fixed number of edges
-function generateRandomGraphFixed(vertices: number, edges: number): GraphImpl {
+function generateRandomGraphFixed(vertices: number, edges: number): BenchmarkGraphImpl {
   const adjacencyList: Map<number, Set<number>> = new Map()
   
   // Initialize vertices
@@ -42,7 +42,7 @@ function generateRandomGraphFixed(vertices: number, edges: number): GraphImpl {
     }
   }
   
-  const metadata: GraphMetadata = {
+  const metadata: BenchmarkGraphMetadata = {
     generationAlgorithm: 'Erdős–Rényi Random Graph (Fixed Edges)',
     parameters: {
       vertices,
@@ -64,7 +64,7 @@ function generateRandomGraphFixed(vertices: number, edges: number): GraphImpl {
 
 export const generateTestGraphs = {
   // Sparse graph: ~4-8 edges per vertex
-  sparse(vertices: number): GraphImpl {
+  sparse(vertices: number): BenchmarkGraphImpl {
     const avgDegree = 6
     const edges = Math.floor(vertices * avgDegree / 2)
     const graph = generateRandomGraphFixed(vertices, edges)
@@ -80,7 +80,7 @@ export const generateTestGraphs = {
   },
   
   // Dense graph: ~20-40% of all possible edges
-  dense(vertices: number): GraphImpl {
+  dense(vertices: number): BenchmarkGraphImpl {
     const maxEdges = (vertices * (vertices - 1)) / 2
     const edges = Math.floor(maxEdges * 0.3) // 30% density
     const graph = generateRandomGraphFixed(vertices, edges)
@@ -95,7 +95,7 @@ export const generateTestGraphs = {
   },
   
   // Grid graph: vertices arranged in a square grid
-  grid(size: number): GraphImpl {
+  grid(size: number): BenchmarkGraphImpl {
     const vertices = size * size
     const adjacencyList: Map<number, Set<number>> = new Map()
     const edges: Array<[number, number]> = []
@@ -128,7 +128,7 @@ export const generateTestGraphs = {
       }
     }
     
-    const metadata: GraphMetadata = {
+    const metadata: BenchmarkGraphMetadata = {
       generationAlgorithm: 'Grid Graph',
       parameters: {
         gridSize: size,
@@ -148,17 +148,17 @@ export const generateTestGraphs = {
   },
   
   // RMAT graph: Power-law degree distribution (scale-free)
-  rmat(vertices: number): GraphImpl {
+  rmat(vertices: number): BenchmarkGraphImpl {
     return generateRMATBenchmark(vertices)
   },
   
   // Small-world graph: High clustering + short paths
-  smallWorld(vertices: number): GraphImpl {
+  smallWorld(vertices: number): BenchmarkGraphImpl {
     return generateSmallWorldBenchmark(vertices)
   },
   
   // Complete graph: All vertices connected (for small tests)
-  complete(vertices: number): GraphImpl {
+  complete(vertices: number): BenchmarkGraphImpl {
     if (vertices > 1000) {
       throw new Error('Complete graphs limited to 1000 vertices for memory reasons')
     }
@@ -180,7 +180,7 @@ export const generateTestGraphs = {
       }
     }
     
-    const metadata: GraphMetadata = {
+    const metadata: BenchmarkGraphMetadata = {
       generationAlgorithm: 'Complete Graph (K_n)',
       parameters: {
         vertices,

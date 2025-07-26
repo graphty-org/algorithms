@@ -76,12 +76,13 @@ function generateHTML(sessions: BenchmarkSession[]): string {
             color: #666;
         }
         .chart-container {
-            margin: 40px 0;
+            margin: 15px 0;
             position: relative;
             height: 400px;
+            padding-bottom: 20px;
         }
         .algorithm-summary {
-            margin: 40px 0;
+            margin: 20px 0;
         }
         .summary-table {
             width: 100%;
@@ -112,7 +113,7 @@ function generateHTML(sessions: BenchmarkSession[]): string {
             text-decoration: underline;
         }
         .algorithm-section {
-            margin: 40px 0;
+            margin: 20px 0;
             padding: 20px;
             background-color: #f8f9fa;
             border-radius: 8px;
@@ -212,7 +213,9 @@ function generateHTML(sessions: BenchmarkSession[]): string {
                     </tr>
                 </thead>
                 <tbody>
-                    ${Array.from(algorithmGroups.entries()).map(([algorithm, results]) => {
+                    ${Array.from(algorithmGroups.entries())
+                      .sort(([a], [b]) => a.localeCompare(b))
+                      .map(([algorithm, results]) => {
                       const avgTime = results.reduce((sum, r) => sum + r.executionTime, 0) / results.length
                       const avgMemory = results.reduce((sum, r) => sum + r.memoryUsage, 0) / results.length
                       
@@ -244,7 +247,9 @@ function generateHTML(sessions: BenchmarkSession[]): string {
             </table>
         </div>
 
-        ${Array.from(algorithmGroups.entries()).map(([algorithm, results]) => {
+        ${Array.from(algorithmGroups.entries())
+          .sort(([a], [b]) => a.localeCompare(b))
+          .map(([algorithm, results]) => {
           const sortedResults = results.sort((a, b) => a.graphSize - b.graphSize)
           const avgTime = results.reduce((sum, r) => sum + r.executionTime, 0) / results.length
           const avgMemory = results.reduce((sum, r) => sum + r.memoryUsage, 0) / results.length
@@ -335,6 +340,11 @@ function generateHTML(sessions: BenchmarkSession[]): string {
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
+                layout: {
+                    padding: {
+                        bottom: 20
+                    }
+                },
                 plugins: {
                     legend: { display: false }
                 },
@@ -342,7 +352,11 @@ function generateHTML(sessions: BenchmarkSession[]): string {
                     x: {
                         title: {
                             display: true,
-                            text: 'Graph Size (vertices)'
+                            text: 'Graph Size (vertices)',
+                            padding: { top: 10 }
+                        },
+                        ticks: {
+                            padding: 5
                         }
                     },
                     y: {
@@ -372,6 +386,11 @@ function generateHTML(sessions: BenchmarkSession[]): string {
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
+                layout: {
+                    padding: {
+                        bottom: 20
+                    }
+                },
                 plugins: {
                     legend: { display: false }
                 },
@@ -379,7 +398,11 @@ function generateHTML(sessions: BenchmarkSession[]): string {
                     x: {
                         title: {
                             display: true,
-                            text: 'Graph Size (vertices)'
+                            text: 'Graph Size (vertices)',
+                            padding: { top: 10 }
+                        },
+                        ticks: {
+                            padding: 5
                         }
                     },
                     y: {

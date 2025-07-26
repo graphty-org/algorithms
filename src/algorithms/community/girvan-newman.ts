@@ -27,9 +27,11 @@ export function girvanNewman(
 ): CommunityResult[] {
     const {maxCommunities} = options;
     const minCommunitySize = options.minCommunitySize ?? 1;
+    const maxIterations = options.maxIterations ?? 100; // Prevent infinite loops
 
     const dendrogram: CommunityResult[] = [];
     const workingGraph = cloneGraph(graph);
+    let iterations = 0;
 
     // Initial state: one large component
     let components = getConnectedComponentsResult(workingGraph);
@@ -38,7 +40,8 @@ export function girvanNewman(
         modularity: calculateModularity(graph, components.componentMap),
     });
 
-    while (Array.from(workingGraph.edges()).length > 0) {
+    while (Array.from(workingGraph.edges()).length > 0 && iterations < maxIterations) {
+        iterations++;
         // Calculate edge betweenness centrality
         const edgeBetweenness = calculateEdgeBetweenness(workingGraph);
 
@@ -187,7 +190,7 @@ function calculateEdgeBetweenness(graph: Graph): Map<string, number> {
 }
 
 /**
- * Find all shortest paths from a source node using BFS
+ * Find all shortest paths from a source node using optimized BFS
  */
 function findAllShortestPaths(graph: Graph, source: NodeId): {
     distances: Map<NodeId, number>;
@@ -198,58 +201,45 @@ function findAllShortestPaths(graph: Graph, source: NodeId): {
     const predecessors = new Map<NodeId, NodeId[]>();
     const pathCounts = new Map<NodeId, number>();
     const queue: NodeId[] = [];
+    const visited = new Set<NodeId>();
 
-    // Initialize
-    for (const node of graph.nodes()) {
-        distances.set(node.id, Infinity);
-        predecessors.set(node.id, []);
-        pathCounts.set(node.id, 0);
-    }
-
+    // Only initialize for reachable nodes
     distances.set(source, 0);
+    predecessors.set(source, []);
     pathCounts.set(source, 1);
     queue.push(source);
 
-    // BFS
-    while (queue.length > 0) {
-        const current = queue.shift();
-        if (current === undefined) {
-            break;
-        }
+    // Optimized BFS with early termination
+    let queueIndex = 0;
+    while (queueIndex < queue.length) {
+        const current = queue[queueIndex++];
+        
+        if (visited.has(current)) continue;
+        visited.add(current);
 
-        const currentDistance = distances.get(current);
-        if (currentDistance === undefined) {
-            continue;
-        }
+        const currentDistance = distances.get(current)!;
 
         for (const neighbor of graph.neighbors(current)) {
-            const edge = graph.getEdge(current, neighbor);
-            const edgeWeight = edge?.weight ?? 1;
+            // Skip if already processed
+            if (visited.has(neighbor)) continue;
+            
+            const edgeWeight = 1; // Unweighted for community detection
             const newDistance = currentDistance + edgeWeight;
-            const neighborDistance = distances.get(neighbor);
-            if (neighborDistance === undefined) {
-                continue;
-            }
+            const neighborDistance = distances.get(neighbor) ?? Infinity;
 
             if (newDistance < neighborDistance) {
                 // Found shorter path
                 distances.set(neighbor, newDistance);
                 predecessors.set(neighbor, [current]);
-                const currentPathCount = pathCounts.get(current);
-                if (currentPathCount !== undefined) {
-                    pathCounts.set(neighbor, currentPathCount);
-                }
-
+                pathCounts.set(neighbor, pathCounts.get(current)!);
                 queue.push(neighbor);
-            } else if (Math.abs(newDistance - neighborDistance) < 1e-10) {
+            } else if (newDistance === neighborDistance) {
                 // Found alternative shortest path
                 const neighborPredecessors = predecessors.get(neighbor);
-                const neighborPathCount = pathCounts.get(neighbor);
-                const currentPathCount = pathCounts.get(current);
-
-                if (neighborPredecessors && neighborPathCount !== undefined && currentPathCount !== undefined) {
+                if (neighborPredecessors) {
                     neighborPredecessors.push(current);
-                    pathCounts.set(neighbor, neighborPathCount + currentPathCount);
+                    pathCounts.set(neighbor, 
+                        (pathCounts.get(neighbor) ?? 0) + pathCounts.get(current)!);
                 }
             }
         }
@@ -274,7 +264,7 @@ function getEdgeKey(source: NodeId, target: NodeId): string {
 }
 
 /**
- * Calculate modularity for a given community structure
+ * Calculate modularity for a given community structure - optimized version
  */
 function calculateModularity(
     graph: Graph,
@@ -286,19 +276,24 @@ function calculateModularity(
     }
 
     let modularity = 0;
+    const degrees = new Map<NodeId, number>();
+    
+    // Pre-calculate all degrees
+    for (const node of graph.nodes()) {
+        degrees.set(node.id, getNodeDegree(graph, node.id));
+    }
 
-    // Calculate modularity: Q = (1/2m) * Σ[A_ij - (k_i * k_j)/(2m)] * δ(c_i, c_j)
-    for (const nodeI of graph.nodes()) {
-        for (const nodeJ of graph.nodes()) {
-            if (communityMap.get(nodeI.id) === communityMap.get(nodeJ.id)) {
-                const edge = graph.getEdge(nodeI.id, nodeJ.id);
-                const edgeWeight = edge?.weight ?? 0;
-
-                const degreeI = getNodeDegree(graph, nodeI.id);
-                const degreeJ = getNodeDegree(graph, nodeJ.id);
-
-                modularity += edgeWeight - ((degreeI * degreeJ) / (2 * totalEdgeWeight));
-            }
+    // Only iterate over existing edges
+    for (const edge of graph.edges()) {
+        const communityI = communityMap.get(edge.source);
+        const communityJ = communityMap.get(edge.target);
+        
+        if (communityI === communityJ) {
+            const edgeWeight = edge.weight ?? 1;
+            const degreeI = degrees.get(edge.source)!;
+            const degreeJ = degrees.get(edge.target)!;
+            
+            modularity += edgeWeight - ((degreeI * degreeJ) / (2 * totalEdgeWeight));
         }
     }
 
