@@ -17,44 +17,91 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Graph Algorithms - Interactive Examples</title>
+    <link rel="stylesheet" href="../shared/design-system.css">
     <link rel="stylesheet" href="shared/styles.css">
     <style>
+        /* Page-specific styles */
         .hero {
-            background: linear-gradient(135deg, #2c5aa0 0%, #4CAF50 100%);
+            background: var(--gradient-primary);
             color: white;
             text-align: center;
-            padding: 3rem 1rem;
-            margin-bottom: 2rem;
+            padding: var(--spacing-2xl) var(--spacing-md);
+            margin-bottom: var(--spacing-xl);
         }
         
         .hero h1 {
-            font-size: 3rem;
-            margin: 0 0 1rem 0;
+            font-size: var(--font-size-5xl);
+            margin: 0 0 var(--spacing-md) 0;
             color: white;
         }
         
         .hero p {
-            font-size: 1.2rem;
-            max-width: 600px;
+            font-size: var(--font-size-xl);
+            max-width: 800px;
             margin: 0 auto;
             opacity: 0.9;
         }
         
-        .category-section {
-            margin-bottom: 3rem;
+        .nav {
+            background: var(--bg-primary);
+            box-shadow: var(--shadow-md);
+            padding: var(--spacing-md);
+            margin-bottom: var(--spacing-xl);
         }
         
+        .nav .container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .category-section {
+            margin-bottom: var(--spacing-2xl);
+        }
+        
+        .category-section h2 {
+            color: var(--primary-blue);
+            border-bottom: 2px solid var(--primary-blue);
+            padding-bottom: var(--spacing-sm);
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .algorithms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: var(--spacing-lg);
+            margin-top: var(--spacing-lg);
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: var(--spacing-3xl);
+            padding-top: var(--spacing-xl);
+            border-top: 1px solid var(--border-color-light);
+            color: var(--text-muted);
+            font-size: var(--font-size-sm);
+        }
     </style>
 </head>
 <body>
+    <nav class="nav">
+        <div class="container">
+            <a href="../../" class="nav-brand">🌐 Graphty Algorithms</a>
+            <div class="nav-links">
+                <a href="../../" class="nav-link">Home</a>
+                <a href="./" class="nav-link active">Examples</a>
+                <a href="../../benchmarks/" class="nav-link">Benchmarks</a>
+            </div>
+        </div>
+    </nav>
+    
     <div class="hero">
         <h1>Graph Algorithms</h1>
         <p>Interactive demonstrations of fundamental graph algorithms implemented in TypeScript. 
            Explore, learn, and visualize how these algorithms work on different graph structures.</p>
     </div>
 
-    <main>
-
+    <main class="container">
         <div class="algorithms-grid">
             <!-- Traversal Algorithms -->
             <div class="card category-section">
@@ -330,5 +377,9 @@
             
         });
     </script>
+    
+    <footer class="footer">
+        <p>Interactive Examples • <a href="https://github.com/graphty-org/algorithms">GitHub</a> • <a href="https://www.npmjs.com/package/@graphty/algorithms">npm</a></p>
+    </footer>
 </body>
 </html>

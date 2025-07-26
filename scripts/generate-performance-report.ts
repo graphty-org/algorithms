@@ -27,145 +27,186 @@ function generateHTML(sessions: BenchmarkSession[]): string {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Graph Algorithm Performance Report</title>
+    <link rel="stylesheet" href="../shared/design-system.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
     <script>eruda.init();</script>
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background-color: #f5f5f5;
+        /* Page-specific styles */
+        .nav {
+            background: var(--bg-primary);
+            box-shadow: var(--shadow-md);
+            padding: var(--spacing-md);
+            margin-bottom: var(--spacing-xl);
         }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            background-color: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        
+        .nav .container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
-        h1 {
-            color: #333;
-            text-align: center;
-            margin-bottom: 10px;
-        }
+        
         .subtitle {
             text-align: center;
-            color: #666;
-            margin-bottom: 30px;
+            color: var(--text-muted);
+            margin-bottom: var(--spacing-xl);
         }
+        
         .summary {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin-bottom: 40px;
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-2xl);
         }
+        
         .summary-card {
-            background-color: #f8f9fa;
-            padding: 20px;
-            border-radius: 8px;
-            border-left: 4px solid #007bff;
+            background-color: var(--bg-secondary);
+            padding: var(--spacing-lg);
+            border-radius: var(--radius-lg);
+            border-left: 4px solid var(--primary-blue);
         }
+        
         .summary-card h3 {
-            margin: 0 0 10px 0;
-            color: #333;
+            margin: 0 0 var(--spacing-sm) 0;
+            color: var(--primary-blue);
+            font-size: var(--font-size-lg);
         }
+        
         .summary-card p {
-            margin: 5px 0;
-            color: #666;
+            margin: var(--spacing-xs) 0;
+            color: var(--text-secondary);
         }
+        
+        .summary-card p strong {
+            color: var(--text-primary);
+            font-size: var(--font-size-xl);
+        }
+        
         .chart-container {
-            margin: 15px 0;
+            margin: var(--spacing-lg) 0;
             position: relative;
             height: 400px;
-            padding-bottom: 20px;
+            padding-bottom: var(--spacing-lg);
         }
+        
         .algorithm-summary {
-            margin: 20px 0;
+            margin: var(--spacing-xl) 0;
         }
+        
+        .algorithm-summary h2 {
+            color: var(--primary-blue);
+            margin-bottom: var(--spacing-lg);
+        }
+        
         .summary-table {
             width: 100%;
-            margin: 20px 0;
+            margin: var(--spacing-lg) 0;
+            overflow-x: auto;
         }
+        
+        .summary-table th {
+            background-color: var(--primary-blue);
+            color: var(--white);
+            font-weight: var(--font-weight-semibold);
+            white-space: nowrap;
+        }
+        
         .summary-table .best-group {
             background-color: #e3f2fd;
-            border-left: 3px solid #2196f3;
+            border-left: 3px solid var(--primary-green);
         }
+        
         .summary-table .largest-group {
             background-color: #f3e5f5;
-            border-left: 3px solid #9c27b0;
+            border-left: 3px solid var(--primary-purple);
         }
+        
         .summary-table th.best-group {
-            background-color: #2196f3;
-            color: white;
+            background-color: var(--primary-green);
+            color: var(--white);
         }
+        
         .summary-table th.largest-group {
-            background-color: #9c27b0;
-            color: white;
+            background-color: var(--primary-purple);
+            color: var(--white);
         }
+        
         .algorithm-link {
-            color: #007bff;
+            color: var(--primary-blue);
             text-decoration: none;
-            font-weight: 600;
+            font-weight: var(--font-weight-semibold);
         }
+        
         .algorithm-link:hover {
+            color: var(--primary-green);
             text-decoration: underline;
         }
+        
         .algorithm-section {
-            margin: 20px 0;
-            padding: 20px;
-            background-color: #f8f9fa;
-            border-radius: 8px;
+            margin: var(--spacing-xl) 0;
+            padding: var(--spacing-xl);
+            background-color: var(--bg-secondary);
+            border-radius: var(--radius-lg);
         }
+        
         .algorithm-charts {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin: 20px 0;
+            gap: var(--spacing-lg);
+            margin: var(--spacing-lg) 0;
         }
+        
         .algorithm-charts .chart-container {
             height: 300px;
         }
+        
         .algorithm-section h2 {
-            color: #333;
-            margin-bottom: 20px;
+            color: var(--primary-blue);
+            margin-bottom: var(--spacing-lg);
         }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 20px 0;
-        }
-        th, td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-        th {
-            background-color: #007bff;
-            color: white;
-            font-weight: 600;
-        }
-        tr:hover {
-            background-color: #f5f5f5;
-        }
+        
         .footer {
             text-align: center;
-            margin-top: 40px;
-            color: #666;
-            font-size: 14px;
+            margin-top: var(--spacing-2xl);
+            padding-top: var(--spacing-xl);
+            border-top: 1px solid var(--border-color-light);
+            color: var(--text-muted);
+            font-size: var(--font-size-sm);
         }
+        
         .system-info {
-            background-color: #e9ecef;
-            padding: 15px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-            font-family: 'Courier New', monospace;
-            font-size: 14px;
+            background-color: var(--gray-100);
+            padding: var(--spacing-md);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--spacing-xl);
+            font-family: var(--font-mono);
+            font-size: var(--font-size-sm);
+            border: 1px solid var(--border-color-light);
+        }
+        
+        @media (max-width: 768px) {
+            .algorithm-charts {
+                grid-template-columns: 1fr;
+            }
+            
+            .summary-table {
+                font-size: var(--font-size-sm);
+            }
         }
     </style>
 </head>
 <body>
+    <nav class="nav">
+        <div class="container">
+            <a href="../" class="nav-brand">🌐 Graphty Algorithms</a>
+            <div class="nav-links">
+                <a href="../" class="nav-link">Home</a>
+                <a href="../examples/" class="nav-link">Examples</a>
+                <a href="./" class="nav-link active">Benchmarks</a>
+            </div>
+        </div>
+    </nav>
+    
     <div class="container">
         <h1>📊 Graph Algorithm Performance Report</h1>
         <p class="subtitle">Generated on ${new Date().toLocaleString()}</p>
@@ -199,7 +240,7 @@ function generateHTML(sessions: BenchmarkSession[]): string {
 
         <div class="algorithm-summary">
             <h2>📊 Algorithm Performance Summary</h2>
-            <table class="summary-table">
+            <table class="table summary-table">
                 <thead>
                     <tr>
                         <th>Algorithm</th>
@@ -416,6 +457,10 @@ function generateHTML(sessions: BenchmarkSession[]): string {
         });`
         }).join('\n')}
     </script>
+    
+    <footer class="footer">
+        <p>Generated by @graphty/algorithms • <a href="https://github.com/graphty-org/algorithms">GitHub</a> • <a href="https://www.npmjs.com/package/@graphty/algorithms">npm</a></p>
+    </footer>
 </body>
 </html>`
 }
