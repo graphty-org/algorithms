@@ -87,7 +87,7 @@ async function buildGitHubPages() {
     console.log('Copied shared/ directory with design-system.css');
     
     // 4. Copy main landing page
-    const mainIndexSrc = path.join(rootDir, 'gh-pages', 'index.html');
+    const mainIndexSrc = path.join(rootDir, 'gh-pages-index.html');
     const mainIndexDest = path.join(ghPagesDir, 'index.html');
     await copyFile(mainIndexSrc, mainIndexDest);
     console.log('Copied main landing page');
