@@ -1,6 +1,6 @@
 /**
  * Optimized graph algorithm implementations
- * 
+ *
  * High-performance implementations using:
  * - Direction-Optimized BFS
  * - Compressed Sparse Row (CSR) format
@@ -8,10 +8,10 @@
  */
 
 // Configuration and optimization control
-export { 
-  configureOptimizations, 
-  getOptimizationConfig,
-  type GraphAlgorithmConfig 
+export {
+    configureOptimizations,
+    getOptimizationConfig,
+    type GraphAlgorithmConfig,
 } from "./graph-adapter.js";
 
 // Note: The main BFS functions in algorithms/traversal/bfs.ts automatically
@@ -19,16 +19,15 @@ export {
 
 // Export optimized implementations for direct use if needed
 export {
-  bfsOptimized,
-  shortestPathBFSOptimized,
-  singleSourceShortestPathBFSOptimized,
-  type OptimizedBFSOptions
-} from "./bfs-optimized.js";
+    bfsOptimized,
+    type OptimizedBFSOptions,
+    shortestPathBFSOptimized,
+    singleSourceShortestPathBFSOptimized} from "./bfs-optimized.js";
 
 // Export data structures for advanced users
-export { CSRGraph } from "./csr-graph.js";
-export { GraphBitSet, VisitedBitArray, CompactDistanceArray } from "./bit-packed.js";
-export { DirectionOptimizedBFS } from "./direction-optimized-bfs.js";
+export {CompactDistanceArray, GraphBitSet, VisitedBitArray} from "./bit-packed.js";
+export {CSRGraph} from "./csr-graph.js";
+export {DirectionOptimizedBFS} from "./direction-optimized-bfs.js";
 
 // Export utilities
-export { toCSRGraph, isCSRGraph, createOptimizedGraph } from "./graph-adapter.js";
+export {createOptimizedGraph, isCSRGraph, toCSRGraph} from "./graph-adapter.js";
