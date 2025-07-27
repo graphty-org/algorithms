@@ -38,3 +38,6 @@ export * from "./research/index.js";
 
 // Data structure exports
 export * from "./data-structures/index.js";
+
+// Optimized algorithm exports
+export * from "./optimized/index.js";
