@@ -1,6 +1,7 @@
 import {describe, expect, it} from "vitest";
 
-import {reconstructPath} from "../../../src/utils/graph-utilities.js";
+import {Graph} from "../../../src/core/graph.js";
+import {getCommonNeighbors, reconstructPath} from "../../../src/utils/graph-utilities.js";
 
 describe("reconstructPath", () => {
     it("should reconstruct simple path", () => {
@@ -73,5 +74,75 @@ describe("reconstructPath", () => {
 
         // Should return empty array since there's no complete path to source
         expect(reconstructPath("A", predecessor)).toEqual([]);
+    });
+});
+
+describe("getCommonNeighbors", () => {
+    it("should find common neighbors in undirected graph", () => {
+        const graph = new Graph();
+        graph.addEdge("A", "B");
+        graph.addEdge("A", "C");
+        graph.addEdge("B", "C");
+        graph.addEdge("B", "D");
+        graph.addEdge("C", "D");
+
+        const common = getCommonNeighbors(graph, "A", "B");
+        expect(common).toEqual(new Set(["C"]));
+    });
+
+    it("should find common neighbors in directed graph", () => {
+        const graph = new Graph({directed: true});
+        graph.addEdge("A", "C");
+        graph.addEdge("B", "C");
+        graph.addEdge("A", "D");
+        graph.addEdge("B", "D");
+        graph.addEdge("C", "E");
+
+        const common = getCommonNeighbors(graph, "A", "B", true);
+        expect(common).toEqual(new Set(["C", "D"]));
+    });
+
+    it("should return empty set when no common neighbors", () => {
+        const graph = new Graph();
+        graph.addEdge("A", "B");
+        graph.addEdge("A", "C");
+        graph.addEdge("D", "E");
+
+        const common = getCommonNeighbors(graph, "A", "D");
+        expect(common).toEqual(new Set());
+    });
+
+    it("should handle nodes with no neighbors", () => {
+        const graph = new Graph();
+        graph.addNode("A");
+        graph.addNode("B");
+
+        const common = getCommonNeighbors(graph, "A", "B");
+        expect(common).toEqual(new Set());
+    });
+
+    it("should handle self-loops correctly", () => {
+        const graph = new Graph();
+        graph.addEdge("A", "A");
+        graph.addEdge("A", "B");
+        graph.addEdge("B", "B");
+        graph.addEdge("A", "C");
+        graph.addEdge("B", "C");
+
+        const common = getCommonNeighbors(graph, "A", "B");
+        // Both A and B have edges to A, B, and C, so all are common neighbors
+        expect(common).toEqual(new Set(["A", "B", "C"]));
+    });
+
+    it("should work with numeric node IDs", () => {
+        const graph = new Graph();
+        graph.addEdge(1, 2);
+        graph.addEdge(1, 3);
+        graph.addEdge(2, 3);
+        graph.addEdge(2, 4);
+        graph.addEdge(3, 4);
+
+        const common = getCommonNeighbors(graph, 1, 2);
+        expect(common).toEqual(new Set([3]));
     });
 });

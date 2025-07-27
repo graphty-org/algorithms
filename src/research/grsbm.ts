@@ -1,5 +1,6 @@
 import type {Graph} from "../core/graph.js";
 import type {NodeId} from "../types/index.js";
+import {SeededRandom} from "../utils/math-utilities.js";
 
 /**
  * Configuration options for the GRSBM (Greedy Recursive Spectral Bisection) algorithm
@@ -95,7 +96,9 @@ export function grsbm(graph: Graph, config: GRSBMConfig = {}): GRSBMResult {
     } = config;
 
     // Set random seed for reproducibility
-    Math.random = seedRandom(seed);
+    const rng = SeededRandom.createGenerator(seed);
+    const originalRandom = Math.random;
+    Math.random = rng;
 
     const nodes = Array.from(graph.nodes());
     const nodeCount = nodes.length;
@@ -227,6 +230,9 @@ export function grsbm(graph: Graph, config: GRSBMConfig = {}): GRSBMResult {
     }
 
     assignClusterIds(root);
+
+    // Restore original random function
+    Math.random = originalRandom;
 
     return {
         root,
@@ -572,18 +578,3 @@ function calculateModularity(graph: Graph, assignment: Map<NodeId, number>): num
     return modularity;
 }
 
-/**
- * Simple seeded random number generator for reproducibility
- */
-function seedRandom(seed: number): () => number {
-    const m = 0x80000000; // 2**31
-    const a = 1103515245;
-    const c = 12345;
-
-    seed = seed % m;
-
-    return function() {
-        seed = ((a * seed) + c) % m;
-        return seed / (m - 1);
-    };
-}

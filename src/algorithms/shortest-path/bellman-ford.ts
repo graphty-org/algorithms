@@ -1,5 +1,6 @@
 import type {Graph} from "../../core/graph.js";
 import type {NodeId, ShortestPathResult} from "../../types/index.js";
+import {reconstructPath} from "../../utils/graph-utilities.js";
 
 /**
  * Bellman-Ford algorithm implementation for single-source shortest paths
@@ -198,17 +199,3 @@ export function hasNegativeCycle(graph: Graph): boolean {
     return false;
 }
 
-/**
- * Reconstruct path from predecessor map
- */
-function reconstructPath(target: NodeId, predecessors: Map<NodeId, NodeId | null>): NodeId[] {
-    const path: NodeId[] = [];
-    let current: NodeId | null = target;
-
-    while (current !== null) {
-        path.unshift(current);
-        current = predecessors.get(current) ?? null;
-    }
-
-    return path;
-}

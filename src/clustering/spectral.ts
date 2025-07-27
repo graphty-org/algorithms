@@ -1,5 +1,6 @@
 import type {Graph} from "../core/graph.js";
 import type {NodeId} from "../types/index.js";
+import {euclideanDistance} from "../utils/math-utilities.js";
 
 /**
  * Spectral Clustering implementation
@@ -546,18 +547,6 @@ function kMeansClustering(
     }
 
     return {assignments, centroids};
-}
-
-/**
- * Calculate Euclidean distance between two vectors
- */
-function euclideanDistance(a: number[], b: number[]): number {
-    let sum = 0;
-    for (let i = 0; i < a.length; i++) {
-        const diff = (a[i] ?? 0) - (b[i] ?? 0);
-        sum += diff * diff;
-    }
-    return Math.sqrt(sum);
 }
 
 /**

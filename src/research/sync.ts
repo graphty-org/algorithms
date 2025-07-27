@@ -1,5 +1,6 @@
 import type {Graph} from "../core/graph.js";
 import type {NodeId} from "../types/index.js";
+import {euclideanDistance, SeededRandom} from "../utils/math-utilities.js";
 
 /**
  * Configuration options for the SynC (Synergistic Deep Graph Clustering) algorithm
@@ -60,7 +61,8 @@ export function syncClustering(graph: Graph, config: SynCConfig): SynCResult {
 
     // Set random seed for reproducibility (save original)
     const originalRandom = Math.random;
-    Math.random = seedRandom(seed);
+    const rng = SeededRandom.createGenerator(seed);
+    Math.random = rng;
 
     const nodes = Array.from(graph.nodes());
     const nodeCount = nodes.length;
@@ -436,34 +438,3 @@ function calculateLoss(
     return clusteringLoss + (lambda * reconstructionLoss) + (lambda * regularizationLoss);
 }
 
-/**
- * Calculate Euclidean distance between two vectors
- */
-function euclideanDistance(a: number[], b: number[]): number {
-    let sum = 0;
-    for (let i = 0; i < a.length; i++) {
-        const aVal = a[i];
-        const bVal = b[i];
-        if (aVal !== undefined && bVal !== undefined) {
-            const diff = aVal - bVal;
-            sum += diff * diff;
-        }
-    }
-    return Math.sqrt(sum);
-}
-
-/**
- * Simple seeded random number generator for reproducibility
- */
-function seedRandom(seed: number): () => number {
-    const m = 0x80000000; // 2**31
-    const a = 1103515245;
-    const c = 12345;
-
-    seed = seed % m;
-
-    return function() {
-        seed = ((a * seed) + c) % m;
-        return seed / (m - 1);
-    };
-}

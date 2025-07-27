@@ -1,6 +1,7 @@
 import type {Graph} from "../../core/graph.js";
 import {PriorityQueue} from "../../data-structures/priority-queue.js";
 import type {DijkstraOptions, NodeId, ShortestPathResult} from "../../types/index.js";
+import {reconstructPath} from "../../utils/graph-utilities.js";
 
 /**
  * Dijkstra's algorithm implementation for single-source shortest paths
@@ -240,17 +241,3 @@ export function allPairsShortestPath(graph: Graph): Map<NodeId, Map<NodeId, numb
     return results;
 }
 
-/**
- * Reconstruct path from predecessor map
- */
-function reconstructPath(target: NodeId, previous: Map<NodeId, NodeId | null>): NodeId[] {
-    const path: NodeId[] = [];
-    let current: NodeId | null = target;
-
-    while (current !== null) {
-        path.unshift(current);
-        current = previous.get(current) ?? null;
-    }
-
-    return path;
-}

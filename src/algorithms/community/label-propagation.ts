@@ -9,6 +9,8 @@
  * detect community structures in large-scale networks"
  */
 
+import {shuffle} from "../../utils/math-utilities.js";
+
 export interface LabelPropagationOptions {
     maxIterations?: number;
     randomSeed?: number;
@@ -373,20 +375,5 @@ export function labelPropagationSemiSupervised(
         iterations,
         converged,
     };
-}
-
-/**
- * Fisher-Yates shuffle
- */
-function shuffle(array: unknown[], random: () => number): void {
-    for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(random() * (i + 1));
-        const temp = array[i];
-        const swapItem = array[j];
-        if (temp !== undefined && swapItem !== undefined) {
-            array[i] = swapItem;
-            array[j] = temp;
-        }
-    }
 }
 

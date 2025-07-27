@@ -1,5 +1,6 @@
 import type {Graph} from "../core/graph.js";
 import type {NodeId} from "../types/index.js";
+import {getCommonNeighbors, getIntermediateNodes} from "../utils/graph-utilities.js";
 import type {LinkPredictionOptions, LinkPredictionScore} from "./common-neighbors.js";
 
 /**
@@ -31,28 +32,24 @@ export function adamicAdarScore(
 
     const {directed = false} = options;
 
-    // Get neighbors
-    const sourceNeighbors = new Set(
-        directed ? Array.from(graph.outNeighbors(source)) : Array.from(graph.neighbors(source)),
-    );
-    const targetNeighbors = new Set(
-        directed ? Array.from(graph.inNeighbors(target)) : Array.from(graph.neighbors(target)),
-    );
+    // Use utility function to get common neighbors
+    // For directed graphs, we want intermediate nodes that form paths source->X->target
+    const commonNeighborsSet = directed ?
+        getIntermediateNodes(graph, source, target) :
+        getCommonNeighbors(graph, source, target, false);
 
     // Calculate Adamic-Adar score
     let score = 0;
-    for (const neighbor of sourceNeighbors) {
-        if (targetNeighbors.has(neighbor)) {
-            const degree = directed ?
-                graph.outDegree(neighbor) : // Use out-degree for directed graphs
-                graph.degree(neighbor); // Use total degree for undirected graphs
+    for (const neighbor of commonNeighborsSet) {
+        const degree = directed ?
+            graph.outDegree(neighbor) : // Use out-degree for directed graphs
+            graph.degree(neighbor); // Use total degree for undirected graphs
 
-            if (degree > 1) {
-                score += 1 / Math.log(degree);
-            } else if (degree === 1) {
-                // For degree 1, we can't use log(1) = 0, so use a small constant
-                score += 1; // or some other reasonable value
-            }
+        if (degree > 1) {
+            score += 1 / Math.log(degree);
+        } else if (degree === 1) {
+            // For degree 1, we can't use log(1) = 0, so use a small constant
+            score += 1; // or some other reasonable value
         }
     }
 
@@ -275,17 +272,7 @@ export function compareAdamicAdarWithCommonNeighbors(
         pairs.map(([source, target]) => ({
             source,
             target,
-            score: (() => {
-                const sourceNeighbors = new Set(Array.from(graph.neighbors(source)));
-                const targetNeighbors = new Set(Array.from(graph.neighbors(target)));
-                let count = 0;
-                for (const n of sourceNeighbors) {
-                    if (targetNeighbors.has(n)) {
-                        count++;
-                    }
-                }
-                return count;
-            })(),
+            score: getCommonNeighbors(graph, source, target, options.directed).size,
         }));
 
     const testScores = commonNeighborsPairs(testEdges);

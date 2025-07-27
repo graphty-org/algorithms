@@ -1,5 +1,6 @@
 import type {Graph} from "../core/graph.js";
 import type {NodeId} from "../types/index.js";
+import {getCommonNeighbors, getIntermediateNodes} from "../utils/graph-utilities.js";
 
 /**
  * Common Neighbors link prediction implementation
@@ -39,23 +40,13 @@ export function commonNeighborsScore(
 
     const {directed = false} = options;
 
-    // Get neighbors
-    const sourceNeighbors = new Set(
-        directed ? Array.from(graph.outNeighbors(source)) : Array.from(graph.neighbors(source)),
-    );
-    const targetNeighbors = new Set(
-        directed ? Array.from(graph.inNeighbors(target)) : Array.from(graph.neighbors(target)),
-    );
+    // Use utility function to get common neighbors
+    // For directed graphs, we want intermediate nodes that form paths source->X->target
+    const commonNeighborsSet = directed ?
+        getIntermediateNodes(graph, source, target) :
+        getCommonNeighbors(graph, source, target, false);
 
-    // Count common neighbors
-    let commonCount = 0;
-    for (const neighbor of sourceNeighbors) {
-        if (targetNeighbors.has(neighbor)) {
-            commonCount++;
-        }
-    }
-
-    return commonCount;
+    return commonNeighborsSet.size;
 }
 
 /**
