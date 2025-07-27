@@ -9,6 +9,8 @@
  * detect community structures in large-scale networks"
  */
 
+import type {Graph} from "../../core/graph.js";
+import {graphToMap} from "../../utils/graph-converters.js";
 import {shuffle} from "../../utils/math-utilities.js";
 
 export interface LabelPropagationOptions {
@@ -23,17 +25,9 @@ export interface LabelPropagationResult {
 }
 
 /**
- * Label Propagation Algorithm
- * Each node adopts the most frequent label among its neighbors
- *
- * @param graph - Undirected graph (can be weighted)
- * @param options - Algorithm options
- * @returns Community assignments
- *
- * Time Complexity: O(m) per iteration, typically O(km) for k iterations
- * Space Complexity: O(n)
+ * Internal implementation of Label Propagation Algorithm
  */
-export function labelPropagation(
+function labelPropagationImpl(
     graph: Map<string, Map<string, number>>,
     options: LabelPropagationOptions = {},
 ): LabelPropagationResult {
@@ -159,10 +153,10 @@ export function labelPropagation(
 }
 
 /**
- * Asynchronous Label Propagation
+ * Internal implementation of Asynchronous Label Propagation
  * Updates all nodes simultaneously (can lead to oscillations)
  */
-export function labelPropagationAsync(
+function labelPropagationAsyncImpl(
     graph: Map<string, Map<string, number>>,
     options: LabelPropagationOptions = {},
 ): LabelPropagationResult {
@@ -269,10 +263,10 @@ export function labelPropagationAsync(
 }
 
 /**
- * Semi-supervised Label Propagation
+ * Internal implementation of Semi-supervised Label Propagation
  * Some nodes have fixed labels that don't change
  */
-export function labelPropagationSemiSupervised(
+function labelPropagationSemiSupervisedImpl(
     graph: Map<string, Map<string, number>>,
     seedLabels: Map<string, number>,
     options: LabelPropagationOptions = {},
@@ -375,5 +369,61 @@ export function labelPropagationSemiSupervised(
         iterations,
         converged,
     };
+}
+
+/**
+ * Label Propagation Algorithm
+ * Each node adopts the most frequent label among its neighbors
+ *
+ * @param graph - Undirected graph (can be weighted) - accepts Graph class or Map representation
+ * @param options - Algorithm options
+ * @returns Community assignments
+ *
+ * Time Complexity: O(m) per iteration, typically O(km) for k iterations
+ * Space Complexity: O(n)
+ */
+export function labelPropagation(
+    graph: Graph | Map<string, Map<string, number>>,
+    options: LabelPropagationOptions = {},
+): LabelPropagationResult {
+    // Convert Graph to Map representation if needed
+    const graphMap = graph instanceof Map ? graph : graphToMap(graph);
+    return labelPropagationImpl(graphMap, options);
+}
+
+/**
+ * Asynchronous Label Propagation
+ * Updates all nodes simultaneously (can lead to oscillations)
+ *
+ * @param graph - Undirected graph (can be weighted) - accepts Graph class or Map representation
+ * @param options - Algorithm options
+ * @returns Community assignments
+ */
+export function labelPropagationAsync(
+    graph: Graph | Map<string, Map<string, number>>,
+    options: LabelPropagationOptions = {},
+): LabelPropagationResult {
+    // Convert Graph to Map representation if needed
+    const graphMap = graph instanceof Map ? graph : graphToMap(graph);
+    return labelPropagationAsyncImpl(graphMap, options);
+}
+
+/**
+ * Semi-supervised Label Propagation
+ * Some nodes have fixed labels that don't change
+ *
+ * @param graph - Undirected graph (can be weighted) - accepts Graph class or Map representation
+ * @param seedLabels - Initial fixed labels for some nodes
+ * @param options - Algorithm options
+ * @returns Community assignments
+ */
+export function labelPropagationSemiSupervised(
+    graph: Graph | Map<string, Map<string, number>>,
+    seedLabels: Map<string, number>,
+    options: LabelPropagationOptions = {},
+): LabelPropagationResult {
+    // Convert Graph to Map representation if needed
+    const graphMap = graph instanceof Map ? graph : graphToMap(graph);
+    return labelPropagationSemiSupervisedImpl(graphMap, seedLabels, options);
 }
 

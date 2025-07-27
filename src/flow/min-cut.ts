@@ -4,6 +4,8 @@
  * Various algorithms for finding minimum cuts in graphs
  */
 
+import type {Graph} from "../core/graph.js";
+import {graphToMap} from "../utils/graph-converters.js";
 import {fordFulkerson} from "./ford-fulkerson.js";
 
 export interface MinCutResult {
@@ -17,7 +19,7 @@ export interface MinCutResult {
  * Find minimum s-t cut using max flow
  * The minimum cut value equals the maximum flow value (max-flow min-cut theorem)
  *
- * @param graph - Weighted graph
+ * @param graph - Weighted graph - accepts Graph class or Map representation
  * @param source - Source node
  * @param sink - Sink node
  * @returns Minimum cut information
@@ -25,11 +27,13 @@ export interface MinCutResult {
  * Time Complexity: Same as max flow algorithm used
  */
 export function minSTCut(
-    graph: Map<string, Map<string, number>>,
+    graph: Graph | Map<string, Map<string, number>>,
     source: string,
     sink: string,
 ): MinCutResult {
-    const flowResult = fordFulkerson(graph, source, sink);
+    // Convert Graph to Map representation if needed
+    const graphMap = graph instanceof Map ? graph : graphToMap(graph);
+    const flowResult = fordFulkerson(graphMap, source, sink);
 
     if (!flowResult.minCut) {
         return {
@@ -44,7 +48,7 @@ export function minSTCut(
 
     // Find actual cut edges and their weights
     for (const [u, v] of flowResult.minCut.edges) {
-        const weight = graph.get(u)?.get(v) ?? 0;
+        const weight = graphMap.get(u)?.get(v) ?? 0;
         if (weight > 0) {
             cutEdges.push({from: u, to: v, weight});
         }
@@ -62,16 +66,20 @@ export function minSTCut(
  * Stoer-Wagner algorithm for finding global minimum cut
  * Finds the minimum cut that separates the graph into two parts
  *
- * @param graph - Undirected weighted graph
+ * @param graph - Undirected weighted graph - accepts Graph class or Map representation
  * @returns Global minimum cut
  *
  * Time Complexity: O(V³) or O(VE + V² log V) with heap
  */
 export function stoerWagner(
-    graph: Map<string, Map<string, number>>,
+    graph: Graph | Map<string, Map<string, number>>,
 ): MinCutResult {
+    // Convert Graph to Map representation if needed
+    const graphMap = graph instanceof Map ? graph : graphToMap(graph);
     // Convert to undirected if necessary
-    const undirectedGraph = makeUndirected(graph);
+    const undirectedGraph = makeUndirected(graphMap);
+    // Keep a copy for finding cut edges later
+    const originalGraph = makeUndirected(graphMap);
 
     if (undirectedGraph.size < 2) {
         return {
@@ -84,6 +92,7 @@ export function stoerWagner(
 
     // Initialize
     const nodes = Array.from(undirectedGraph.keys());
+    const originalNodes = new Set(nodes); // Keep track of original nodes
     let minCutValue = Infinity;
     let bestPartition = new Set<string>();
     const contractionMap = new Map<string, Set<string>>();
@@ -125,7 +134,7 @@ export function stoerWagner(
     const partition1 = bestPartition;
     const partition2 = new Set<string>();
 
-    for (const node of graph.keys()) {
+    for (const node of originalNodes) {
         if (!partition1.has(node)) {
             partition2.add(node);
         }
@@ -134,7 +143,7 @@ export function stoerWagner(
     // Find cut edges
     const cutEdges: {from: string, to: string, weight: number}[] = [];
     for (const u of partition1) {
-        const neighbors = graph.get(u);
+        const neighbors = originalGraph.get(u);
         if (neighbors) {
             for (const [v, weight] of neighbors) {
                 if (partition2.has(v)) {
@@ -308,22 +317,24 @@ function makeUndirected(
  * Karger's randomized min-cut algorithm
  * Probabilistic algorithm that finds min cut with high probability
  *
- * @param graph - Undirected graph
+ * @param graph - Undirected graph - accepts Graph class or Map representation
  * @param iterations - Number of iterations (higher = better accuracy)
  * @returns Minimum cut found
  *
  * Time Complexity: O(V² * iterations)
  */
 export function kargerMinCut(
-    graph: Map<string, Map<string, number>>,
+    graph: Graph | Map<string, Map<string, number>>,
     iterations = 100,
 ): MinCutResult {
+    // Convert Graph to Map representation if needed
+    const graphMap = graph instanceof Map ? graph : graphToMap(graph);
     let minCutValue = Infinity;
     let bestPartition1 = new Set<string>();
     let bestPartition2 = new Set<string>();
 
     for (let i = 0; i < iterations; i++) {
-        const result = kargerSingleRun(graph);
+        const result = kargerSingleRun(graphMap);
 
         if (result.cutValue < minCutValue) {
             minCutValue = result.cutValue;
@@ -335,7 +346,7 @@ export function kargerMinCut(
     // Find cut edges
     const cutEdges: {from: string, to: string, weight: number}[] = [];
     for (const u of bestPartition1) {
-        const neighbors = graph.get(u);
+        const neighbors = graphMap.get(u);
         if (neighbors) {
             for (const [v, weight] of neighbors) {
                 if (bestPartition2.has(v)) {

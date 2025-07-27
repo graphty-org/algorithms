@@ -6,6 +6,42 @@
  * understanding graph structure.
  */
 
+import type {Graph} from "../core/graph.js";
+import type {NodeId} from "../types/index.js";
+
+/**
+ * Convert Graph to adjacency set representation
+ */
+function graphToAdjacencySet(graph: Graph): Map<string, Set<string>> {
+    const adjacency = new Map<string, Set<string>>();
+
+    // Initialize all nodes
+    for (const node of graph.nodes()) {
+        adjacency.set(String(node.id), new Set());
+    }
+
+    // Add edges
+    for (const edge of graph.edges()) {
+        const source = String(edge.source);
+        const target = String(edge.target);
+
+        const sourceSet = adjacency.get(source);
+        if (sourceSet) {
+            sourceSet.add(target);
+        }
+
+        // For undirected graphs, add reverse edge
+        if (!graph.isDirected) {
+            const targetSet = adjacency.get(target);
+            if (targetSet) {
+                targetSet.add(source);
+            }
+        }
+    }
+
+    return adjacency;
+}
+
 export interface KCoreResult<T> {
     cores: Map<number, Set<T>>;
     coreness: Map<T, number>;
@@ -13,16 +49,9 @@ export interface KCoreResult<T> {
 }
 
 /**
- * K-Core decomposition algorithm
- * Finds all k-cores in the graph and assigns coreness values to nodes
- *
- * @param graph - Undirected graph as adjacency list
- * @returns K-core decomposition results
- *
- * Time Complexity: O(V + E)
- * Space Complexity: O(V)
+ * Internal implementation of K-Core decomposition algorithm
  */
-export function kCoreDecomposition<T>(
+function kCoreDecompositionImpl<T>(
     graph: Map<T, Set<T>>,
 ): KCoreResult<T> {
     if (graph.size === 0) {
@@ -456,5 +485,28 @@ export function toUndirected<T>(
     }
 
     return undirected;
+}
+
+/**
+ * K-Core decomposition algorithm
+ * Finds all k-cores in the graph and assigns coreness values to nodes
+ *
+ * @param graph - Undirected graph - accepts Graph class or Map<T, Set<T>>
+ * @returns K-core decomposition results
+ *
+ * Time Complexity: O(V + E)
+ * Space Complexity: O(V)
+ */
+export function kCoreDecomposition<T = NodeId>(
+    graph: Graph | Map<T, Set<T>>,
+): KCoreResult<T> {
+    if (graph instanceof Map) {
+        return kCoreDecompositionImpl(graph);
+    }
+
+    // Convert Graph to adjacency set representation
+    const adjacencySet = graphToAdjacencySet(graph);
+    // Type assertion needed because we know the keys are strings
+    return kCoreDecompositionImpl(adjacencySet as Map<T, Set<T>>);
 }
 

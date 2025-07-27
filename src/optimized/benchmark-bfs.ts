@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import {breadthFirstSearch} from "../algorithms/traversal/bfs.js";
 import {Graph} from "../core/graph.js";
 import {bfsOptimized} from "./bfs-optimized.js";

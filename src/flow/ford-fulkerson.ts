@@ -1,4 +1,6 @@
 import {bfsAugmentingPath} from "../algorithms/traversal/bfs-variants.js";
+import type {Graph} from "../core/graph.js";
+import {graphToMap} from "../utils/graph-converters.js";
 
 /**
  * Ford-Fulkerson Algorithm for Maximum Flow
@@ -245,17 +247,9 @@ function maxFlowCore(
 }
 
 /**
- * Ford-Fulkerson algorithm using DFS for finding augmenting paths
- *
- * @param graph - Adjacency list representation with capacities
- * @param source - Source node
- * @param sink - Sink node
- * @returns Maximum flow value and flow graph
- *
- * Time Complexity: O(E * f) where f is the maximum flow
- * Space Complexity: O(V + E)
+ * Internal implementation of Ford-Fulkerson algorithm using DFS
  */
-export function fordFulkerson(
+function fordFulkersonImpl(
     graph: Map<string, Map<string, number>>,
     source: string,
     sink: string,
@@ -287,12 +281,9 @@ export function fordFulkerson(
 }
 
 /**
- * Edmonds-Karp algorithm (Ford-Fulkerson with BFS)
- * More efficient implementation with better time complexity
- *
- * Time Complexity: O(V * E²)
+ * Internal implementation of Edmonds-Karp algorithm
  */
-export function edmondsKarp(
+function edmondsKarpImpl(
     graph: Map<string, Map<string, number>>,
     source: string,
     sink: string,
@@ -355,4 +346,46 @@ export function createBipartiteFlowNetwork(
     graph.set(sink, new Map());
 
     return {graph, source, sink};
+}
+
+/**
+ * Ford-Fulkerson algorithm using DFS for finding augmenting paths
+ *
+ * @param graph - Adjacency list representation with capacities - accepts Graph class or Map
+ * @param source - Source node
+ * @param sink - Sink node
+ * @returns Maximum flow value and flow graph
+ *
+ * Time Complexity: O(E * f) where f is the maximum flow
+ * Space Complexity: O(V + E)
+ */
+export function fordFulkerson(
+    graph: Graph | Map<string, Map<string, number>>,
+    source: string,
+    sink: string,
+): MaxFlowResult {
+    // Convert Graph to Map representation if needed
+    const graphMap = graph instanceof Map ? graph : graphToMap(graph);
+    return fordFulkersonImpl(graphMap, source, sink);
+}
+
+/**
+ * Edmonds-Karp algorithm (Ford-Fulkerson with BFS)
+ * More efficient implementation with better time complexity
+ *
+ * @param graph - Adjacency list representation with capacities - accepts Graph class or Map
+ * @param source - Source node
+ * @param sink - Sink node
+ * @returns Maximum flow value and flow graph
+ *
+ * Time Complexity: O(V * E²)
+ */
+export function edmondsKarp(
+    graph: Graph | Map<string, Map<string, number>>,
+    source: string,
+    sink: string,
+): MaxFlowResult {
+    // Convert Graph to Map representation if needed
+    const graphMap = graph instanceof Map ? graph : graphToMap(graph);
+    return edmondsKarpImpl(graphMap, source, sink);
 }

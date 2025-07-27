@@ -10,6 +10,8 @@
 
 // Louvain import removed - not used in this implementation
 
+import type {Graph} from "../../core/graph.js";
+import {graphToMap} from "../../utils/graph-converters.js";
 import {shuffle} from "../../utils/math-utilities.js";
 
 export interface LeidenOptions {
@@ -26,17 +28,10 @@ export interface LeidenResult {
 }
 
 /**
- * Leiden algorithm for community detection
+ * Internal implementation of Leiden algorithm for community detection
  * Improves upon Louvain by ensuring well-connected communities
- *
- * @param graph - Undirected weighted graph
- * @param options - Algorithm options
- * @returns Community assignments and modularity
- *
- * Time Complexity: O(m) per iteration, typically O(m log m) total
- * Space Complexity: O(n + m)
  */
-export function leiden(
+function leidenImpl(
     graph: Map<string, Map<string, number>>,
     options: LeidenOptions = {},
 ): LeidenResult {
@@ -555,5 +550,25 @@ function aggregateCommunities(
     }
 
     return {graph: aggregated, mapping};
+}
+
+/**
+ * Leiden algorithm for community detection
+ * Improves upon Louvain by ensuring well-connected communities
+ *
+ * @param graph - Undirected weighted graph - accepts Graph class or Map representation
+ * @param options - Algorithm options
+ * @returns Community assignments and modularity
+ *
+ * Time Complexity: O(m) per iteration, typically O(m log m) total
+ * Space Complexity: O(n + m)
+ */
+export function leiden(
+    graph: Graph | Map<string, Map<string, number>>,
+    options: LeidenOptions = {},
+): LeidenResult {
+    // Convert Graph to Map representation if needed
+    const graphMap = graph instanceof Map ? graph : graphToMap(graph);
+    return leidenImpl(graphMap, options);
 }
 
