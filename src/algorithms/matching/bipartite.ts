@@ -1,5 +1,6 @@
 import type {Graph} from "../../core/graph.js";
 import type {NodeId} from "../../types/index.js";
+import {bfsColoringWithPartitions} from "../traversal/bfs-variants.js";
 
 /**
  * Maximum Bipartite Matching implementation using Hopcroft-Karp algorithm
@@ -88,53 +89,16 @@ export function maximumBipartiteMatching(
  * Check if graph is bipartite and return the partition
  */
 export function bipartitePartition(graph: Graph): {left: Set<NodeId>, right: Set<NodeId>} | null {
-    const color = new Map<NodeId, boolean>();
-    const left = new Set<NodeId>();
-    const right = new Set<NodeId>();
+    const result = bfsColoringWithPartitions(graph);
 
-    const nodes = Array.from(graph.nodes());
-
-    for (const startNode of nodes) {
-        if (color.has(startNode.id)) {
-            continue;
-        }
-
-        // BFS to color the component
-        const queue = [startNode.id];
-        color.set(startNode.id, true);
-        left.add(startNode.id);
-
-        while (queue.length > 0) {
-            const u = queue.shift();
-            if (u === undefined) {
-                continue;
-            }
-
-            const uColor = color.get(u);
-            if (uColor === undefined) {
-                continue;
-            }
-
-            const neighbors = Array.from(graph.neighbors(u));
-            for (const v of neighbors) {
-                if (!color.has(v)) {
-                    color.set(v, !uColor);
-                    if (!uColor) {
-                        left.add(v);
-                    } else {
-                        right.add(v);
-                    }
-
-                    queue.push(v);
-                } else if (color.get(v) === uColor) {
-                    // Same color as neighbor - not bipartite
-                    return null;
-                }
-            }
-        }
+    if (!result.isBipartite || !result.partitions) {
+        return null;
     }
 
-    return {left, right};
+    return {
+        left: result.partitions[0],
+        right: result.partitions[1],
+    };
 }
 
 /**
