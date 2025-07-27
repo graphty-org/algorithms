@@ -12,7 +12,7 @@
 
 import type {Graph} from "../../core/graph.js";
 import {graphToMap} from "../../utils/graph-converters.js";
-import {shuffle} from "../../utils/math-utilities.js";
+import {SeededRandom, shuffle} from "../../utils/math-utilities.js";
 
 export interface LeidenOptions {
     resolution?: number;
@@ -52,11 +52,7 @@ function leidenImpl(
     }
 
     // Initialize random number generator
-    let seed = randomSeed;
-    const random = (): number => {
-        seed = ((seed * 1664525) + 1013904223) % 2147483647;
-        return seed / 2147483647;
-    };
+    const random = SeededRandom.createGenerator(randomSeed);
 
     // Calculate total weight
     let totalWeight = 0;

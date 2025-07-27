@@ -11,7 +11,7 @@
 
 import type {Graph} from "../../core/graph.js";
 import {graphToMap} from "../../utils/graph-converters.js";
-import {shuffle} from "../../utils/math-utilities.js";
+import {SeededRandom, shuffle} from "../../utils/math-utilities.js";
 
 export interface LabelPropagationOptions {
     maxIterations?: number;
@@ -45,11 +45,7 @@ function labelPropagationImpl(
     }
 
     // Initialize random number generator
-    let seed = randomSeed;
-    const random = (): number => {
-        seed = ((seed * 1664525) + 1013904223) % 2147483647;
-        return seed / 2147483647;
-    };
+    const random = SeededRandom.createGenerator(randomSeed);
 
     // Initialize labels - each node gets its own label
     const labels = new Map<string, number>();
@@ -277,11 +273,7 @@ function labelPropagationSemiSupervisedImpl(
     } = options;
 
     // Initialize random number generator
-    let seed = randomSeed;
-    const random = (): number => {
-        seed = ((seed * 1664525) + 1013904223) % 2147483647;
-        return seed / 2147483647;
-    };
+    const random = SeededRandom.createGenerator(randomSeed);
 
     // Initialize labels
     const labels = new Map<string, number>();

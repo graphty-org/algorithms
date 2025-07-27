@@ -1,5 +1,6 @@
 import type {Graph} from "../../core/graph.js";
 import type {NodeId, ShortestPathResult, TraversalOptions, TraversalResult} from "../../types/index.js";
+import {reconstructPath} from "../../utils/graph-utilities.js";
 
 /**
  * Breadth-First Search (BFS) implementation
@@ -220,17 +221,3 @@ export function isBipartite(graph: Graph): boolean {
     return true;
 }
 
-/**
- * Reconstruct path from predecessor map
- */
-function reconstructPath(target: NodeId, predecessor: Map<NodeId, NodeId | null>): NodeId[] {
-    const path: NodeId[] = [];
-    let current: NodeId | null = target;
-
-    while (current !== null) {
-        path.unshift(current);
-        current = predecessor.get(current) ?? null;
-    }
-
-    return path;
-}

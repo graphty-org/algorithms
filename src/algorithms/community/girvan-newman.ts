@@ -30,7 +30,7 @@ export function girvanNewman(
     const maxIterations = options.maxIterations ?? 100; // Prevent infinite loops
 
     const dendrogram: CommunityResult[] = [];
-    const workingGraph = cloneGraph(graph);
+    const workingGraph = graph.clone();
     let iterations = 0;
 
     // Initial state: one large component
@@ -363,25 +363,3 @@ function getConnectedComponentsResult(graph: Graph): ComponentResult {
     return {components, componentMap};
 }
 
-/**
- * Create a deep clone of the graph
- */
-function cloneGraph(graph: Graph): Graph {
-    const clone = new Graph({
-        directed: graph.isDirected,
-        allowSelfLoops: true,
-        allowParallelEdges: false,
-    });
-
-    // Add all nodes
-    for (const node of graph.nodes()) {
-        clone.addNode(node.id, node.data);
-    }
-
-    // Add all edges
-    for (const edge of graph.edges()) {
-        clone.addEdge(edge.source, edge.target, edge.weight, edge.data);
-    }
-
-    return clone;
-}

@@ -1,4 +1,5 @@
 import type {Graph} from "../../core/graph.js";
+import {PriorityQueue} from "../../data-structures/priority-queue.js";
 import type {NodeId} from "../../types/index.js";
 
 /**
@@ -240,23 +241,19 @@ export function bfsWeightedDistances(
     const distances = new Map<NodeId, number>();
     const visited = new Set<NodeId>();
 
-    // Simple array-based priority queue for BFS-like behavior
-    // For true Dijkstra, use the dijkstra algorithm directly
-    const queue: {node: NodeId, distance: number}[] = [];
+    // Use efficient priority queue instead of array-based queue
+    const queue = new PriorityQueue<NodeId>();
 
     distances.set(source, 0);
-    queue.push({node: source, distance: 0});
+    queue.enqueue(source, 0);
 
-    while (queue.length > 0) {
-        // Sort to get minimum distance
-        queue.sort((a, b) => a.distance - b.distance);
-        const item = queue.shift();
-        if (item === undefined) {
+    while (!queue.isEmpty()) {
+        const current = queue.dequeue();
+        if (current === undefined) {
             continue;
         }
 
-        const current = item.node;
-        const currentDist = item.distance;
+        const currentDist = distances.get(current) ?? 0;
 
         if (visited.has(current)) {
             continue;
@@ -278,7 +275,7 @@ export function bfsWeightedDistances(
                 const oldDistance = distances.get(neighbor);
                 if (oldDistance === undefined || newDistance < oldDistance) {
                     distances.set(neighbor, newDistance);
-                    queue.push({node: neighbor, distance: newDistance});
+                    queue.enqueue(neighbor, newDistance);
                 }
             }
         }

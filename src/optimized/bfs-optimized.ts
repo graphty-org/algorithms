@@ -1,6 +1,7 @@
 import {breadthFirstSearch, shortestPathBFS, singleSourceShortestPathBFS} from "../algorithms/traversal/bfs.js";
 import type {Graph} from "../core/graph.js";
 import type {NodeId, ShortestPathResult, TraversalOptions, TraversalResult} from "../types/index.js";
+import {reconstructPath} from "../utils/graph-utilities.js";
 import {CSRGraph} from "./csr-graph.js";
 import {DirectionOptimizedBFS, type DirectionOptimizedBFSOptions} from "./direction-optimized-bfs.js";
 import {getOptimizationConfig, toCSRGraph} from "./graph-adapter.js";
@@ -141,13 +142,7 @@ export function shortestPathBFSOptimized(
     }
 
     // Reconstruct path
-    const path: NodeId[] = [];
-    let current: NodeId | null = target;
-
-    while (current !== null) {
-        path.unshift(current);
-        current = result.parents.get(current) ?? null;
-    }
+    const path = reconstructPath(target, result.parents);
 
     return {
         distance,
@@ -187,13 +182,7 @@ export function singleSourceShortestPathBFSOptimized(
 
     for (const [nodeId, distance] of bfsResult.distances) {
     // Reconstruct path for each node
-        const path: NodeId[] = [];
-        let current: NodeId | null = nodeId;
-
-        while (current !== null) {
-            path.unshift(current);
-            current = bfsResult.parents.get(current) ?? null;
-        }
+        const path = reconstructPath(nodeId, bfsResult.parents);
 
         results.set(nodeId, {
             distance,
