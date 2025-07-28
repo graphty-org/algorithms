@@ -1,7 +1,7 @@
 [
   {
-    "sessionId": "tu6wwg",
-    "timestamp": "2025-07-26T03:07:53.016Z",
+    "sessionId": "zwpvzb",
+    "timestamp": "2025-07-27T22:54:38.425Z",
     "systemInfo": {
       "platform": "linux",
       "arch": "x64",
@@ -30,11 +30,11 @@
         "graphType": "community",
         "graphGenerationAlgorithm": "Community Graph",
         "graphSize": 50,
-        "edges": 249,
-        "executionTime": 8.674904635897436,
-        "memoryUsage": 19524024,
-        "memoryPerVertex": 390480.48,
-        "timestamp": "2025-07-26T03:06:01.404Z",
+        "edges": 243,
+        "executionTime": 4.1783006352206575,
+        "memoryUsage": 11458480,
+        "memoryPerVertex": 229169.6,
+        "timestamp": "2025-07-27T22:53:22.831Z",
         "systemInfo": {
           "platform": "linux",
           "arch": "x64",
@@ -57,14 +57,14 @@
           }
         },
         "metrics": {
-          "opsPerSecond": 115.27504243238843,
+          "opsPerSecond": 239.3317492692073,
           "samples": 15,
-          "marginOfError": 12.44120970544209,
-          "standardDeviation": 0.0019487029954921434,
-          "variance": 0.000003797443364640053,
+          "marginOfError": 12.254441801030426,
+          "standardDeviation": 0.000924509868984255,
+          "variance": 8.547184978492843e-7,
           "platform": "node",
           "testType": "comprehensive",
-          "teps": 28703.48556566472
+          "teps": 58157.61507241737
         }
       },
       {
@@ -72,11 +72,11 @@
         "graphType": "community",
         "graphGenerationAlgorithm": "Community Graph",
         "graphSize": 100,
-        "edges": 836,
-        "executionTime": 57.31010682025117,
-        "memoryUsage": 5283456,
-        "memoryPerVertex": 52834.56,
-        "timestamp": "2025-07-26T03:06:16.401Z",
+        "edges": 853,
+        "executionTime": 15.753751655771898,
+        "memoryUsage": 19915952,
+        "memoryPerVertex": 199159.52,
+        "timestamp": "2025-07-27T22:53:36.422Z",
         "systemInfo": {
           "platform": "linux",
           "arch": "x64",
@@ -99,14 +99,14 @@
           }
         },
         "metrics": {
-          "opsPerSecond": 17.448929263671147,
-          "samples": 14,
-          "marginOfError": 13.340222458526737,
-          "standardDeviation": 0.01324355429793366,
-          "variance": 0.00017539173044231712,
+          "opsPerSecond": 63.476943260916364,
+          "samples": 15,
+          "marginOfError": 15.836327797803595,
+          "standardDeviation": 0.004504605996227462,
+          "variance": 0.0000202914751812484,
           "platform": "node",
           "testType": "comprehensive",
-          "teps": 14587.304864429077
+          "teps": 54145.832601561655
         }
       },
       {
@@ -114,11 +114,11 @@
         "graphType": "community",
         "graphGenerationAlgorithm": "Community Graph",
         "graphSize": 200,
-        "edges": 3072,
-        "executionTime": 366.6653056410256,
-        "memoryUsage": 17652216,
-        "memoryPerVertex": 88261.08,
-        "timestamp": "2025-07-26T03:06:34.236Z",
+        "edges": 2974,
+        "executionTime": 94.81793244642859,
+        "memoryUsage": 6753232,
+        "memoryPerVertex": 33766.16,
+        "timestamp": "2025-07-27T22:53:50.489Z",
         "systemInfo": {
           "platform": "linux",
           "arch": "x64",
@@ -141,14 +141,14 @@
           }
         },
         "metrics": {
-          "opsPerSecond": 2.7272828506415183,
-          "samples": 13,
-          "marginOfError": 12.890400322653237,
-          "standardDeviation": 0.07820790804325957,
-          "variance": 0.006116476880502944,
+          "opsPerSecond": 10.546528216748372,
+          "samples": 17,
+          "marginOfError": 16.968420394232147,
+          "standardDeviation": 0.03129107591073851,
+          "variance": 0.0009791314316515997,
           "platform": "node",
           "testType": "comprehensive",
-          "teps": 8378.212917170746
+          "teps": 31365.374916609657
         }
       },
       {
@@ -156,11 +156,11 @@
         "graphType": "community",
         "graphGenerationAlgorithm": "Community Graph",
         "graphSize": 500,
-        "edges": 14836,
-        "executionTime": 3033.096179272727,
-        "memoryUsage": 43475344,
-        "memoryPerVertex": 86950.688,
-        "timestamp": "2025-07-26T03:07:52.899Z",
+        "edges": 15044,
+        "executionTime": 2176.970811636363,
+        "memoryUsage": 9697672,
+        "memoryPerVertex": 19395.344,
+        "timestamp": "2025-07-27T22:54:37.881Z",
         "systemInfo": {
           "platform": "linux",
           "arch": "x64",
@@ -183,14 +183,14 @@
           }
         },
         "metrics": {
-          "opsPerSecond": 0.329696106188027,
+          "opsPerSecond": 0.4593538850657948,
           "samples": 11,
-          "marginOfError": 28.945001947096667,
-          "standardDeviation": 1.3068956763453698,
-          "variance": 1.7079763088502218,
+          "marginOfError": 3.5356046958724274,
+          "standardDeviation": 0.11457700460561583,
+          "variance": 0.01312788998439531,
           "platform": "node",
           "testType": "comprehensive",
-          "teps": 4891.371431405569
+          "teps": 6910.519846929817
         }
       }
     ]

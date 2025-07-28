@@ -1,7 +1,7 @@
 [
   {
-    "sessionId": "bc8rol",
-    "timestamp": "2025-07-26T03:56:23.992Z",
+    "sessionId": "3nfhp4",
+    "timestamp": "2025-07-27T23:18:06.077Z",
     "systemInfo": {
       "platform": "linux",
       "arch": "x64",
@@ -30,11 +30,11 @@
         "graphType": "hierarchical",
         "graphGenerationAlgorithm": "Hierarchical Graph",
         "graphSize": 50,
-        "edges": 204,
-        "executionTime": 3.089520370389611,
-        "memoryUsage": 11964752,
-        "memoryPerVertex": 239295.04,
-        "timestamp": "2025-07-26T03:53:19.536Z",
+        "edges": 199,
+        "executionTime": 1.0802165066296898,
+        "memoryUsage": 17701968,
+        "memoryPerVertex": 354039.36,
+        "timestamp": "2025-07-27T23:16:41.965Z",
         "systemInfo": {
           "platform": "linux",
           "arch": "x64",
@@ -57,14 +57,14 @@
           }
         },
         "metrics": {
-          "opsPerSecond": 323.674836257478,
-          "samples": 25,
-          "marginOfError": 5.032978585020545,
-          "standardDeviation": 0.00037668337844369316,
-          "variance": 1.4189036759575458e-7,
+          "opsPerSecond": 925.7403435909641,
+          "samples": 27,
+          "marginOfError": 1.9949630023653002,
+          "standardDeviation": 0.000054463359539171944,
+          "variance": 2.9662575322931118e-9,
           "platform": "node",
           "testType": "quick",
-          "teps": 66029.66659652551
+          "teps": 184222.32837460187
         }
       },
       {
@@ -72,11 +72,11 @@
         "graphType": "hierarchical",
         "graphGenerationAlgorithm": "Hierarchical Graph",
         "graphSize": 50,
-        "edges": 204,
-        "executionTime": 3.8437268847339157,
-        "memoryUsage": 26502432,
-        "memoryPerVertex": 530048.64,
-        "timestamp": "2025-07-26T03:53:26.475Z",
+        "edges": 199,
+        "executionTime": 1.0610695524781342,
+        "memoryUsage": 21986160,
+        "memoryPerVertex": 439723.2,
+        "timestamp": "2025-07-27T23:16:48.565Z",
         "systemInfo": {
           "platform": "linux",
           "arch": "x64",
@@ -99,14 +99,14 @@
           }
         },
         "metrics": {
-          "opsPerSecond": 260.1641661824851,
-          "samples": 19,
-          "marginOfError": 16.1835352570655,
-          "standardDeviation": 0.0012905554457666394,
-          "variance": 0.0000016655333585979295,
+          "opsPerSecond": 942.4452880251762,
+          "samples": 28,
+          "marginOfError": 1.865773513742109,
+          "standardDeviation": 0.00005105102137443032,
+          "variance": 2.606206783372541e-9,
           "platform": "node",
           "testType": "quick",
-          "teps": 53073.48990122695
+          "teps": 187546.61231701006
         }
       },
       {
@@ -114,11 +114,11 @@
         "graphType": "hierarchical",
         "graphGenerationAlgorithm": "Hierarchical Graph",
         "graphSize": 50,
-        "edges": 204,
-        "executionTime": 4.155434693800246,
-        "memoryUsage": 27894536,
-        "memoryPerVertex": 557890.72,
-        "timestamp": "2025-07-26T03:53:43.675Z",
+        "edges": 199,
+        "executionTime": 1.0682364293040294,
+        "memoryUsage": 30141960,
+        "memoryPerVertex": 602839.2,
+        "timestamp": "2025-07-27T23:16:55.180Z",
         "systemInfo": {
           "platform": "linux",
           "arch": "x64",
@@ -141,14 +141,14 @@
           }
         },
         "metrics": {
-          "opsPerSecond": 240.64871034839334,
-          "samples": 19,
-          "marginOfError": 27.845539812534632,
-          "standardDeviation": 0.0024006168548995357,
-          "variance": 0.000005762961284027737,
+          "opsPerSecond": 936.1223532242892,
+          "samples": 28,
+          "marginOfError": 1.8623304661575766,
+          "standardDeviation": 0.00005130099536477886,
+          "variance": 2.6317921254170623e-9,
           "platform": "node",
           "testType": "quick",
-          "teps": 49092.33691107224
+          "teps": 186288.34829163353
         }
       },
       {
@@ -156,11 +156,11 @@
         "graphType": "hierarchical",
         "graphGenerationAlgorithm": "Hierarchical Graph",
         "graphSize": 50,
-        "edges": 204,
-        "executionTime": 2.8955036695573058,
-        "memoryUsage": 23875208,
-        "memoryPerVertex": 477504.16,
-        "timestamp": "2025-07-26T03:54:29.344Z",
+        "edges": 199,
+        "executionTime": 1.0887169179866767,
+        "memoryUsage": 20776104,
+        "memoryPerVertex": 415522.08,
+        "timestamp": "2025-07-27T23:17:01.929Z",
         "systemInfo": {
           "platform": "linux",
           "arch": "x64",
@@ -183,14 +183,14 @@
           }
         },
         "metrics": {
-          "opsPerSecond": 345.3630573892142,
-          "samples": 21,
-          "marginOfError": 12.193887117162328,
-          "standardDeviation": 0.0007756425638630372,
-          "variance": 6.016213868760258e-7,
+          "opsPerSecond": 918.5124098643222,
+          "samples": 28,
+          "marginOfError": 1.8432480195679957,
+          "standardDeviation": 0.00005174881470555223,
+          "variance": 2.6779398234295785e-9,
           "platform": "node",
           "testType": "quick",
-          "teps": 70454.06370739969
+          "teps": 182783.9695630001
         }
       },
       {
@@ -198,11 +198,11 @@
         "graphType": "hierarchical",
         "graphGenerationAlgorithm": "Hierarchical Graph",
         "graphSize": 100,
-        "edges": 564,
-        "executionTime": 16.227806075238533,
-        "memoryUsage": 11228656,
-        "memoryPerVertex": 112286.56,
-        "timestamp": "2025-07-26T03:54:36.168Z",
+        "edges": 583,
+        "executionTime": 6.054038112169312,
+        "memoryUsage": -1240392,
+        "memoryPerVertex": -12403.92,
+        "timestamp": "2025-07-27T23:17:08.758Z",
         "systemInfo": {
           "platform": "linux",
           "arch": "x64",
@@ -225,14 +225,14 @@
           }
         },
         "metrics": {
-          "opsPerSecond": 61.622624485626964,
-          "samples": 19,
-          "marginOfError": 9.377800754733064,
-          "standardDeviation": 0.003157268804204211,
-          "variance": 0.00000996834630200109,
+          "opsPerSecond": 165.1790063874697,
+          "samples": 27,
+          "marginOfError": 1.9735602912375312,
+          "standardDeviation": 0.00030196340979605054,
+          "variance": 9.118190085565755e-8,
           "platform": "node",
           "testType": "quick",
-          "teps": 34755.16020989361
+          "teps": 96299.36072389485
         }
       },
       {
@@ -240,11 +240,11 @@
         "graphType": "hierarchical",
         "graphGenerationAlgorithm": "Hierarchical Graph",
         "graphSize": 100,
-        "edges": 564,
-        "executionTime": 16.453553662841166,
-        "memoryUsage": 6503520,
-        "memoryPerVertex": 65035.2,
-        "timestamp": "2025-07-26T03:54:42.821Z",
+        "edges": 583,
+        "executionTime": 5.777561615079365,
+        "memoryUsage": 7736160,
+        "memoryPerVertex": 77361.6,
+        "timestamp": "2025-07-27T23:17:15.735Z",
         "systemInfo": {
           "platform": "linux",
           "arch": "x64",
@@ -267,14 +267,14 @@
           }
         },
         "metrics": {
-          "opsPerSecond": 60.777143983090276,
-          "samples": 22,
-          "marginOfError": 7.563358784695222,
-          "standardDeviation": 0.0028062245522064407,
-          "variance": 0.000007874896237406237,
+          "opsPerSecond": 173.08339860712385,
+          "samples": 28,
+          "marginOfError": 0.4696320921798001,
+          "standardDeviation": 0.00006996873330099617,
+          "variance": 4.895623639745931e-9,
           "platform": "node",
           "testType": "quick",
-          "teps": 34278.309206462916
+          "teps": 100907.62138795322
         }
       },
       {
@@ -282,11 +282,11 @@
         "graphType": "hierarchical",
         "graphGenerationAlgorithm": "Hierarchical Graph",
         "graphSize": 100,
-        "edges": 564,
-        "executionTime": 15.761056846568623,
-        "memoryUsage": 8123024,
-        "memoryPerVertex": 81230.24,
-        "timestamp": "2025-07-26T03:54:49.531Z",
+        "edges": 583,
+        "executionTime": 5.8018732857142865,
+        "memoryUsage": 19260064,
+        "memoryPerVertex": 192600.64,
+        "timestamp": "2025-07-27T23:17:22.720Z",
         "systemInfo": {
           "platform": "linux",
           "arch": "x64",
@@ -309,14 +309,14 @@
           }
         },
         "metrics": {
-          "opsPerSecond": 63.44752193554282,
-          "samples": 20,
-          "marginOfError": 6.16687983827309,
-          "standardDeviation": 0.0020768091627756924,
-          "variance": 0.000004313136298589073,
+          "opsPerSecond": 172.35812482534888,
+          "samples": 28,
+          "marginOfError": 1.4044244592379982,
+          "standardDeviation": 0.0002101204311029522,
+          "variance": 4.415059556689048e-8,
           "platform": "node",
           "testType": "quick",
-          "teps": 35784.402371646145
+          "teps": 100484.78677317839
         }
       },
       {
@@ -324,11 +324,11 @@
         "graphType": "hierarchical",
         "graphGenerationAlgorithm": "Hierarchical Graph",
         "graphSize": 100,
-        "edges": 564,
-        "executionTime": 19.323487454164262,
-        "memoryUsage": 14871240,
-        "memoryPerVertex": 148712.4,
-        "timestamp": "2025-07-26T03:54:55.906Z",
+        "edges": 583,
+        "executionTime": 5.831580946428573,
+        "memoryUsage": 5526624,
+        "memoryPerVertex": 55266.24,
+        "timestamp": "2025-07-27T23:17:29.531Z",
         "systemInfo": {
           "platform": "linux",
           "arch": "x64",
@@ -351,14 +351,14 @@
           }
         },
         "metrics": {
-          "opsPerSecond": 51.75049288447657,
-          "samples": 19,
-          "marginOfError": 11.651167903707684,
-          "standardDeviation": 0.004670955378098674,
-          "variance": 0.000021817824144188927,
+          "opsPerSecond": 171.48008562110908,
+          "samples": 28,
+          "marginOfError": 0.3600062826981331,
+          "standardDeviation": 0.00005413748140015455,
+          "variance": 2.9308668923520796e-9,
           "platform": "node",
           "testType": "quick",
-          "teps": 29187.277986844787
+          "teps": 99972.88991710659
         }
       },
       {
@@ -366,11 +366,11 @@
         "graphType": "hierarchical",
         "graphGenerationAlgorithm": "Hierarchical Graph",
         "graphSize": 200,
-        "edges": 1718,
-        "executionTime": 772.2517942857143,
-        "memoryUsage": 15036008,
-        "memoryPerVertex": 75180.04,
-        "timestamp": "2025-07-26T03:55:22.932Z",
+        "edges": 1747,
+        "executionTime": 315.29437635000005,
+        "memoryUsage": 13248552,
+        "memoryPerVertex": 66242.76,
+        "timestamp": "2025-07-27T23:17:38.010Z",
         "systemInfo": {
           "platform": "linux",
           "arch": "x64",
@@ -393,14 +393,14 @@
           }
         },
         "metrics": {
-          "opsPerSecond": 1.2949144403412347,
-          "samples": 7,
-          "marginOfError": 43.76595582475304,
-          "standardDeviation": 0.36543521392950407,
-          "variance": 0.13354289557970242,
+          "opsPerSecond": 3.1716391886734003,
+          "samples": 10,
+          "marginOfError": 15.22913730159969,
+          "standardDeviation": 0.06712726088426293,
+          "variance": 0.004506069153823896,
           "platform": "node",
           "testType": "quick",
-          "teps": 2224.6630085062416
+          "teps": 5540.8536626124305
         }
       },
       {
@@ -408,11 +408,11 @@
         "graphType": "hierarchical",
         "graphGenerationAlgorithm": "Hierarchical Graph",
         "graphSize": 200,
-        "edges": 1718,
-        "executionTime": 548.7380018888889,
-        "memoryUsage": 21485552,
-        "memoryPerVertex": 107427.76,
-        "timestamp": "2025-07-26T03:55:33.536Z",
+        "edges": 1747,
+        "executionTime": 258.5562341363637,
+        "memoryUsage": 1335696,
+        "memoryPerVertex": 6678.48,
+        "timestamp": "2025-07-27T23:17:47.935Z",
         "systemInfo": {
           "platform": "linux",
           "arch": "x64",
@@ -435,14 +435,14 @@
           }
         },
         "metrics": {
-          "opsPerSecond": 1.8223633073666452,
-          "samples": 9,
-          "marginOfError": 28.833985208465577,
-          "standardDeviation": 0.20584089457658952,
-          "variance": 0.042370473880090645,
+          "opsPerSecond": 3.8676305885264233,
+          "samples": 11,
+          "marginOfError": 13.991660872894835,
+          "standardDeviation": 0.05385244675301306,
+          "variance": 0.002900086021286107,
           "platform": "node",
           "testType": "quick",
-          "teps": 3130.8201620558966
+          "teps": 6756.750638155661
         }
       },
       {
@@ -450,11 +450,11 @@
         "graphType": "hierarchical",
         "graphGenerationAlgorithm": "Hierarchical Graph",
         "graphSize": 200,
-        "edges": 1718,
-        "executionTime": 1155.829416875,
-        "memoryUsage": 3783912,
-        "memoryPerVertex": 18919.56,
-        "timestamp": "2025-07-26T03:56:06.776Z",
+        "edges": 1747,
+        "executionTime": 283.4900615,
+        "memoryUsage": 3107120,
+        "memoryPerVertex": 15535.6,
+        "timestamp": "2025-07-27T23:17:56.995Z",
         "systemInfo": {
           "platform": "linux",
           "arch": "x64",
@@ -477,14 +477,14 @@
           }
         },
         "metrics": {
-          "opsPerSecond": 0.865179571829627,
-          "samples": 8,
-          "marginOfError": 108.38297263737846,
-          "standardDeviation": 1.498196058476797,
-          "variance": 2.2445914296354106,
+          "opsPerSecond": 3.527460520869089,
+          "samples": 11,
+          "marginOfError": 16.620102433663977,
+          "standardDeviation": 0.0701378889885784,
+          "variance": 0.0049193234717741455,
           "platform": "node",
           "testType": "quick",
-          "teps": 1486.378504403299
+          "teps": 6162.473529958298
         }
       },
       {
@@ -492,11 +492,11 @@
         "graphType": "hierarchical",
         "graphGenerationAlgorithm": "Hierarchical Graph",
         "graphSize": 200,
-        "edges": 1718,
-        "executionTime": 652.5222135624999,
-        "memoryUsage": 15864048,
-        "memoryPerVertex": 79320.24,
-        "timestamp": "2025-07-26T03:56:23.903Z",
+        "edges": 1747,
+        "executionTime": 304.55785069999996,
+        "memoryUsage": 2973992,
+        "memoryPerVertex": 14869.96,
+        "timestamp": "2025-07-27T23:18:05.513Z",
         "systemInfo": {
           "platform": "linux",
           "arch": "x64",
@@ -519,14 +519,14 @@
           }
         },
         "metrics": {
-          "opsPerSecond": 1.5325148772183799,
-          "samples": 8,
-          "marginOfError": 38.17922014705673,
-          "standardDeviation": 0.2979450691180696,
-          "variance": 0.08877126421177128,
+          "opsPerSecond": 3.2834484407530007,
+          "samples": 10,
+          "marginOfError": 16.844509683551536,
+          "standardDeviation": 0.07171922241311326,
+          "variance": 0.005143646863541608,
           "platform": "node",
           "testType": "quick",
-          "teps": 2632.8605590611764
+          "teps": 5736.184425995491
         }
       }
     ]

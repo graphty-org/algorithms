@@ -26,6 +26,10 @@ export interface ClosenessCentralityOptions {
      * Consider only nodes within this distance (default: undefined = all nodes)
      */
     cutoff?: number;
+    /**
+     * Whether to use optimized BFS implementation for large graphs
+     */
+    optimized?: boolean;
 }
 
 /**
@@ -110,7 +114,7 @@ export function nodeClosenessCentrality(
     }
 
     // Use optimized BFS variant for unweighted graphs
-    const distances = bfsDistancesOnly(graph, node, options.cutoff);
+    const distances = bfsDistancesOnly(graph, node, options.cutoff, options.optimized !== undefined ? {optimized: options.optimized} : {});
     const totalNodes = graph.nodeCount;
 
     return calculateClosenessFromDistances(distances, node, totalNodes, options);
@@ -146,7 +150,7 @@ export function nodeWeightedClosenessCentrality(
     }
 
     // Use optimized weighted BFS variant (simplified Dijkstra)
-    const distances = bfsWeightedDistances(graph, node, options.cutoff);
+    const distances = bfsWeightedDistances(graph, node, options.cutoff, options.optimized !== undefined ? {optimized: options.optimized} : {});
     const totalNodes = graph.nodeCount;
 
     return calculateClosenessFromDistances(distances, node, totalNodes, options);

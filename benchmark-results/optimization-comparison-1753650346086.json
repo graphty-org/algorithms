@@ -1,0 +1,22 @@
+{
+  "timestamp": "2025-07-27T21:05:40.266Z",
+  "optimizationsEnabled": true,
+  "comparisons": [
+    {
+      "algorithm": "BFS",
+      "nodes": 100,
+      "edges": 300,
+      "oldTime": 0.02959109013286754,
+      "newTime": 0.06629519999999971,
+      "speedup": 0.4463534333234936
+    },
+    {
+      "algorithm": "BFS",
+      "nodes": 1000,
+      "edges": 3000,
+      "oldTime": 0.7859598696876922,
+      "newTime": 0.4590531999999996,
+      "speedup": 1.7121324275436764
+    }
+  ]
+}

@@ -41,3 +41,12 @@ export * from "./data-structures/index.js";
 
 // Optimized algorithm exports
 export * from "./optimized/index.js";
+
+// Configuration exports
+export {
+    configureGlobalOptimizations,
+    getOptimizationConfiguration,
+    getRecommendedPreset,
+    OPTIMIZATION_PRESETS,
+    shouldUseOptimizations,
+} from "./config/optimization.js";

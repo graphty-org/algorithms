@@ -15,14 +15,17 @@ export {
 } from "./graph-adapter.js";
 
 // Note: The main BFS functions in algorithms/traversal/bfs.ts automatically
-// use these optimizations when enabled via configureOptimizations()
+// use these optimizations for large graphs (>10k nodes) when optimizations are enabled.
+// No manual configuration needed - just use breadthFirstSearch, shortestPathBFS, etc.
+//
+// The previously exported bfsOptimized, shortestPathBFSOptimized, and
+// singleSourceShortestPathBFSOptimized functions have been removed since they
+// are no longer needed. All optimization happens automatically.
 
-// Export optimized implementations for direct use if needed
-export {
-    bfsOptimized,
-    type OptimizedBFSOptions,
-    shortestPathBFSOptimized,
-    singleSourceShortestPathBFSOptimized} from "./bfs-optimized.js";
+// BFS optimization functions have been removed. The main BFS functions
+// (breadthFirstSearch, shortestPathBFS, singleSourceShortestPathBFS)
+// in algorithms/traversal/bfs.ts now automatically use optimizations
+// for large graphs without requiring manual configuration.
 
 // Export data structures for advanced users
 export {CompactDistanceArray, GraphBitSet, VisitedBitArray} from "./bit-packed.js";

@@ -47,16 +47,16 @@ function benchmarkBFS(): void {
         }
         const standardTime = (performance.now() - standardStart) / standardRuns;
 
-        // Benchmark optimized BFS (first run includes conversion)
+        // Benchmark auto-optimized BFS (first run includes conversion if needed)
         const optimizedFirstStart = performance.now();
-        const firstResult = bfsOptimized(graph, 0, {optimized: true});
+        const firstResult = breadthFirstSearch(graph, 0);
         const optimizedFirstTime = performance.now() - optimizedFirstStart;
 
-        // Benchmark optimized BFS (subsequent runs use cached CSR)
+        // Benchmark auto-optimized BFS (subsequent runs use cached CSR if applicable)
         const optimizedRuns = 10;
         const optimizedStart = performance.now();
         for (let i = 0; i < optimizedRuns; i++) {
-            bfsOptimized(graph, 0, {optimized: true});
+            breadthFirstSearch(graph, 0);
         }
         const optimizedTime = (performance.now() - optimizedStart) / optimizedRuns;
 
@@ -65,10 +65,11 @@ function benchmarkBFS(): void {
         console.log("\nStandard BFS:");
         console.log(`  Average time: ${standardTime.toFixed(2)}ms`);
 
-        console.log("\nOptimized BFS:");
-        console.log(`  First run (with conversion): ${optimizedFirstTime.toFixed(2)}ms`);
-        console.log(`  Average time (cached): ${optimizedTime.toFixed(2)}ms`);
+        console.log("\nAuto-Optimized BFS:");
+        console.log(`  First run: ${optimizedFirstTime.toFixed(2)}ms`);
+        console.log(`  Average time: ${optimizedTime.toFixed(2)}ms`);
         console.log(`  Speedup vs standard: ${(standardTime / optimizedTime).toFixed(2)}x`);
+        console.log(`  Using: ${config.nodes >= 10000 ? "Direction-Optimized BFS" : "Standard BFS"}`);
 
         // Memory estimation
         const standardMemory = estimateStandardMemory(graph);
@@ -154,8 +155,9 @@ function estimateOptimizedMemory(graph: Graph): number {
     return csrMemory + mappingMemory + bitPackedMemory;
 }
 
-// Run benchmark if called directly
-if (import.meta.url === `file://${String(process.argv[1])}`) {
+// Run benchmark if called directly (Node.js only)
+// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+if (typeof process !== "undefined" && process?.argv && import.meta.url === `file://${String(process.argv[1])}`) {
     benchmarkBFS();
 }
 

@@ -21,6 +21,10 @@ export interface BetweennessCentralityOptions {
      * Whether to use endpoints in path counting (default: false)
      */
     endpoints?: boolean;
+    /**
+     * Whether to use optimized BFS implementation for large graphs
+     */
+    optimized?: boolean;
 }
 
 /**
@@ -36,8 +40,8 @@ interface BrandesResult {
 /**
  * Run single-source shortest path computation using BFS
  */
-function brandesSingleSource(graph: Graph, source: NodeId): BrandesResult {
-    const result = bfsWithPathCounting(graph, source);
+function brandesSingleSource(graph: Graph, source: NodeId, optimized?: boolean): BrandesResult {
+    const result = bfsWithPathCounting(graph, source, optimized !== undefined ? {optimized} : {});
 
     return {
         stack: result.stack,
@@ -199,7 +203,7 @@ export function betweennessCentrality(
 
     // Brandes' algorithm - run from each source
     for (const source of nodes) {
-        const result = brandesSingleSource(graph, source);
+        const result = brandesSingleSource(graph, source, options.optimized);
         accumulateBetweenness(result, source, centrality, options);
     }
 
@@ -256,7 +260,7 @@ export function edgeBetweennessCentrality(
 
     // Modified Brandes' algorithm for edge betweenness
     for (const source of nodes) {
-        const result = brandesSingleSource(graph, source);
+        const result = brandesSingleSource(graph, source, options.optimized);
         accumulateEdgeBetweenness(result, source, edgeCentrality, options);
     }
 

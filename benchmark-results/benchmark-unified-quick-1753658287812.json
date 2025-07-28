@@ -1,0 +1,3934 @@
+{
+  "sessionId": "qyoghpk",
+  "timestamp": "2025-07-27T23:18:07.342Z",
+  "systemInfo": {
+    "platform": "linux",
+    "arch": "x64",
+    "nodeVersion": "v22.14.0",
+    "v8Version": "12.4.254.21-node.22",
+    "libraryVersion": "1.2.0",
+    "cpu": {
+      "model": "Intel(R) Core(TM) i9-14900KF",
+      "cores": 32,
+      "speed": 5700
+    },
+    "memory": {
+      "total": 100899524608,
+      "totalGB": 94
+    },
+    "os": {
+      "type": "Linux",
+      "release": "5.15.0-136-generic",
+      "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+    }
+  },
+  "testType": "quick",
+  "results": [
+    {
+      "algorithm": "BFS",
+      "graphType": "sparse",
+      "graphGenerationAlgorithm": "Erdős–Rényi Random Graph (Fixed Edges)",
+      "graphSize": 100,
+      "edges": 300,
+      "executionTime": 0.024245738236625257,
+      "memoryUsage": 6155896,
+      "memoryPerVertex": 61558.96,
+      "timestamp": "2025-07-27T23:11:35.205Z",
+      "systemInfo": {
+        "platform": "linux",
+        "arch": "x64",
+        "nodeVersion": "v22.14.0",
+        "v8Version": "12.4.254.21-node.22",
+        "libraryVersion": "1.2.0",
+        "cpu": {
+          "model": "Intel(R) Core(TM) i9-14900KF",
+          "cores": 32,
+          "speed": 5700
+        },
+        "memory": {
+          "total": 100899524608,
+          "totalGB": 94
+        },
+        "os": {
+          "type": "Linux",
+          "release": "5.15.0-136-generic",
+          "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+        }
+      },
+      "metrics": {
+        "opsPerSecond": 41244.361802496685,
+        "samples": 45,
+        "marginOfError": 4.318388990960774,
+        "standardDeviation": 0.000003583499578105929,
+        "variance": 1.2841469226285373e-11,
+        "platform": "node",
+        "testType": "quick",
+        "teps": 12373308.540749006
+      }
+    },
+    {
+      "algorithm": "BFS",
+      "graphType": "sparse",
+      "graphGenerationAlgorithm": "Erdős–Rényi Random Graph (Fixed Edges)",
+      "graphSize": 1000,
+      "edges": 3000,
+      "executionTime": 0.4424502205314961,
+      "memoryUsage": 10697496,
+      "memoryPerVertex": 10697.496,
+      "timestamp": "2025-07-27T23:11:42.246Z",
+      "systemInfo": {
+        "platform": "linux",
+        "arch": "x64",
+        "nodeVersion": "v22.14.0",
+        "v8Version": "12.4.254.21-node.22",
+        "libraryVersion": "1.2.0",
+        "cpu": {
+          "model": "Intel(R) Core(TM) i9-14900KF",
+          "cores": 32,
+          "speed": 5700
+        },
+        "memory": {
+          "total": 100899524608,
+          "totalGB": 94
+        },
+        "os": {
+          "type": "Linux",
+          "release": "5.15.0-136-generic",
+          "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+        }
+      },
+      "metrics": {
+        "opsPerSecond": 2260.1412624424593,
+        "samples": 42,
+        "marginOfError": 5.2555943178249835,
+        "standardDeviation": 0.00007688733785532351,
+        "variance": 5.911662722478664e-9,
+        "platform": "node",
+        "testType": "quick",
+        "teps": 6780423.787327378
+      }
+    },
+    {
+      "algorithm": "BFS",
+      "graphType": "sparse",
+      "graphGenerationAlgorithm": "Erdős–Rényi Random Graph (Fixed Edges)",
+      "graphSize": 5000,
+      "edges": 15000,
+      "executionTime": 4.638471770702559,
+      "memoryUsage": 17560520,
+      "memoryPerVertex": 3512.104,
+      "timestamp": "2025-07-27T23:11:49.509Z",
+      "systemInfo": {
+        "platform": "linux",
+        "arch": "x64",
+        "nodeVersion": "v22.14.0",
+        "v8Version": "12.4.254.21-node.22",
+        "libraryVersion": "1.2.0",
+        "cpu": {
+          "model": "Intel(R) Core(TM) i9-14900KF",
+          "cores": 32,
+          "speed": 5700
+        },
+        "memory": {
+          "total": 100899524608,
+          "totalGB": 94
+        },
+        "os": {
+          "type": "Linux",
+          "release": "5.15.0-136-generic",
+          "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+        }
+      },
+      "metrics": {
+        "opsPerSecond": 215.58824747326997,
+        "samples": 38,
+        "marginOfError": 9.449632497162186,
+        "standardDeviation": 0.0013785596530331782,
+        "variance": 0.0000019004267169709568,
+        "platform": "node",
+        "testType": "quick",
+        "teps": 3233823.7120990492
+      }
+    },
+    {
+      "algorithm": "DFS",
+      "graphType": "sparse",
+      "graphGenerationAlgorithm": "Erdős–Rényi Random Graph (Fixed Edges)",
+      "graphSize": 100,
+      "edges": 300,
+      "executionTime": 0.03696833818181818,
+      "memoryUsage": 6731488,
+      "memoryPerVertex": 67314.88,
+      "timestamp": "2025-07-27T23:11:35.259Z",
+      "systemInfo": {
+        "platform": "linux",
+        "arch": "x64",
+        "nodeVersion": "v22.14.0",
+        "v8Version": "12.4.254.21-node.22",
+        "libraryVersion": "1.2.0",
+        "cpu": {
+          "model": "Intel(R) Core(TM) i9-14900KF",
+          "cores": 32,
+          "speed": 5700
+        },
+        "memory": {
+          "total": 100899524608,
+          "totalGB": 94
+        },
+        "os": {
+          "type": "Linux",
+          "release": "5.15.0-136-generic",
+          "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+        }
+      },
+      "metrics": {
+        "opsPerSecond": 27050.174532644298,
+        "samples": 31,
+        "marginOfError": 9.508435113605149,
+        "standardDeviation": 0.000009584381335507312,
+        "variance": 9.18603655844209e-11,
+        "platform": "node",
+        "testType": "quick",
+        "teps": 8115052.359793289
+      }
+    },
+    {
+      "algorithm": "DFS",
+      "graphType": "sparse",
+      "graphGenerationAlgorithm": "Erdős–Rényi Random Graph (Fixed Edges)",
+      "graphSize": 1000,
+      "edges": 3000,
+      "executionTime": 0.6320591334474664,
+      "memoryUsage": 14289280,
+      "memoryPerVertex": 14289.28,
+      "timestamp": "2025-07-27T23:11:42.045Z",
+      "systemInfo": {
+        "platform": "linux",
+        "arch": "x64",
+        "nodeVersion": "v22.14.0",
+        "v8Version": "12.4.254.21-node.22",
+        "libraryVersion": "1.2.0",
+        "cpu": {
+          "model": "Intel(R) Core(TM) i9-14900KF",
+          "cores": 32,
+          "speed": 5700
+        },
+        "memory": {
+          "total": 100899524608,
+          "totalGB": 94
+        },
+        "os": {
+          "type": "Linux",
+          "release": "5.15.0-136-generic",
+          "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+        }
+      },
+      "metrics": {
+        "opsPerSecond": 1582.130448057381,
+        "samples": 42,
+        "marginOfError": 5.029688896874731,
+        "standardDeviation": 0.00010511565686740957,
+        "variance": 1.104930131866699e-8,
+        "platform": "node",
+        "testType": "quick",
+        "teps": 4746391.344172142
+      }
+    },
+    {
+      "algorithm": "DFS",
+      "graphType": "sparse",
+      "graphGenerationAlgorithm": "Erdős–Rényi Random Graph (Fixed Edges)",
+      "graphSize": 5000,
+      "edges": 15000,
+      "executionTime": 6.193590059438392,
+      "memoryUsage": 22807976,
+      "memoryPerVertex": 4561.5952,
+      "timestamp": "2025-07-27T23:11:48.638Z",
+      "systemInfo": {
+        "platform": "linux",
+        "arch": "x64",
+        "nodeVersion": "v22.14.0",
+        "v8Version": "12.4.254.21-node.22",
+        "libraryVersion": "1.2.0",
+        "cpu": {
+          "model": "Intel(R) Core(TM) i9-14900KF",
+          "cores": 32,
+          "speed": 5700
+        },
+        "memory": {
+          "total": 100899524608,
+          "totalGB": 94
+        },
+        "os": {
+          "type": "Linux",
+          "release": "5.15.0-136-generic",
+          "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+        }
+      },
+      "metrics": {
+        "opsPerSecond": 161.45724699297836,
+        "samples": 40,
+        "marginOfError": 6.3546487264981595,
+        "standardDeviation": 0.00127001230788172,
+        "variance": 0.0000016129312621710525,
+        "platform": "node",
+        "testType": "quick",
+        "teps": 2421858.7048946754
+      }
+    },
+    {
+      "algorithm": "PageRank",
+      "graphType": "sparse",
+      "graphGenerationAlgorithm": "Erdős–Rényi Random Graph (Fixed Edges)",
+      "graphSize": 100,
+      "edges": 300,
+      "executionTime": 0.38412184179687503,
+      "memoryUsage": 15624064,
+      "memoryPerVertex": 156240.64,
+      "timestamp": "2025-07-27T23:11:34.213Z",
+      "systemInfo": {
+        "platform": "linux",
+        "arch": "x64",
+        "nodeVersion": "v22.14.0",
+        "v8Version": "12.4.254.21-node.22",
+        "libraryVersion": "1.2.0",
+        "cpu": {
+          "model": "Intel(R) Core(TM) i9-14900KF",
+          "cores": 32,
+          "speed": 5700
+        },
+        "memory": {
+          "total": 100899524608,
+          "totalGB": 94
+        },
+        "os": {
+          "type": "Linux",
+          "release": "5.15.0-136-generic",
+          "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+        }
+      },
+      "metrics": {
+        "opsPerSecond": 2603.340636195334,
+        "samples": 64,
+        "marginOfError": 5.825006693762518,
+        "standardDeviation": 0.00009132703264029322,
+        "variance": 8.340626890881184e-9,
+        "platform": "node",
+        "testType": "quick",
+        "teps": 781002.1908586002
+      }
+    },
+    {
+      "algorithm": "PageRank",
+      "graphType": "sparse",
+      "graphGenerationAlgorithm": "Erdős–Rényi Random Graph (Fixed Edges)",
+      "graphSize": 300,
+      "edges": 900,
+      "executionTime": 1.5044266969343663,
+      "memoryUsage": 16618368,
+      "memoryPerVertex": 55394.56,
+      "timestamp": "2025-07-27T23:11:40.186Z",
+      "systemInfo": {
+        "platform": "linux",
+        "arch": "x64",
+        "nodeVersion": "v22.14.0",
+        "v8Version": "12.4.254.21-node.22",
+        "libraryVersion": "1.2.0",
+        "cpu": {
+          "model": "Intel(R) Core(TM) i9-14900KF",
+          "cores": 32,
+          "speed": 5700
+        },
+        "memory": {
+          "total": 100899524608,
+          "totalGB": 94
+        },
+        "os": {
+          "type": "Linux",
+          "release": "5.15.0-136-generic",
+          "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+        }
+      },
+      "metrics": {
+        "opsPerSecond": 664.7050348400106,
+        "samples": 59,
+        "marginOfError": 5.005311095734427,
+        "standardDeviation": 0.0002951019243354282,
+        "variance": 8.70851457464728e-8,
+        "platform": "node",
+        "testType": "quick",
+        "teps": 598234.5313560095
+      }
+    },
+    {
+      "algorithm": "PageRank",
+      "graphType": "sparse",
+      "graphGenerationAlgorithm": "Erdős–Rényi Random Graph (Fixed Edges)",
+      "graphSize": 500,
+      "edges": 1500,
+      "executionTime": 2.2257100570946906,
+      "memoryUsage": 13724952,
+      "memoryPerVertex": 27449.904,
+      "timestamp": "2025-07-27T23:11:46.324Z",
+      "systemInfo": {
+        "platform": "linux",
+        "arch": "x64",
+        "nodeVersion": "v22.14.0",
+        "v8Version": "12.4.254.21-node.22",
+        "libraryVersion": "1.2.0",
+        "cpu": {
+          "model": "Intel(R) Core(TM) i9-14900KF",
+          "cores": 32,
+          "speed": 5700
+        },
+        "memory": {
+          "total": 100899524608,
+          "totalGB": 94
+        },
+        "os": {
+          "type": "Linux",
+          "release": "5.15.0-136-generic",
+          "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+        }
+      },
+      "metrics": {
+        "opsPerSecond": 449.2948202360825,
+        "samples": 70,
+        "marginOfError": 4.641355152531216,
+        "standardDeviation": 0.00044096725218293806,
+        "variance": 1.9445211749777088e-7,
+        "platform": "node",
+        "testType": "quick",
+        "teps": 673942.2303541237
+      }
+    },
+    {
+      "algorithm": "Bellman-Ford",
+      "graphType": "sparse",
+      "graphGenerationAlgorithm": "Erdős–Rényi Random Graph (Fixed Edges)",
+      "graphSize": 50,
+      "edges": 150,
+      "executionTime": 0.11887192135064942,
+      "memoryUsage": 13752400,
+      "memoryPerVertex": 275048,
+      "timestamp": "2025-07-27T23:11:35.678Z",
+      "systemInfo": {
+        "platform": "linux",
+        "arch": "x64",
+        "nodeVersion": "v22.14.0",
+        "v8Version": "12.4.254.21-node.22",
+        "libraryVersion": "1.2.0",
+        "cpu": {
+          "model": "Intel(R) Core(TM) i9-14900KF",
+          "cores": 32,
+          "speed": 5700
+        },
+        "memory": {
+          "total": 100899524608,
+          "totalGB": 94
+        },
+        "os": {
+          "type": "Linux",
+          "release": "5.15.0-136-generic",
+          "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+        }
+      },
+      "metrics": {
+        "opsPerSecond": 8412.415553124538,
+        "samples": 42,
+        "marginOfError": 7.8850090169668015,
+        "standardDeviation": 0.00003099203190763285,
+        "variance": 9.605060417637327e-10,
+        "platform": "node",
+        "testType": "quick",
+        "teps": 1261862.3329686807
+      }
+    },
+    {
+      "algorithm": "Bellman-Ford",
+      "graphType": "sparse",
+      "graphGenerationAlgorithm": "Erdős–Rényi Random Graph (Fixed Edges)",
+      "graphSize": 100,
+      "edges": 300,
+      "executionTime": 0.3898756741036452,
+      "memoryUsage": 15296384,
+      "memoryPerVertex": 152963.84,
+      "timestamp": "2025-07-27T23:11:42.498Z",
+      "systemInfo": {
+        "platform": "linux",
+        "arch": "x64",
+        "nodeVersion": "v22.14.0",
+        "v8Version": "12.4.254.21-node.22",
+        "libraryVersion": "1.2.0",
+        "cpu": {
+          "model": "Intel(R) Core(TM) i9-14900KF",
+          "cores": 32,
+          "speed": 5700
+        },
+        "memory": {
+          "total": 100899524608,
+          "totalGB": 94
+        },
+        "os": {
+          "type": "Linux",
+          "release": "5.15.0-136-generic",
+          "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+        }
+      },
+      "metrics": {
+        "opsPerSecond": 2564.9202205269116,
+        "samples": 43,
+        "marginOfError": 7.007895394618869,
+        "standardDeviation": 0.0000914096204534708,
+        "variance": 8.355718711447588e-9,
+        "platform": "node",
+        "testType": "quick",
+        "teps": 769476.0661580735
+      }
+    },
+    {
+      "algorithm": "Bellman-Ford",
+      "graphType": "sparse",
+      "graphGenerationAlgorithm": "Erdős–Rényi Random Graph (Fixed Edges)",
+      "graphSize": 200,
+      "edges": 600,
+      "executionTime": 0.759817580592035,
+      "memoryUsage": 9093072,
+      "memoryPerVertex": 45465.36,
+      "timestamp": "2025-07-27T23:11:49.363Z",
+      "systemInfo": {
+        "platform": "linux",
+        "arch": "x64",
+        "nodeVersion": "v22.14.0",
+        "v8Version": "12.4.254.21-node.22",
+        "libraryVersion": "1.2.0",
+        "cpu": {
+          "model": "Intel(R) Core(TM) i9-14900KF",
+          "cores": 32,
+          "speed": 5700
+        },
+        "memory": {
+          "total": 100899524608,
+          "totalGB": 94
+        },
+        "os": {
+          "type": "Linux",
+          "release": "5.15.0-136-generic",
+          "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+        }
+      },
+      "metrics": {
+        "opsPerSecond": 1316.105372582745,
+        "samples": 39,
+        "marginOfError": 6.2345550391153175,
+        "standardDeviation": 0.00015093537337927307,
+        "variance": 2.2781486937140577e-8,
+        "platform": "node",
+        "testType": "quick",
+        "teps": 789663.223549647
+      }
+    },
+    {
+      "algorithm": "Floyd-Warshall",
+      "graphType": "complete",
+      "graphGenerationAlgorithm": "Complete Graph (K_n)",
+      "graphSize": 5,
+      "edges": 10,
+      "executionTime": 0.017805023612323105,
+      "memoryUsage": 2679176,
+      "memoryPerVertex": 535835.2,
+      "timestamp": "2025-07-27T23:11:34.167Z",
+      "systemInfo": {
+        "platform": "linux",
+        "arch": "x64",
+        "nodeVersion": "v22.14.0",
+        "v8Version": "12.4.254.21-node.22",
+        "libraryVersion": "1.2.0",
+        "cpu": {
+          "model": "Intel(R) Core(TM) i9-14900KF",
+          "cores": 32,
+          "speed": 5700
+        },
+        "memory": {
+          "total": 100899524608,
+          "totalGB": 94
+        },
+        "os": {
+          "type": "Linux",
+          "release": "5.15.0-136-generic",
+          "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+        }
+      },
+      "metrics": {
+        "opsPerSecond": 56163.92439423029,
+        "samples": 38,
+        "marginOfError": 8.081313117698079,
+        "standardDeviation": 0.000004525433788502427,
+        "variance": 2.0479550974119428e-11,
+        "platform": "node",
+        "testType": "quick",
+        "teps": 561639.2439423029
+      }
+    },
+    {
+      "algorithm": "Floyd-Warshall",
+      "graphType": "complete",
+      "graphGenerationAlgorithm": "Complete Graph (K_n)",
+      "graphSize": 10,
+      "edges": 45,
+      "executionTime": 0.10617196283990755,
+      "memoryUsage": 11076536,
+      "memoryPerVertex": 1107653.6,
+      "timestamp": "2025-07-27T23:11:40.082Z",
+      "systemInfo": {
+        "platform": "linux",
+        "arch": "x64",
+        "nodeVersion": "v22.14.0",
+        "v8Version": "12.4.254.21-node.22",
+        "libraryVersion": "1.2.0",
+        "cpu": {
+          "model": "Intel(R) Core(TM) i9-14900KF",
+          "cores": 32,
+          "speed": 5700
+        },
+        "memory": {
+          "total": 100899524608,
+          "totalGB": 94
+        },
+        "os": {
+          "type": "Linux",
+          "release": "5.15.0-136-generic",
+          "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+        }
+      },
+      "metrics": {
+        "opsPerSecond": 9418.682420968895,
+        "samples": 35,
+        "marginOfError": 5.6983685626477225,
+        "standardDeviation": 0.000018261579260700597,
+        "variance": 3.334852770948502e-10,
+        "platform": "node",
+        "testType": "quick",
+        "teps": 423840.70894360024
+      }
+    },
+    {
+      "algorithm": "Floyd-Warshall",
+      "graphType": "complete",
+      "graphGenerationAlgorithm": "Complete Graph (K_n)",
+      "graphSize": 12,
+      "edges": 66,
+      "executionTime": 0.13829165808348617,
+      "memoryUsage": 9352584,
+      "memoryPerVertex": 779382,
+      "timestamp": "2025-07-27T23:11:45.739Z",
+      "systemInfo": {
+        "platform": "linux",
+        "arch": "x64",
+        "nodeVersion": "v22.14.0",
+        "v8Version": "12.4.254.21-node.22",
+        "libraryVersion": "1.2.0",
+        "cpu": {
+          "model": "Intel(R) Core(TM) i9-14900KF",
+          "cores": 32,
+          "speed": 5700
+        },
+        "memory": {
+          "total": 100899524608,
+          "totalGB": 94
+        },
+        "os": {
+          "type": "Linux",
+          "release": "5.15.0-136-generic",
+          "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+        }
+      },
+      "metrics": {
+        "opsPerSecond": 7231.0941517260835,
+        "samples": 33,
+        "marginOfError": 6.266300622507408,
+        "standardDeviation": 0.000025398502331739545,
+        "variance": 6.450839206953791e-10,
+        "platform": "node",
+        "testType": "quick",
+        "teps": 477252.2140139215
+      }
+    },
+    {
+      "algorithm": "Degree Centrality",
+      "graphType": "sparse",
+      "graphGenerationAlgorithm": "Erdős–Rényi Random Graph (Fixed Edges)",
+      "graphSize": 100,
+      "edges": 300,
+      "executionTime": 0.00554559922627828,
+      "memoryUsage": 14590288,
+      "memoryPerVertex": 145902.88,
+      "timestamp": "2025-07-27T23:11:35.786Z",
+      "systemInfo": {
+        "platform": "linux",
+        "arch": "x64",
+        "nodeVersion": "v22.14.0",
+        "v8Version": "12.4.254.21-node.22",
+        "libraryVersion": "1.2.0",
+        "cpu": {
+          "model": "Intel(R) Core(TM) i9-14900KF",
+          "cores": 32,
+          "speed": 5700
+        },
+        "memory": {
+          "total": 100899524608,
+          "totalGB": 94
+        },
+        "os": {
+          "type": "Linux",
+          "release": "5.15.0-136-generic",
+          "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+        }
+      },
+      "metrics": {
+        "opsPerSecond": 180323.16422387995,
+        "samples": 72,
+        "marginOfError": 4.509547741482257,
+        "standardDeviation": 0.000001082658890009505,
+        "variance": 1.1721502721166131e-12,
+        "platform": "node",
+        "testType": "quick",
+        "teps": 54096949.26716399
+      }
+    },
+    {
+      "algorithm": "Degree Centrality",
+      "graphType": "sparse",
+      "graphGenerationAlgorithm": "Erdős–Rényi Random Graph (Fixed Edges)",
+      "graphSize": 1000,
+      "edges": 3000,
+      "executionTime": 0.062119647504458995,
+      "memoryUsage": 15797864,
+      "memoryPerVertex": 15797.864,
+      "timestamp": "2025-07-27T23:11:42.333Z",
+      "systemInfo": {
+        "platform": "linux",
+        "arch": "x64",
+        "nodeVersion": "v22.14.0",
+        "v8Version": "12.4.254.21-node.22",
+        "libraryVersion": "1.2.0",
+        "cpu": {
+          "model": "Intel(R) Core(TM) i9-14900KF",
+          "cores": 32,
+          "speed": 5700
+        },
+        "memory": {
+          "total": 100899524608,
+          "totalGB": 94
+        },
+        "os": {
+          "type": "Linux",
+          "release": "5.15.0-136-generic",
+          "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+        }
+      },
+      "metrics": {
+        "opsPerSecond": 16097.966427259898,
+        "samples": 73,
+        "marginOfError": 5.74348266719657,
+        "standardDeviation": 0.000015552838279241086,
+        "variance": 2.418907785402268e-10,
+        "platform": "node",
+        "testType": "quick",
+        "teps": 48293899.2817797
+      }
+    },
+    {
+      "algorithm": "Degree Centrality",
+      "graphType": "sparse",
+      "graphGenerationAlgorithm": "Erdős–Rényi Random Graph (Fixed Edges)",
+      "graphSize": 5000,
+      "edges": 15000,
+      "executionTime": 0.7293904302642711,
+      "memoryUsage": 27822696,
+      "memoryPerVertex": 5564.5392,
+      "timestamp": "2025-07-27T23:11:48.545Z",
+      "systemInfo": {
+        "platform": "linux",
+        "arch": "x64",
+        "nodeVersion": "v22.14.0",
+        "v8Version": "12.4.254.21-node.22",
+        "libraryVersion": "1.2.0",
+        "cpu": {
+          "model": "Intel(R) Core(TM) i9-14900KF",
+          "cores": 32,
+          "speed": 5700
+        },
+        "memory": {
+          "total": 100899524608,
+          "totalGB": 94
+        },
+        "os": {
+          "type": "Linux",
+          "release": "5.15.0-136-generic",
+          "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+        }
+      },
+      "metrics": {
+        "opsPerSecond": 1371.0078423124942,
+        "samples": 69,
+        "marginOfError": 5.477927776134103,
+        "standardDeviation": 0.000169334261086157,
+        "variance": 2.8674091977594786e-8,
+        "platform": "node",
+        "testType": "quick",
+        "teps": 20565117.634687413
+      }
+    },
+    {
+      "algorithm": "Betweenness Centrality",
+      "graphType": "sparse",
+      "graphGenerationAlgorithm": "Erdős–Rényi Random Graph (Fixed Edges)",
+      "graphSize": 10,
+      "edges": 30,
+      "executionTime": 0.08616933891117183,
+      "memoryUsage": 4694168,
+      "memoryPerVertex": 469416.8,
+      "timestamp": "2025-07-27T23:11:34.049Z",
+      "systemInfo": {
+        "platform": "linux",
+        "arch": "x64",
+        "nodeVersion": "v22.14.0",
+        "v8Version": "12.4.254.21-node.22",
+        "libraryVersion": "1.2.0",
+        "cpu": {
+          "model": "Intel(R) Core(TM) i9-14900KF",
+          "cores": 32,
+          "speed": 5700
+        },
+        "memory": {
+          "total": 100899524608,
+          "totalGB": 94
+        },
+        "os": {
+          "type": "Linux",
+          "release": "5.15.0-136-generic",
+          "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+        }
+      },
+      "metrics": {
+        "opsPerSecond": 11605.05595883538,
+        "samples": 36,
+        "marginOfError": 3.5245606361672057,
+        "standardDeviation": 0.000009297216121557163,
+        "variance": 8.643822761094242e-11,
+        "platform": "node",
+        "testType": "quick",
+        "teps": 348151.6787650614
+      }
+    },
+    {
+      "algorithm": "Betweenness Centrality",
+      "graphType": "sparse",
+      "graphGenerationAlgorithm": "Erdős–Rényi Random Graph (Fixed Edges)",
+      "graphSize": 20,
+      "edges": 60,
+      "executionTime": 0.35416698425302495,
+      "memoryUsage": 11647456,
+      "memoryPerVertex": 582372.8,
+      "timestamp": "2025-07-27T23:11:39.711Z",
+      "systemInfo": {
+        "platform": "linux",
+        "arch": "x64",
+        "nodeVersion": "v22.14.0",
+        "v8Version": "12.4.254.21-node.22",
+        "libraryVersion": "1.2.0",
+        "cpu": {
+          "model": "Intel(R) Core(TM) i9-14900KF",
+          "cores": 32,
+          "speed": 5700
+        },
+        "memory": {
+          "total": 100899524608,
+          "totalGB": 94
+        },
+        "os": {
+          "type": "Linux",
+          "release": "5.15.0-136-generic",
+          "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+        }
+      },
+      "metrics": {
+        "opsPerSecond": 2823.526879867428,
+        "samples": 36,
+        "marginOfError": 7.457439506887561,
+        "standardDeviation": 0.00008085241409399183,
+        "variance": 6.53711286482633e-9,
+        "platform": "node",
+        "testType": "quick",
+        "teps": 169411.61279204566
+      }
+    },
+    {
+      "algorithm": "Betweenness Centrality",
+      "graphType": "sparse",
+      "graphGenerationAlgorithm": "Erdős–Rényi Random Graph (Fixed Edges)",
+      "graphSize": 50,
+      "edges": 150,
+      "executionTime": 2.142012641862609,
+      "memoryUsage": 18832264,
+      "memoryPerVertex": 376645.28,
+      "timestamp": "2025-07-27T23:11:45.506Z",
+      "systemInfo": {
+        "platform": "linux",
+        "arch": "x64",
+        "nodeVersion": "v22.14.0",
+        "v8Version": "12.4.254.21-node.22",
+        "libraryVersion": "1.2.0",
+        "cpu": {
+          "model": "Intel(R) Core(TM) i9-14900KF",
+          "cores": 32,
+          "speed": 5700
+        },
+        "memory": {
+          "total": 100899524608,
+          "totalGB": 94
+        },
+        "os": {
+          "type": "Linux",
+          "release": "5.15.0-136-generic",
+          "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+        }
+      },
+      "metrics": {
+        "opsPerSecond": 466.8506527255786,
+        "samples": 43,
+        "marginOfError": 4.691995425696553,
+        "standardDeviation": 0.00033624649510375097,
+        "variance": 1.1306170546955684e-7,
+        "platform": "node",
+        "testType": "quick",
+        "teps": 70027.59790883679
+      }
+    },
+    {
+      "algorithm": "Closeness Centrality",
+      "graphType": "complete",
+      "graphGenerationAlgorithm": "Complete Graph (K_n)",
+      "graphSize": 50,
+      "edges": 1225,
+      "executionTime": 1.6108720059903094,
+      "memoryUsage": 7168720,
+      "memoryPerVertex": 143374.4,
+      "timestamp": "2025-07-27T23:11:36.008Z",
+      "systemInfo": {
+        "platform": "linux",
+        "arch": "x64",
+        "nodeVersion": "v22.14.0",
+        "v8Version": "12.4.254.21-node.22",
+        "libraryVersion": "1.2.0",
+        "cpu": {
+          "model": "Intel(R) Core(TM) i9-14900KF",
+          "cores": 32,
+          "speed": 5700
+        },
+        "memory": {
+          "total": 100899524608,
+          "totalGB": 94
+        },
+        "os": {
+          "type": "Linux",
+          "release": "5.15.0-136-generic",
+          "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+        }
+      },
+      "metrics": {
+        "opsPerSecond": 620.7817854437379,
+        "samples": 49,
+        "marginOfError": 5.981890140907367,
+        "standardDeviation": 0.0003441449775320395,
+        "variance": 1.1843576556052795e-7,
+        "platform": "node",
+        "testType": "quick",
+        "teps": 760457.687168579
+      }
+    },
+    {
+      "algorithm": "Closeness Centrality",
+      "graphType": "complete",
+      "graphGenerationAlgorithm": "Complete Graph (K_n)",
+      "graphSize": 100,
+      "edges": 4950,
+      "executionTime": 11.275727579809724,
+      "memoryUsage": 8454096,
+      "memoryPerVertex": 84540.96,
+      "timestamp": "2025-07-27T23:11:42.792Z",
+      "systemInfo": {
+        "platform": "linux",
+        "arch": "x64",
+        "nodeVersion": "v22.14.0",
+        "v8Version": "12.4.254.21-node.22",
+        "libraryVersion": "1.2.0",
+        "cpu": {
+          "model": "Intel(R) Core(TM) i9-14900KF",
+          "cores": 32,
+          "speed": 5700
+        },
+        "memory": {
+          "total": 100899524608,
+          "totalGB": 94
+        },
+        "os": {
+          "type": "Linux",
+          "release": "5.15.0-136-generic",
+          "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+        }
+      },
+      "metrics": {
+        "opsPerSecond": 88.68607306464163,
+        "samples": 43,
+        "marginOfError": 4.090300983681383,
+        "standardDeviation": 0.0015430428904278548,
+        "variance": 0.000002380981361699949,
+        "platform": "node",
+        "testType": "quick",
+        "teps": 438996.0616699761
+      }
+    },
+    {
+      "algorithm": "Closeness Centrality",
+      "graphType": "sparse",
+      "graphGenerationAlgorithm": "Erdős–Rényi Random Graph (Fixed Edges)",
+      "graphSize": 250,
+      "edges": 750,
+      "executionTime": 20.082931142450146,
+      "memoryUsage": 25754000,
+      "memoryPerVertex": 103016,
+      "timestamp": "2025-07-27T23:11:49.563Z",
+      "systemInfo": {
+        "platform": "linux",
+        "arch": "x64",
+        "nodeVersion": "v22.14.0",
+        "v8Version": "12.4.254.21-node.22",
+        "libraryVersion": "1.2.0",
+        "cpu": {
+          "model": "Intel(R) Core(TM) i9-14900KF",
+          "cores": 32,
+          "speed": 5700
+        },
+        "memory": {
+          "total": 100899524608,
+          "totalGB": 94
+        },
+        "os": {
+          "type": "Linux",
+          "release": "5.15.0-136-generic",
+          "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+        }
+      },
+      "metrics": {
+        "opsPerSecond": 49.79352829061179,
+        "samples": 39,
+        "marginOfError": 4.3243206115314665,
+        "standardDeviation": 0.002767076825259432,
+        "variance": 0.000007656714156887816,
+        "platform": "node",
+        "testType": "quick",
+        "teps": 37345.14621795884
+      }
+    },
+    {
+      "algorithm": "Eigenvector Centrality",
+      "graphType": "sparse",
+      "graphGenerationAlgorithm": "Erdős–Rényi Random Graph (Fixed Edges)",
+      "graphSize": 50,
+      "edges": 150,
+      "executionTime": 1.3314513666666667,
+      "memoryUsage": 7275208,
+      "memoryPerVertex": 145504.16,
+      "timestamp": "2025-07-27T23:11:34.708Z",
+      "systemInfo": {
+        "platform": "linux",
+        "arch": "x64",
+        "nodeVersion": "v22.14.0",
+        "v8Version": "12.4.254.21-node.22",
+        "libraryVersion": "1.2.0",
+        "cpu": {
+          "model": "Intel(R) Core(TM) i9-14900KF",
+          "cores": 32,
+          "speed": 5700
+        },
+        "memory": {
+          "total": 100899524608,
+          "totalGB": 94
+        },
+        "os": {
+          "type": "Linux",
+          "release": "5.15.0-136-generic",
+          "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+        }
+      },
+      "metrics": {
+        "opsPerSecond": 751.0601025582584,
+        "samples": 30,
+        "marginOfError": 5.754214390013266,
+        "standardDeviation": 0.0002052006166580723,
+        "variance": 4.210729307685314e-8,
+        "platform": "node",
+        "testType": "quick",
+        "teps": 112659.01538373876
+      }
+    },
+    {
+      "algorithm": "Eigenvector Centrality",
+      "graphType": "sparse",
+      "graphGenerationAlgorithm": "Erdős–Rényi Random Graph (Fixed Edges)",
+      "graphSize": 100,
+      "edges": 300,
+      "executionTime": 2.5176303251572265,
+      "memoryUsage": 14150336,
+      "memoryPerVertex": 141503.36,
+      "timestamp": "2025-07-27T23:11:40.796Z",
+      "systemInfo": {
+        "platform": "linux",
+        "arch": "x64",
+        "nodeVersion": "v22.14.0",
+        "v8Version": "12.4.254.21-node.22",
+        "libraryVersion": "1.2.0",
+        "cpu": {
+          "model": "Intel(R) Core(TM) i9-14900KF",
+          "cores": 32,
+          "speed": 5700
+        },
+        "memory": {
+          "total": 100899524608,
+          "totalGB": 94
+        },
+        "os": {
+          "type": "Linux",
+          "release": "5.15.0-136-generic",
+          "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+        }
+      },
+      "metrics": {
+        "opsPerSecond": 397.1989016844837,
+        "samples": 39,
+        "marginOfError": 5.370394477539961,
+        "standardDeviation": 0.00043079869675501347,
+        "variance": 1.8558751712581806e-7,
+        "platform": "node",
+        "testType": "quick",
+        "teps": 119159.67050534512
+      }
+    },
+    {
+      "algorithm": "Eigenvector Centrality",
+      "graphType": "sparse",
+      "graphGenerationAlgorithm": "Erdős–Rényi Random Graph (Fixed Edges)",
+      "graphSize": 200,
+      "edges": 600,
+      "executionTime": 6.260509417550097,
+      "memoryUsage": 20486304,
+      "memoryPerVertex": 102431.52,
+      "timestamp": "2025-07-27T23:11:46.934Z",
+      "systemInfo": {
+        "platform": "linux",
+        "arch": "x64",
+        "nodeVersion": "v22.14.0",
+        "v8Version": "12.4.254.21-node.22",
+        "libraryVersion": "1.2.0",
+        "cpu": {
+          "model": "Intel(R) Core(TM) i9-14900KF",
+          "cores": 32,
+          "speed": 5700
+        },
+        "memory": {
+          "total": 100899524608,
+          "totalGB": 94
+        },
+        "os": {
+          "type": "Linux",
+          "release": "5.15.0-136-generic",
+          "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+        }
+      },
+      "metrics": {
+        "opsPerSecond": 159.73141054571346,
+        "samples": 35,
+        "marginOfError": 6.0068084936404365,
+        "standardDeviation": 0.001135092907881919,
+        "variance": 0.0000012884359095238307,
+        "platform": "node",
+        "testType": "quick",
+        "teps": 95838.84632742808
+      }
+    },
+    {
+      "algorithm": "HITS",
+      "graphType": "sparse",
+      "graphGenerationAlgorithm": "Erdős–Rényi Random Graph (Fixed Edges)",
+      "graphSize": 100,
+      "edges": 300,
+      "executionTime": 2.7991397513317113,
+      "memoryUsage": 11065200,
+      "memoryPerVertex": 110652,
+      "timestamp": "2025-07-27T23:11:35.400Z",
+      "systemInfo": {
+        "platform": "linux",
+        "arch": "x64",
+        "nodeVersion": "v22.14.0",
+        "v8Version": "12.4.254.21-node.22",
+        "libraryVersion": "1.2.0",
+        "cpu": {
+          "model": "Intel(R) Core(TM) i9-14900KF",
+          "cores": 32,
+          "speed": 5700
+        },
+        "memory": {
+          "total": 100899524608,
+          "totalGB": 94
+        },
+        "os": {
+          "type": "Linux",
+          "release": "5.15.0-136-generic",
+          "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+        }
+      },
+      "metrics": {
+        "opsPerSecond": 357.2526164598401,
+        "samples": 69,
+        "marginOfError": 5.481290718320407,
+        "standardDeviation": 0.0006502433101302784,
+        "variance": 4.2281636236918154e-7,
+        "platform": "node",
+        "testType": "quick",
+        "teps": 107175.78493795203
+      }
+    },
+    {
+      "algorithm": "HITS",
+      "graphType": "sparse",
+      "graphGenerationAlgorithm": "Erdős–Rényi Random Graph (Fixed Edges)",
+      "graphSize": 300,
+      "edges": 900,
+      "executionTime": 9.048359869811321,
+      "memoryUsage": 22994048,
+      "memoryPerVertex": 76646.82666666666,
+      "timestamp": "2025-07-27T23:11:41.210Z",
+      "systemInfo": {
+        "platform": "linux",
+        "arch": "x64",
+        "nodeVersion": "v22.14.0",
+        "v8Version": "12.4.254.21-node.22",
+        "libraryVersion": "1.2.0",
+        "cpu": {
+          "model": "Intel(R) Core(TM) i9-14900KF",
+          "cores": 32,
+          "speed": 5700
+        },
+        "memory": {
+          "total": 100899524608,
+          "totalGB": 94
+        },
+        "os": {
+          "type": "Linux",
+          "release": "5.15.0-136-generic",
+          "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+        }
+      },
+      "metrics": {
+        "opsPerSecond": 110.51726659727254,
+        "samples": 53,
+        "marginOfError": 5.932279699467083,
+        "standardDeviation": 0.001993762153033071,
+        "variance": 0.000003975087522867067,
+        "platform": "node",
+        "testType": "quick",
+        "teps": 99465.53993754528
+      }
+    },
+    {
+      "algorithm": "HITS",
+      "graphType": "sparse",
+      "graphGenerationAlgorithm": "Erdős–Rényi Random Graph (Fixed Edges)",
+      "graphSize": 500,
+      "edges": 1500,
+      "executionTime": 15.876986548830411,
+      "memoryUsage": 14248240,
+      "memoryPerVertex": 28496.48,
+      "timestamp": "2025-07-27T23:11:47.110Z",
+      "systemInfo": {
+        "platform": "linux",
+        "arch": "x64",
+        "nodeVersion": "v22.14.0",
+        "v8Version": "12.4.254.21-node.22",
+        "libraryVersion": "1.2.0",
+        "cpu": {
+          "model": "Intel(R) Core(TM) i9-14900KF",
+          "cores": 32,
+          "speed": 5700
+        },
+        "memory": {
+          "total": 100899524608,
+          "totalGB": 94
+        },
+        "os": {
+          "type": "Linux",
+          "release": "5.15.0-136-generic",
+          "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+        }
+      },
+      "metrics": {
+        "opsPerSecond": 62.98424432901379,
+        "samples": 57,
+        "marginOfError": 6.829298992330793,
+        "standardDeviation": 0.004176625735915182,
+        "variance": 0.000017444202537909036,
+        "platform": "node",
+        "testType": "quick",
+        "teps": 94476.36649352068
+      }
+    },
+    {
+      "algorithm": "Katz Centrality",
+      "graphType": "sparse",
+      "graphGenerationAlgorithm": "Erdős–Rényi Random Graph (Fixed Edges)",
+      "graphSize": 100,
+      "edges": 300,
+      "executionTime": 3.037274059030998,
+      "memoryUsage": 4483208,
+      "memoryPerVertex": 44832.08,
+      "timestamp": "2025-07-27T23:11:36.175Z",
+      "systemInfo": {
+        "platform": "linux",
+        "arch": "x64",
+        "nodeVersion": "v22.14.0",
+        "v8Version": "12.4.254.21-node.22",
+        "libraryVersion": "1.2.0",
+        "cpu": {
+          "model": "Intel(R) Core(TM) i9-14900KF",
+          "cores": 32,
+          "speed": 5700
+        },
+        "memory": {
+          "total": 100899524608,
+          "totalGB": 94
+        },
+        "os": {
+          "type": "Linux",
+          "release": "5.15.0-136-generic",
+          "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+        }
+      },
+      "metrics": {
+        "opsPerSecond": 329.2425973305276,
+        "samples": 44,
+        "marginOfError": 8.371210439229081,
+        "standardDeviation": 0.0008604834213725029,
+        "variance": 7.404317184569283e-7,
+        "platform": "node",
+        "testType": "quick",
+        "teps": 98772.77919915828
+      }
+    },
+    {
+      "algorithm": "Katz Centrality",
+      "graphType": "sparse",
+      "graphGenerationAlgorithm": "Erdős–Rényi Random Graph (Fixed Edges)",
+      "graphSize": 500,
+      "edges": 1500,
+      "executionTime": 12.90878191934732,
+      "memoryUsage": 22659552,
+      "memoryPerVertex": 45319.104,
+      "timestamp": "2025-07-27T23:11:42.907Z",
+      "systemInfo": {
+        "platform": "linux",
+        "arch": "x64",
+        "nodeVersion": "v22.14.0",
+        "v8Version": "12.4.254.21-node.22",
+        "libraryVersion": "1.2.0",
+        "cpu": {
+          "model": "Intel(R) Core(TM) i9-14900KF",
+          "cores": 32,
+          "speed": 5700
+        },
+        "memory": {
+          "total": 100899524608,
+          "totalGB": 94
+        },
+        "os": {
+          "type": "Linux",
+          "release": "5.15.0-136-generic",
+          "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+        }
+      },
+      "metrics": {
+        "opsPerSecond": 77.46664296041969,
+        "samples": 39,
+        "marginOfError": 7.8860698833382745,
+        "standardDeviation": 0.0032435613545198326,
+        "variance": 0.000010520690260534531,
+        "platform": "node",
+        "testType": "quick",
+        "teps": 116199.96444062953
+      }
+    },
+    {
+      "algorithm": "Katz Centrality",
+      "graphType": "sparse",
+      "graphGenerationAlgorithm": "Erdős–Rényi Random Graph (Fixed Edges)",
+      "graphSize": 1000,
+      "edges": 3000,
+      "executionTime": 34.80528816927083,
+      "memoryUsage": 27383920,
+      "memoryPerVertex": 27383.92,
+      "timestamp": "2025-07-27T23:11:50.132Z",
+      "systemInfo": {
+        "platform": "linux",
+        "arch": "x64",
+        "nodeVersion": "v22.14.0",
+        "v8Version": "12.4.254.21-node.22",
+        "libraryVersion": "1.2.0",
+        "cpu": {
+          "model": "Intel(R) Core(TM) i9-14900KF",
+          "cores": 32,
+          "speed": 5700
+        },
+        "memory": {
+          "total": 100899524608,
+          "totalGB": 94
+        },
+        "os": {
+          "type": "Linux",
+          "release": "5.15.0-136-generic",
+          "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+        }
+      },
+      "metrics": {
+        "opsPerSecond": 28.731266212669603,
+        "samples": 32,
+        "marginOfError": 9.154969937092632,
+        "standardDeviation": 0.009196468214701605,
+        "variance": 0.00008457502762401692,
+        "platform": "node",
+        "testType": "quick",
+        "teps": 86193.7986380088
+      }
+    },
+    {
+      "algorithm": "Connected Components",
+      "graphType": "sparse",
+      "graphGenerationAlgorithm": "Erdős–Rényi Random Graph (Fixed Edges)",
+      "graphSize": 100,
+      "edges": 300,
+      "executionTime": 0.11534640121326949,
+      "memoryUsage": 20230424,
+      "memoryPerVertex": 202304.24,
+      "timestamp": "2025-07-27T23:11:35.008Z",
+      "systemInfo": {
+        "platform": "linux",
+        "arch": "x64",
+        "nodeVersion": "v22.14.0",
+        "v8Version": "12.4.254.21-node.22",
+        "libraryVersion": "1.2.0",
+        "cpu": {
+          "model": "Intel(R) Core(TM) i9-14900KF",
+          "cores": 32,
+          "speed": 5700
+        },
+        "memory": {
+          "total": 100899524608,
+          "totalGB": 94
+        },
+        "os": {
+          "type": "Linux",
+          "release": "5.15.0-136-generic",
+          "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+        }
+      },
+      "metrics": {
+        "opsPerSecond": 8669.537926467701,
+        "samples": 68,
+        "marginOfError": 6.475576816890134,
+        "standardDeviation": 0.00003142540574578799,
+        "variance": 9.87556126287405e-10,
+        "platform": "node",
+        "testType": "quick",
+        "teps": 2600861.3779403106
+      }
+    },
+    {
+      "algorithm": "Connected Components",
+      "graphType": "sparse",
+      "graphGenerationAlgorithm": "Erdős–Rényi Random Graph (Fixed Edges)",
+      "graphSize": 1000,
+      "edges": 3000,
+      "executionTime": 1.2688911679078183,
+      "memoryUsage": 27341200,
+      "memoryPerVertex": 27341.2,
+      "timestamp": "2025-07-27T23:11:41.424Z",
+      "systemInfo": {
+        "platform": "linux",
+        "arch": "x64",
+        "nodeVersion": "v22.14.0",
+        "v8Version": "12.4.254.21-node.22",
+        "libraryVersion": "1.2.0",
+        "cpu": {
+          "model": "Intel(R) Core(TM) i9-14900KF",
+          "cores": 32,
+          "speed": 5700
+        },
+        "memory": {
+          "total": 100899524608,
+          "totalGB": 94
+        },
+        "os": {
+          "type": "Linux",
+          "release": "5.15.0-136-generic",
+          "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+        }
+      },
+      "metrics": {
+        "opsPerSecond": 788.0896528335261,
+        "samples": 71,
+        "marginOfError": 5.145127974142801,
+        "standardDeviation": 0.00028066849048286713,
+        "variance": 7.877480154993128e-8,
+        "platform": "node",
+        "testType": "quick",
+        "teps": 2364268.958500578
+      }
+    },
+    {
+      "algorithm": "Connected Components",
+      "graphType": "sparse",
+      "graphGenerationAlgorithm": "Erdős–Rényi Random Graph (Fixed Edges)",
+      "graphSize": 5000,
+      "edges": 15000,
+      "executionTime": 13.786236788011696,
+      "memoryUsage": 29083560,
+      "memoryPerVertex": 5816.712,
+      "timestamp": "2025-07-27T23:11:47.736Z",
+      "systemInfo": {
+        "platform": "linux",
+        "arch": "x64",
+        "nodeVersion": "v22.14.0",
+        "v8Version": "12.4.254.21-node.22",
+        "libraryVersion": "1.2.0",
+        "cpu": {
+          "model": "Intel(R) Core(TM) i9-14900KF",
+          "cores": 32,
+          "speed": 5700
+        },
+        "memory": {
+          "total": 100899524608,
+          "totalGB": 94
+        },
+        "os": {
+          "type": "Linux",
+          "release": "5.15.0-136-generic",
+          "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+        }
+      },
+      "metrics": {
+        "opsPerSecond": 72.53611086018665,
+        "samples": 57,
+        "marginOfError": 6.675539173190831,
+        "standardDeviation": 0.003544977138472045,
+        "variance": 0.000012566862912289449,
+        "platform": "node",
+        "testType": "quick",
+        "teps": 1088041.6629028
+      }
+    },
+    {
+      "algorithm": "Common Neighbors",
+      "graphType": "sparse",
+      "graphGenerationAlgorithm": "Erdős–Rényi Random Graph (Fixed Edges)",
+      "graphSize": 50,
+      "edges": 150,
+      "executionTime": 1.5471163358704314,
+      "memoryUsage": 17683992,
+      "memoryPerVertex": 353679.84,
+      "timestamp": "2025-07-27T23:11:35.707Z",
+      "systemInfo": {
+        "platform": "linux",
+        "arch": "x64",
+        "nodeVersion": "v22.14.0",
+        "v8Version": "12.4.254.21-node.22",
+        "libraryVersion": "1.2.0",
+        "cpu": {
+          "model": "Intel(R) Core(TM) i9-14900KF",
+          "cores": 32,
+          "speed": 5700
+        },
+        "memory": {
+          "total": 100899524608,
+          "totalGB": 94
+        },
+        "os": {
+          "type": "Linux",
+          "release": "5.15.0-136-generic",
+          "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+        }
+      },
+      "metrics": {
+        "opsPerSecond": 646.3638039458647,
+        "samples": 47,
+        "marginOfError": 8.690359589962092,
+        "standardDeviation": 0.00047027682396757244,
+        "variance": 2.211602911610271e-7,
+        "platform": "node",
+        "testType": "quick",
+        "teps": 96954.5705918797
+      }
+    },
+    {
+      "algorithm": "Common Neighbors",
+      "graphType": "sparse",
+      "graphGenerationAlgorithm": "Erdős–Rényi Random Graph (Fixed Edges)",
+      "graphSize": 100,
+      "edges": 300,
+      "executionTime": 8.764888041322315,
+      "memoryUsage": 18053264,
+      "memoryPerVertex": 180532.64,
+      "timestamp": "2025-07-27T23:11:42.965Z",
+      "systemInfo": {
+        "platform": "linux",
+        "arch": "x64",
+        "nodeVersion": "v22.14.0",
+        "v8Version": "12.4.254.21-node.22",
+        "libraryVersion": "1.2.0",
+        "cpu": {
+          "model": "Intel(R) Core(TM) i9-14900KF",
+          "cores": 32,
+          "speed": 5700
+        },
+        "memory": {
+          "total": 100899524608,
+          "totalGB": 94
+        },
+        "os": {
+          "type": "Linux",
+          "release": "5.15.0-136-generic",
+          "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+        }
+      },
+      "metrics": {
+        "opsPerSecond": 114.09158853889193,
+        "samples": 33,
+        "marginOfError": 5.202481152811654,
+        "standardDeviation": 0.0013364656074577393,
+        "variance": 0.0000017861403199173843,
+        "platform": "node",
+        "testType": "quick",
+        "teps": 34227.47656166758
+      }
+    },
+    {
+      "algorithm": "Common Neighbors",
+      "graphType": "sparse",
+      "graphGenerationAlgorithm": "Erdős–Rényi Random Graph (Fixed Edges)",
+      "graphSize": 200,
+      "edges": 600,
+      "executionTime": 27.90076162120535,
+      "memoryUsage": 13397760,
+      "memoryPerVertex": 66988.8,
+      "timestamp": "2025-07-27T23:11:50.113Z",
+      "systemInfo": {
+        "platform": "linux",
+        "arch": "x64",
+        "nodeVersion": "v22.14.0",
+        "v8Version": "12.4.254.21-node.22",
+        "libraryVersion": "1.2.0",
+        "cpu": {
+          "model": "Intel(R) Core(TM) i9-14900KF",
+          "cores": 32,
+          "speed": 5700
+        },
+        "memory": {
+          "total": 100899524608,
+          "totalGB": 94
+        },
+        "os": {
+          "type": "Linux",
+          "release": "5.15.0-136-generic",
+          "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+        }
+      },
+      "metrics": {
+        "opsPerSecond": 35.841315501580155,
+        "samples": 32,
+        "marginOfError": 9.568836730714445,
+        "standardDeviation": 0.0077053810558852355,
+        "variance": 0.00005937289721639507,
+        "platform": "node",
+        "testType": "quick",
+        "teps": 21504.789300948094
+      }
+    },
+    {
+      "algorithm": "Maximum Bipartite Matching",
+      "graphType": "bipartite",
+      "graphGenerationAlgorithm": "Bipartite Graph",
+      "graphSize": 50,
+      "edges": 161,
+      "executionTime": 0.05058356874516661,
+      "memoryUsage": 5826680,
+      "memoryPerVertex": 116533.6,
+      "timestamp": "2025-07-27T23:11:35.858Z",
+      "systemInfo": {
+        "platform": "linux",
+        "arch": "x64",
+        "nodeVersion": "v22.14.0",
+        "v8Version": "12.4.254.21-node.22",
+        "libraryVersion": "1.2.0",
+        "cpu": {
+          "model": "Intel(R) Core(TM) i9-14900KF",
+          "cores": 32,
+          "speed": 5700
+        },
+        "memory": {
+          "total": 100899524608,
+          "totalGB": 94
+        },
+        "os": {
+          "type": "Linux",
+          "release": "5.15.0-136-generic",
+          "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+        }
+      },
+      "metrics": {
+        "opsPerSecond": 19769.26549089229,
+        "samples": 41,
+        "marginOfError": 6.596612126896879,
+        "standardDeviation": 0.000010900998302843422,
+        "variance": 1.1883176399859517e-10,
+        "platform": "node",
+        "testType": "quick",
+        "teps": 3182851.7440336584
+      }
+    },
+    {
+      "algorithm": "Maximum Bipartite Matching",
+      "graphType": "bipartite",
+      "graphGenerationAlgorithm": "Bipartite Graph",
+      "graphSize": 100,
+      "edges": 763,
+      "executionTime": 0.4312213141694786,
+      "memoryUsage": 10633680,
+      "memoryPerVertex": 106336.8,
+      "timestamp": "2025-07-27T23:11:42.863Z",
+      "systemInfo": {
+        "platform": "linux",
+        "arch": "x64",
+        "nodeVersion": "v22.14.0",
+        "v8Version": "12.4.254.21-node.22",
+        "libraryVersion": "1.2.0",
+        "cpu": {
+          "model": "Intel(R) Core(TM) i9-14900KF",
+          "cores": 32,
+          "speed": 5700
+        },
+        "memory": {
+          "total": 100899524608,
+          "totalGB": 94
+        },
+        "os": {
+          "type": "Linux",
+          "release": "5.15.0-136-generic",
+          "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+        }
+      },
+      "metrics": {
+        "opsPerSecond": 2318.9948343021374,
+        "samples": 42,
+        "marginOfError": 4.554504223433108,
+        "standardDeviation": 0.00006493964374104533,
+        "variance": 4.217157329213887e-9,
+        "platform": "node",
+        "testType": "quick",
+        "teps": 1769393.058572531
+      }
+    },
+    {
+      "algorithm": "Maximum Bipartite Matching",
+      "graphType": "bipartite",
+      "graphGenerationAlgorithm": "Bipartite Graph",
+      "graphSize": 200,
+      "edges": 2980,
+      "executionTime": 2.606937207710219,
+      "memoryUsage": 20403440,
+      "memoryPerVertex": 102017.2,
+      "timestamp": "2025-07-27T23:11:49.680Z",
+      "systemInfo": {
+        "platform": "linux",
+        "arch": "x64",
+        "nodeVersion": "v22.14.0",
+        "v8Version": "12.4.254.21-node.22",
+        "libraryVersion": "1.2.0",
+        "cpu": {
+          "model": "Intel(R) Core(TM) i9-14900KF",
+          "cores": 32,
+          "speed": 5700
+        },
+        "memory": {
+          "total": 100899524608,
+          "totalGB": 94
+        },
+        "os": {
+          "type": "Linux",
+          "release": "5.15.0-136-generic",
+          "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+        }
+      },
+      "metrics": {
+        "opsPerSecond": 383.59190127112475,
+        "samples": 41,
+        "marginOfError": 5.882499628373903,
+        "standardDeviation": 0.0005009891680417152,
+        "variance": 2.509901464951299e-7,
+        "platform": "node",
+        "testType": "quick",
+        "teps": 1143103.8657879517
+      }
+    },
+    {
+      "algorithm": "Girvan-Newman",
+      "graphType": "community-structured",
+      "graphGenerationAlgorithm": "Community-Structured Graph",
+      "graphSize": 5,
+      "edges": 2,
+      "executionTime": 0.05162675864850217,
+      "memoryUsage": 49504,
+      "memoryPerVertex": 9900.8,
+      "timestamp": "2025-07-27T23:11:34.536Z",
+      "metrics": {
+        "opsPerSecond": 19369.800200094738,
+        "samples": 64,
+        "marginOfError": 6.6626228999391275,
+        "standardDeviation": 0.000014039576506985344,
+        "variance": 1.971097084954948e-10,
+        "platform": "node",
+        "testType": "quick",
+        "teps": 38739.600400189476
+      },
+      "systemInfo": {
+        "platform": "linux",
+        "arch": "x64",
+        "nodeVersion": "v22.14.0",
+        "v8Version": "12.4.254.21-node.22",
+        "libraryVersion": "1.2.0",
+        "cpu": {
+          "model": "Intel(R) Core(TM) i9-14900KF",
+          "cores": 32,
+          "speed": 5700
+        },
+        "memory": {
+          "total": 100899524608,
+          "totalGB": 94
+        },
+        "os": {
+          "type": "Linux",
+          "release": "5.15.0-136-generic",
+          "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+        }
+      }
+    },
+    {
+      "algorithm": "Girvan-Newman",
+      "graphType": "community-structured",
+      "graphGenerationAlgorithm": "Community-Structured Graph",
+      "graphSize": 8,
+      "edges": 12,
+      "executionTime": 0.10397636817792376,
+      "memoryUsage": 97384,
+      "memoryPerVertex": 12173,
+      "timestamp": "2025-07-27T23:11:40.489Z",
+      "metrics": {
+        "opsPerSecond": 9617.570006761593,
+        "samples": 70,
+        "marginOfError": 5.38201695923236,
+        "standardDeviation": 0.000023887607491418996,
+        "variance": 5.70617791664097e-10,
+        "platform": "node",
+        "testType": "quick",
+        "teps": 115410.84008113912
+      },
+      "systemInfo": {
+        "platform": "linux",
+        "arch": "x64",
+        "nodeVersion": "v22.14.0",
+        "v8Version": "12.4.254.21-node.22",
+        "libraryVersion": "1.2.0",
+        "cpu": {
+          "model": "Intel(R) Core(TM) i9-14900KF",
+          "cores": 32,
+          "speed": 5700
+        },
+        "memory": {
+          "total": 100899524608,
+          "totalGB": 94
+        },
+        "os": {
+          "type": "Linux",
+          "release": "5.15.0-136-generic",
+          "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+        }
+      }
+    },
+    {
+      "algorithm": "Girvan-Newman",
+      "graphType": "community-structured",
+      "graphGenerationAlgorithm": "Community-Structured Graph",
+      "graphSize": 10,
+      "edges": 14,
+      "executionTime": 6.163210641873282,
+      "memoryUsage": 0,
+      "memoryPerVertex": 0,
+      "timestamp": "2025-07-27T23:11:46.494Z",
+      "metrics": {
+        "opsPerSecond": 162.25309471104728,
+        "samples": 66,
+        "marginOfError": 5.8540012885217605,
+        "standardDeviation": 0.0014954631676855309,
+        "variance": 0.0000022364100859040424,
+        "platform": "node",
+        "testType": "quick",
+        "teps": 2271.543325954662
+      },
+      "systemInfo": {
+        "platform": "linux",
+        "arch": "x64",
+        "nodeVersion": "v22.14.0",
+        "v8Version": "12.4.254.21-node.22",
+        "libraryVersion": "1.2.0",
+        "cpu": {
+          "model": "Intel(R) Core(TM) i9-14900KF",
+          "cores": 32,
+          "speed": 5700
+        },
+        "memory": {
+          "total": 100899524608,
+          "totalGB": 94
+        },
+        "os": {
+          "type": "Linux",
+          "release": "5.15.0-136-generic",
+          "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+        }
+      }
+    },
+    {
+      "algorithm": "Leiden",
+      "graphType": "community-structured",
+      "graphGenerationAlgorithm": "Community-Structured Graph",
+      "graphSize": 50,
+      "edges": 215,
+      "executionTime": 1.657778773098096,
+      "memoryUsage": 0,
+      "memoryPerVertex": 0,
+      "timestamp": "2025-07-27T23:11:34.720Z",
+      "metrics": {
+        "opsPerSecond": 603.2167960090214,
+        "samples": 66,
+        "marginOfError": 7.832005290971446,
+        "standardDeviation": 0.0005381649918161708,
+        "variance": 2.8962155841649913e-7,
+        "platform": "node",
+        "testType": "quick",
+        "teps": 129691.6111419396
+      },
+      "systemInfo": {
+        "platform": "linux",
+        "arch": "x64",
+        "nodeVersion": "v22.14.0",
+        "v8Version": "12.4.254.21-node.22",
+        "libraryVersion": "1.2.0",
+        "cpu": {
+          "model": "Intel(R) Core(TM) i9-14900KF",
+          "cores": 32,
+          "speed": 5700
+        },
+        "memory": {
+          "total": 100899524608,
+          "totalGB": 94
+        },
+        "os": {
+          "type": "Linux",
+          "release": "5.15.0-136-generic",
+          "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+        }
+      }
+    },
+    {
+      "algorithm": "Leiden",
+      "graphType": "community-structured",
+      "graphGenerationAlgorithm": "Community-Structured Graph",
+      "graphSize": 100,
+      "edges": 727,
+      "executionTime": 7.681098855634279,
+      "memoryUsage": 0,
+      "memoryPerVertex": 0,
+      "timestamp": "2025-07-27T23:11:40.631Z",
+      "metrics": {
+        "opsPerSecond": 130.18970576930863,
+        "samples": 57,
+        "marginOfError": 6.775445254383183,
+        "standardDeviation": 0.002004668432145866,
+        "variance": 0.000004018695522842166,
+        "platform": "node",
+        "testType": "quick",
+        "teps": 94647.91609428737
+      },
+      "systemInfo": {
+        "platform": "linux",
+        "arch": "x64",
+        "nodeVersion": "v22.14.0",
+        "v8Version": "12.4.254.21-node.22",
+        "libraryVersion": "1.2.0",
+        "cpu": {
+          "model": "Intel(R) Core(TM) i9-14900KF",
+          "cores": 32,
+          "speed": 5700
+        },
+        "memory": {
+          "total": 100899524608,
+          "totalGB": 94
+        },
+        "os": {
+          "type": "Linux",
+          "release": "5.15.0-136-generic",
+          "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+        }
+      }
+    },
+    {
+      "algorithm": "Leiden",
+      "graphType": "community-structured",
+      "graphGenerationAlgorithm": "Community-Structured Graph",
+      "graphSize": 200,
+      "edges": 2424,
+      "executionTime": 37.64293959574469,
+      "memoryUsage": 0,
+      "memoryPerVertex": 0,
+      "timestamp": "2025-07-27T23:11:46.587Z",
+      "metrics": {
+        "opsPerSecond": 26.565406706787694,
+        "samples": 47,
+        "marginOfError": 7.407982340749548,
+        "standardDeviation": 0.009753855712023604,
+        "variance": 0.00009513770125097547,
+        "platform": "node",
+        "testType": "quick",
+        "teps": 64394.54585725337
+      },
+      "systemInfo": {
+        "platform": "linux",
+        "arch": "x64",
+        "nodeVersion": "v22.14.0",
+        "v8Version": "12.4.254.21-node.22",
+        "libraryVersion": "1.2.0",
+        "cpu": {
+          "model": "Intel(R) Core(TM) i9-14900KF",
+          "cores": 32,
+          "speed": 5700
+        },
+        "memory": {
+          "total": 100899524608,
+          "totalGB": 94
+        },
+        "os": {
+          "type": "Linux",
+          "release": "5.15.0-136-generic",
+          "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+        }
+      }
+    },
+    {
+      "algorithm": "Hierarchical Clustering (Single)",
+      "graphType": "hierarchical-structured",
+      "graphGenerationAlgorithm": "Hierarchical-Structured Graph",
+      "graphSize": 5,
+      "edges": 4,
+      "executionTime": 0.02003374515075224,
+      "memoryUsage": 23440,
+      "memoryPerVertex": 4688,
+      "timestamp": "2025-07-27T23:11:34.705Z",
+      "metrics": {
+        "opsPerSecond": 49915.77922525642,
+        "samples": 72,
+        "marginOfError": 5.643480862114051,
+        "standardDeviation": 0.000004894624483890425,
+        "variance": 2.3957348838299614e-11,
+        "platform": "node",
+        "testType": "quick",
+        "teps": 199663.11690102567
+      },
+      "systemInfo": {
+        "platform": "linux",
+        "arch": "x64",
+        "nodeVersion": "v22.14.0",
+        "v8Version": "12.4.254.21-node.22",
+        "libraryVersion": "1.2.0",
+        "cpu": {
+          "model": "Intel(R) Core(TM) i9-14900KF",
+          "cores": 32,
+          "speed": 5700
+        },
+        "memory": {
+          "total": 100899524608,
+          "totalGB": 94
+        },
+        "os": {
+          "type": "Linux",
+          "release": "5.15.0-136-generic",
+          "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+        }
+      }
+    },
+    {
+      "algorithm": "Hierarchical Clustering (Modularity)",
+      "graphType": "hierarchical-structured",
+      "graphGenerationAlgorithm": "Hierarchical-Structured Graph",
+      "graphSize": 5,
+      "edges": 4,
+      "executionTime": 0.024544742144796856,
+      "memoryUsage": 20488,
+      "memoryPerVertex": 4097.6,
+      "timestamp": "2025-07-27T23:11:40.685Z",
+      "metrics": {
+        "opsPerSecond": 40741.92322334036,
+        "samples": 56,
+        "marginOfError": 9.52971208635844,
+        "standardDeviation": 0.000008930508660246584,
+        "variance": 7.975398493073923e-11,
+        "platform": "node",
+        "testType": "quick",
+        "teps": 162967.69289336144
+      },
+      "systemInfo": {
+        "platform": "linux",
+        "arch": "x64",
+        "nodeVersion": "v22.14.0",
+        "v8Version": "12.4.254.21-node.22",
+        "libraryVersion": "1.2.0",
+        "cpu": {
+          "model": "Intel(R) Core(TM) i9-14900KF",
+          "cores": 32,
+          "speed": 5700
+        },
+        "memory": {
+          "total": 100899524608,
+          "totalGB": 94
+        },
+        "os": {
+          "type": "Linux",
+          "release": "5.15.0-136-generic",
+          "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+        }
+      }
+    },
+    {
+      "algorithm": "Hierarchical Clustering (Single)",
+      "graphType": "hierarchical-structured",
+      "graphGenerationAlgorithm": "Hierarchical-Structured Graph",
+      "graphSize": 8,
+      "edges": 10,
+      "executionTime": 0.05025637295775006,
+      "memoryUsage": 51888,
+      "memoryPerVertex": 6486,
+      "timestamp": "2025-07-27T23:11:46.796Z",
+      "metrics": {
+        "opsPerSecond": 19897.973951297445,
+        "samples": 67,
+        "marginOfError": 6.481173301111029,
+        "standardDeviation": 0.000013602730890449225,
+        "variance": 1.8503428767798156e-10,
+        "platform": "node",
+        "testType": "quick",
+        "teps": 198979.73951297445
+      },
+      "systemInfo": {
+        "platform": "linux",
+        "arch": "x64",
+        "nodeVersion": "v22.14.0",
+        "v8Version": "12.4.254.21-node.22",
+        "libraryVersion": "1.2.0",
+        "cpu": {
+          "model": "Intel(R) Core(TM) i9-14900KF",
+          "cores": 32,
+          "speed": 5700
+        },
+        "memory": {
+          "total": 100899524608,
+          "totalGB": 94
+        },
+        "os": {
+          "type": "Linux",
+          "release": "5.15.0-136-generic",
+          "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+        }
+      }
+    },
+    {
+      "algorithm": "Hierarchical Clustering (Modularity)",
+      "graphType": "hierarchical-structured",
+      "graphGenerationAlgorithm": "Hierarchical-Structured Graph",
+      "graphSize": 8,
+      "edges": 10,
+      "executionTime": 0.04153782120629975,
+      "memoryUsage": 58304,
+      "memoryPerVertex": 7288,
+      "timestamp": "2025-07-27T23:11:52.634Z",
+      "metrics": {
+        "opsPerSecond": 24074.445191370243,
+        "samples": 53,
+        "marginOfError": 7.704708116790364,
+        "standardDeviation": 0.000011887260136340291,
+        "variance": 1.41306953549025e-10,
+        "platform": "node",
+        "testType": "quick",
+        "teps": 240744.45191370242
+      },
+      "systemInfo": {
+        "platform": "linux",
+        "arch": "x64",
+        "nodeVersion": "v22.14.0",
+        "v8Version": "12.4.254.21-node.22",
+        "libraryVersion": "1.2.0",
+        "cpu": {
+          "model": "Intel(R) Core(TM) i9-14900KF",
+          "cores": 32,
+          "speed": 5700
+        },
+        "memory": {
+          "total": 100899524608,
+          "totalGB": 94
+        },
+        "os": {
+          "type": "Linux",
+          "release": "5.15.0-136-generic",
+          "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+        }
+      }
+    },
+    {
+      "algorithm": "Hierarchical Clustering (Single)",
+      "graphType": "hierarchical-structured",
+      "graphGenerationAlgorithm": "Hierarchical-Structured Graph",
+      "graphSize": 10,
+      "edges": 10,
+      "executionTime": 0.04358297557397851,
+      "memoryUsage": 64016,
+      "memoryPerVertex": 6401.6,
+      "timestamp": "2025-07-27T23:11:58.530Z",
+      "metrics": {
+        "opsPerSecond": 22944.73901403502,
+        "samples": 77,
+        "marginOfError": 6.3794279664538305,
+        "standardDeviation": 0.000012447665436891448,
+        "variance": 1.5494437482878197e-10,
+        "platform": "node",
+        "testType": "quick",
+        "teps": 229447.3901403502
+      },
+      "systemInfo": {
+        "platform": "linux",
+        "arch": "x64",
+        "nodeVersion": "v22.14.0",
+        "v8Version": "12.4.254.21-node.22",
+        "libraryVersion": "1.2.0",
+        "cpu": {
+          "model": "Intel(R) Core(TM) i9-14900KF",
+          "cores": 32,
+          "speed": 5700
+        },
+        "memory": {
+          "total": 100899524608,
+          "totalGB": 94
+        },
+        "os": {
+          "type": "Linux",
+          "release": "5.15.0-136-generic",
+          "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+        }
+      }
+    },
+    {
+      "algorithm": "Hierarchical Clustering (Modularity)",
+      "graphType": "hierarchical-structured",
+      "graphGenerationAlgorithm": "Hierarchical-Structured Graph",
+      "graphSize": 10,
+      "edges": 10,
+      "executionTime": 0.04152623525789147,
+      "memoryUsage": 97344,
+      "memoryPerVertex": 9734.4,
+      "timestamp": "2025-07-27T23:12:04.501Z",
+      "metrics": {
+        "opsPerSecond": 24081.16203623261,
+        "samples": 66,
+        "marginOfError": 6.644056776165004,
+        "standardDeviation": 0.000011435937981639801,
+        "variance": 1.3078067751991182e-10,
+        "platform": "node",
+        "testType": "quick",
+        "teps": 240811.6203623261
+      },
+      "systemInfo": {
+        "platform": "linux",
+        "arch": "x64",
+        "nodeVersion": "v22.14.0",
+        "v8Version": "12.4.254.21-node.22",
+        "libraryVersion": "1.2.0",
+        "cpu": {
+          "model": "Intel(R) Core(TM) i9-14900KF",
+          "cores": 32,
+          "speed": 5700
+        },
+        "memory": {
+          "total": 100899524608,
+          "totalGB": 94
+        },
+        "os": {
+          "type": "Linux",
+          "release": "5.15.0-136-generic",
+          "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+        }
+      }
+    },
+    {
+      "algorithm": "MCL (Standard)",
+      "graphType": "clustered",
+      "graphGenerationAlgorithm": "Clustered Graph",
+      "graphSize": 10,
+      "edges": 17,
+      "executionTime": 0.135825427277628,
+      "memoryUsage": 139152,
+      "memoryPerVertex": 13915.2,
+      "timestamp": "2025-07-27T23:11:34.443Z",
+      "metrics": {
+        "opsPerSecond": 7362.3917115018085,
+        "samples": 70,
+        "marginOfError": 4.206087211251611,
+        "standardDeviation": 0.00002438665879453714,
+        "variance": 5.947091271611755e-10,
+        "platform": "node",
+        "testType": "quick",
+        "teps": 125160.65909553075
+      },
+      "systemInfo": {
+        "platform": "linux",
+        "arch": "x64",
+        "nodeVersion": "v22.14.0",
+        "v8Version": "12.4.254.21-node.22",
+        "libraryVersion": "1.2.0",
+        "cpu": {
+          "model": "Intel(R) Core(TM) i9-14900KF",
+          "cores": 32,
+          "speed": 5700
+        },
+        "memory": {
+          "total": 100899524608,
+          "totalGB": 94
+        },
+        "os": {
+          "type": "Linux",
+          "release": "5.15.0-136-generic",
+          "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+        }
+      }
+    },
+    {
+      "algorithm": "MCL (High Inflation)",
+      "graphType": "clustered",
+      "graphGenerationAlgorithm": "Clustered Graph",
+      "graphSize": 10,
+      "edges": 17,
+      "executionTime": 0.13202473332266376,
+      "memoryUsage": 122232,
+      "memoryPerVertex": 12223.2,
+      "timestamp": "2025-07-27T23:11:40.558Z",
+      "metrics": {
+        "opsPerSecond": 7574.338344286109,
+        "samples": 69,
+        "marginOfError": 4.830314268570557,
+        "standardDeviation": 0.0000270270820791178,
+        "variance": 7.304631657113705e-10,
+        "platform": "node",
+        "testType": "quick",
+        "teps": 128763.75185286385
+      },
+      "systemInfo": {
+        "platform": "linux",
+        "arch": "x64",
+        "nodeVersion": "v22.14.0",
+        "v8Version": "12.4.254.21-node.22",
+        "libraryVersion": "1.2.0",
+        "cpu": {
+          "model": "Intel(R) Core(TM) i9-14900KF",
+          "cores": 32,
+          "speed": 5700
+        },
+        "memory": {
+          "total": 100899524608,
+          "totalGB": 94
+        },
+        "os": {
+          "type": "Linux",
+          "release": "5.15.0-136-generic",
+          "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+        }
+      }
+    },
+    {
+      "algorithm": "MCL (Standard)",
+      "graphType": "clustered",
+      "graphGenerationAlgorithm": "Clustered Graph",
+      "graphSize": 12,
+      "edges": 28,
+      "executionTime": 0.20511715167487532,
+      "memoryUsage": 230728,
+      "memoryPerVertex": 19227.333333333332,
+      "timestamp": "2025-07-27T23:11:46.753Z",
+      "metrics": {
+        "opsPerSecond": 4875.262706382879,
+        "samples": 73,
+        "marginOfError": 4.581869265936374,
+        "standardDeviation": 0.000040968496789468725,
+        "variance": 1.6784177291887094e-9,
+        "platform": "node",
+        "testType": "quick",
+        "teps": 136507.3557787206
+      },
+      "systemInfo": {
+        "platform": "linux",
+        "arch": "x64",
+        "nodeVersion": "v22.14.0",
+        "v8Version": "12.4.254.21-node.22",
+        "libraryVersion": "1.2.0",
+        "cpu": {
+          "model": "Intel(R) Core(TM) i9-14900KF",
+          "cores": 32,
+          "speed": 5700
+        },
+        "memory": {
+          "total": 100899524608,
+          "totalGB": 94
+        },
+        "os": {
+          "type": "Linux",
+          "release": "5.15.0-136-generic",
+          "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+        }
+      }
+    },
+    {
+      "algorithm": "MCL (High Inflation)",
+      "graphType": "clustered",
+      "graphGenerationAlgorithm": "Clustered Graph",
+      "graphSize": 12,
+      "edges": 28,
+      "executionTime": 0.15360012799882486,
+      "memoryUsage": 202056,
+      "memoryPerVertex": 16838,
+      "timestamp": "2025-07-27T23:11:52.637Z",
+      "metrics": {
+        "opsPerSecond": 6510.411241373775,
+        "samples": 62,
+        "marginOfError": 5.353954076308866,
+        "standardDeviation": 0.00003303740997318132,
+        "variance": 1.0914704577360606e-9,
+        "platform": "node",
+        "testType": "quick",
+        "teps": 182291.5147584657
+      },
+      "systemInfo": {
+        "platform": "linux",
+        "arch": "x64",
+        "nodeVersion": "v22.14.0",
+        "v8Version": "12.4.254.21-node.22",
+        "libraryVersion": "1.2.0",
+        "cpu": {
+          "model": "Intel(R) Core(TM) i9-14900KF",
+          "cores": 32,
+          "speed": 5700
+        },
+        "memory": {
+          "total": 100899524608,
+          "totalGB": 94
+        },
+        "os": {
+          "type": "Linux",
+          "release": "5.15.0-136-generic",
+          "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+        }
+      }
+    },
+    {
+      "algorithm": "MCL (Standard)",
+      "graphType": "clustered",
+      "graphGenerationAlgorithm": "Clustered Graph",
+      "graphSize": 15,
+      "edges": 38,
+      "executionTime": 0.2064683753928823,
+      "memoryUsage": 336040,
+      "memoryPerVertex": 22402.666666666668,
+      "timestamp": "2025-07-27T23:11:58.613Z",
+      "metrics": {
+        "opsPerSecond": 4843.356751837326,
+        "samples": 65,
+        "marginOfError": 4.5900374385832095,
+        "standardDeviation": 0.000038982561737006635,
+        "variance": 1.519640119579534e-9,
+        "platform": "node",
+        "testType": "quick",
+        "teps": 184047.55656981838
+      },
+      "systemInfo": {
+        "platform": "linux",
+        "arch": "x64",
+        "nodeVersion": "v22.14.0",
+        "v8Version": "12.4.254.21-node.22",
+        "libraryVersion": "1.2.0",
+        "cpu": {
+          "model": "Intel(R) Core(TM) i9-14900KF",
+          "cores": 32,
+          "speed": 5700
+        },
+        "memory": {
+          "total": 100899524608,
+          "totalGB": 94
+        },
+        "os": {
+          "type": "Linux",
+          "release": "5.15.0-136-generic",
+          "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+        }
+      }
+    },
+    {
+      "algorithm": "MCL (High Inflation)",
+      "graphType": "clustered",
+      "graphGenerationAlgorithm": "Clustered Graph",
+      "graphSize": 15,
+      "edges": 38,
+      "executionTime": 0.17933184598609866,
+      "memoryUsage": 312896,
+      "memoryPerVertex": 20859.733333333334,
+      "timestamp": "2025-07-27T23:12:04.619Z",
+      "metrics": {
+        "opsPerSecond": 5576.254426542386,
+        "samples": 79,
+        "marginOfError": 4.03702806538483,
+        "standardDeviation": 0.00003283043687425901,
+        "variance": 1.0778375853547054e-9,
+        "platform": "node",
+        "testType": "quick",
+        "teps": 211897.66820861067
+      },
+      "systemInfo": {
+        "platform": "linux",
+        "arch": "x64",
+        "nodeVersion": "v22.14.0",
+        "v8Version": "12.4.254.21-node.22",
+        "libraryVersion": "1.2.0",
+        "cpu": {
+          "model": "Intel(R) Core(TM) i9-14900KF",
+          "cores": 32,
+          "speed": 5700
+        },
+        "memory": {
+          "total": 100899524608,
+          "totalGB": 94
+        },
+        "os": {
+          "type": "Linux",
+          "release": "5.15.0-136-generic",
+          "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+        }
+      }
+    },
+    {
+      "algorithm": "Adamic-Adar",
+      "graphType": "scale-free",
+      "graphGenerationAlgorithm": "Scale-Free Network",
+      "graphSize": 50,
+      "edges": 235,
+      "executionTime": 2.993486545003193,
+      "memoryUsage": 2378152,
+      "memoryPerVertex": 47563.04,
+      "timestamp": "2025-07-27T23:11:34.697Z",
+      "metrics": {
+        "opsPerSecond": 334.0586252740058,
+        "samples": 60,
+        "marginOfError": 6.250124592538881,
+        "standardDeviation": 0.0007394103733753452,
+        "variance": 5.467277002550674e-7,
+        "platform": "node",
+        "testType": "quick",
+        "teps": 78503.77693939136
+      },
+      "systemInfo": {
+        "platform": "linux",
+        "arch": "x64",
+        "nodeVersion": "v22.14.0",
+        "v8Version": "12.4.254.21-node.22",
+        "libraryVersion": "1.2.0",
+        "cpu": {
+          "model": "Intel(R) Core(TM) i9-14900KF",
+          "cores": 32,
+          "speed": 5700
+        },
+        "memory": {
+          "total": 100899524608,
+          "totalGB": 94
+        },
+        "os": {
+          "type": "Linux",
+          "release": "5.15.0-136-generic",
+          "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+        }
+      }
+    },
+    {
+      "algorithm": "Adamic-Adar",
+      "graphType": "scale-free",
+      "graphGenerationAlgorithm": "Scale-Free Network",
+      "graphSize": 100,
+      "edges": 579,
+      "executionTime": 13.485773548809524,
+      "memoryUsage": 0,
+      "memoryPerVertex": 0,
+      "timestamp": "2025-07-27T23:11:40.544Z",
+      "metrics": {
+        "opsPerSecond": 74.15221651028513,
+        "samples": 56,
+        "marginOfError": 5.391734732333071,
+        "standardDeviation": 0.0027761461268289906,
+        "variance": 0.000007706987317507605,
+        "platform": "node",
+        "testType": "quick",
+        "teps": 42934.13335945509
+      },
+      "systemInfo": {
+        "platform": "linux",
+        "arch": "x64",
+        "nodeVersion": "v22.14.0",
+        "v8Version": "12.4.254.21-node.22",
+        "libraryVersion": "1.2.0",
+        "cpu": {
+          "model": "Intel(R) Core(TM) i9-14900KF",
+          "cores": 32,
+          "speed": 5700
+        },
+        "memory": {
+          "total": 100899524608,
+          "totalGB": 94
+        },
+        "os": {
+          "type": "Linux",
+          "release": "5.15.0-136-generic",
+          "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+        }
+      }
+    },
+    {
+      "algorithm": "Adamic-Adar",
+      "graphType": "scale-free",
+      "graphGenerationAlgorithm": "Scale-Free Network",
+      "graphSize": 200,
+      "edges": 1372,
+      "executionTime": 86.10243887878788,
+      "memoryUsage": 0,
+      "memoryPerVertex": 0,
+      "timestamp": "2025-07-27T23:11:46.827Z",
+      "metrics": {
+        "opsPerSecond": 11.614072876701744,
+        "samples": 33,
+        "marginOfError": 5.083033154974905,
+        "standardDeviation": 0.01282741939199867,
+        "variance": 0.0001645426882582235,
+        "platform": "node",
+        "testType": "quick",
+        "teps": 15934.507986834793
+      },
+      "systemInfo": {
+        "platform": "linux",
+        "arch": "x64",
+        "nodeVersion": "v22.14.0",
+        "v8Version": "12.4.254.21-node.22",
+        "libraryVersion": "1.2.0",
+        "cpu": {
+          "model": "Intel(R) Core(TM) i9-14900KF",
+          "cores": 32,
+          "speed": 5700
+        },
+        "memory": {
+          "total": 100899524608,
+          "totalGB": 94
+        },
+        "os": {
+          "type": "Linux",
+          "release": "5.15.0-136-generic",
+          "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+        }
+      }
+    },
+    {
+      "algorithm": "A* Pathfinding",
+      "graphType": "grid",
+      "graphGenerationAlgorithm": "Grid Graph",
+      "graphSize": 100,
+      "edges": 19800,
+      "executionTime": 0.08620371266324821,
+      "memoryUsage": 86933600,
+      "memoryPerVertex": 869336,
+      "timestamp": "2025-07-27T23:11:44.900Z",
+      "systemInfo": {
+        "platform": "linux",
+        "arch": "x64",
+        "nodeVersion": "v22.14.0",
+        "v8Version": "12.4.254.21-node.22",
+        "libraryVersion": "1.2.0",
+        "cpu": {
+          "model": "Intel(R) Core(TM) i9-14900KF",
+          "cores": 32,
+          "speed": 5700
+        },
+        "memory": {
+          "total": 100899524608,
+          "totalGB": 94
+        },
+        "os": {
+          "type": "Linux",
+          "release": "5.15.0-136-generic",
+          "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+        }
+      },
+      "metrics": {
+        "opsPerSecond": 11600.428439856936,
+        "samples": 44,
+        "marginOfError": 3.480946864642863,
+        "standardDeviation": 0.000010155320436900933,
+        "variance": 1.0313053317613777e-10,
+        "platform": "node",
+        "testType": "quick",
+        "teps": 229688483.1091673
+      }
+    },
+    {
+      "algorithm": "A* Pathfinding",
+      "graphType": "grid",
+      "graphGenerationAlgorithm": "Grid Graph",
+      "graphSize": 400,
+      "edges": 319200,
+      "executionTime": 0.2845025877531852,
+      "memoryUsage": 85147328,
+      "memoryPerVertex": 212868.32,
+      "timestamp": "2025-07-27T23:11:51.698Z",
+      "systemInfo": {
+        "platform": "linux",
+        "arch": "x64",
+        "nodeVersion": "v22.14.0",
+        "v8Version": "12.4.254.21-node.22",
+        "libraryVersion": "1.2.0",
+        "cpu": {
+          "model": "Intel(R) Core(TM) i9-14900KF",
+          "cores": 32,
+          "speed": 5700
+        },
+        "memory": {
+          "total": 100899524608,
+          "totalGB": 94
+        },
+        "os": {
+          "type": "Linux",
+          "release": "5.15.0-136-generic",
+          "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+        }
+      },
+      "metrics": {
+        "opsPerSecond": 3514.9065177134025,
+        "samples": 37,
+        "marginOfError": 8.541336059564635,
+        "standardDeviation": 0.00007541484125229819,
+        "variance": 5.687398281109337e-9,
+        "platform": "node",
+        "testType": "quick",
+        "teps": 1121958160.454118
+      }
+    },
+    {
+      "algorithm": "A* Pathfinding",
+      "graphType": "grid",
+      "graphGenerationAlgorithm": "Grid Graph",
+      "graphSize": 900,
+      "edges": 1618200,
+      "executionTime": 0.5609272877973123,
+      "memoryUsage": 8864832,
+      "memoryPerVertex": 9849.813333333334,
+      "timestamp": "2025-07-27T23:11:59.141Z",
+      "systemInfo": {
+        "platform": "linux",
+        "arch": "x64",
+        "nodeVersion": "v22.14.0",
+        "v8Version": "12.4.254.21-node.22",
+        "libraryVersion": "1.2.0",
+        "cpu": {
+          "model": "Intel(R) Core(TM) i9-14900KF",
+          "cores": 32,
+          "speed": 5700
+        },
+        "memory": {
+          "total": 100899524608,
+          "totalGB": 94
+        },
+        "os": {
+          "type": "Linux",
+          "release": "5.15.0-136-generic",
+          "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+        }
+      },
+      "metrics": {
+        "opsPerSecond": 1782.7622612671753,
+        "samples": 40,
+        "marginOfError": 5.7280916549544,
+        "standardDeviation": 0.00010367891668649514,
+        "variance": 1.07493177652852e-8,
+        "platform": "node",
+        "testType": "quick",
+        "teps": 2884865891.182543
+      }
+    },
+    {
+      "algorithm": "Ford-Fulkerson",
+      "graphType": "sparse",
+      "graphGenerationAlgorithm": "Erdős–Rényi Random Graph (Fixed Edges)",
+      "graphSize": 50,
+      "edges": 150,
+      "executionTime": 0.10033578652506685,
+      "memoryUsage": 23147152,
+      "memoryPerVertex": 462943.04,
+      "timestamp": "2025-07-27T23:11:35.683Z",
+      "systemInfo": {
+        "platform": "linux",
+        "arch": "x64",
+        "nodeVersion": "v22.14.0",
+        "v8Version": "12.4.254.21-node.22",
+        "libraryVersion": "1.2.0",
+        "cpu": {
+          "model": "Intel(R) Core(TM) i9-14900KF",
+          "cores": 32,
+          "speed": 5700
+        },
+        "memory": {
+          "total": 100899524608,
+          "totalGB": 94
+        },
+        "os": {
+          "type": "Linux",
+          "release": "5.15.0-136-generic",
+          "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+        }
+      },
+      "metrics": {
+        "opsPerSecond": 9966.533722742786,
+        "samples": 41,
+        "marginOfError": 7.058613743102766,
+        "standardDeviation": 0.000023137217746824886,
+        "variance": 5.353308450639884e-10,
+        "platform": "node",
+        "testType": "quick",
+        "teps": 1494980.058411418
+      }
+    },
+    {
+      "algorithm": "Ford-Fulkerson",
+      "graphType": "sparse",
+      "graphGenerationAlgorithm": "Erdős–Rényi Random Graph (Fixed Edges)",
+      "graphSize": 100,
+      "edges": 300,
+      "executionTime": 0.12090398131139815,
+      "memoryUsage": 17103680,
+      "memoryPerVertex": 171036.8,
+      "timestamp": "2025-07-27T23:11:43.016Z",
+      "systemInfo": {
+        "platform": "linux",
+        "arch": "x64",
+        "nodeVersion": "v22.14.0",
+        "v8Version": "12.4.254.21-node.22",
+        "libraryVersion": "1.2.0",
+        "cpu": {
+          "model": "Intel(R) Core(TM) i9-14900KF",
+          "cores": 32,
+          "speed": 5700
+        },
+        "memory": {
+          "total": 100899524608,
+          "totalGB": 94
+        },
+        "os": {
+          "type": "Linux",
+          "release": "5.15.0-136-generic",
+          "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+        }
+      },
+      "metrics": {
+        "opsPerSecond": 8271.02622389595,
+        "samples": 37,
+        "marginOfError": 6.004852271626158,
+        "standardDeviation": 0.00002253137627978021,
+        "variance": 5.076629170610423e-10,
+        "platform": "node",
+        "testType": "quick",
+        "teps": 2481307.867168785
+      }
+    },
+    {
+      "algorithm": "Ford-Fulkerson",
+      "graphType": "sparse",
+      "graphGenerationAlgorithm": "Erdős–Rényi Random Graph (Fixed Edges)",
+      "graphSize": 200,
+      "edges": 600,
+      "executionTime": 0.23937999767438198,
+      "memoryUsage": 26571872,
+      "memoryPerVertex": 132859.36,
+      "timestamp": "2025-07-27T23:11:49.701Z",
+      "systemInfo": {
+        "platform": "linux",
+        "arch": "x64",
+        "nodeVersion": "v22.14.0",
+        "v8Version": "12.4.254.21-node.22",
+        "libraryVersion": "1.2.0",
+        "cpu": {
+          "model": "Intel(R) Core(TM) i9-14900KF",
+          "cores": 32,
+          "speed": 5700
+        },
+        "memory": {
+          "total": 100899524608,
+          "totalGB": 94
+        },
+        "os": {
+          "type": "Linux",
+          "release": "5.15.0-136-generic",
+          "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+        }
+      },
+      "metrics": {
+        "opsPerSecond": 4177.458474873309,
+        "samples": 41,
+        "marginOfError": 8.422004884776529,
+        "standardDeviation": 0.00006586265056565492,
+        "variance": 4.337888739533565e-9,
+        "platform": "node",
+        "testType": "quick",
+        "teps": 2506475.0849239854
+      }
+    },
+    {
+      "algorithm": "GRSBM",
+      "graphType": "community",
+      "graphGenerationAlgorithm": "Community Graph",
+      "graphSize": 50,
+      "edges": 226,
+      "executionTime": 5.369866078247682,
+      "memoryUsage": 18768968,
+      "memoryPerVertex": 375379.36,
+      "timestamp": "2025-07-27T23:11:39.864Z",
+      "systemInfo": {
+        "platform": "linux",
+        "arch": "x64",
+        "nodeVersion": "v22.14.0",
+        "v8Version": "12.4.254.21-node.22",
+        "libraryVersion": "1.2.0",
+        "cpu": {
+          "model": "Intel(R) Core(TM) i9-14900KF",
+          "cores": 32,
+          "speed": 5700
+        },
+        "memory": {
+          "total": 100899524608,
+          "totalGB": 94
+        },
+        "os": {
+          "type": "Linux",
+          "release": "5.15.0-136-generic",
+          "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+        }
+      },
+      "metrics": {
+        "opsPerSecond": 186.22438351876448,
+        "samples": 10,
+        "marginOfError": 7.2147524741997575,
+        "standardDeviation": 0.0005416170032909753,
+        "variance": 2.9334897825389645e-7,
+        "platform": "node",
+        "testType": "quick",
+        "teps": 42086.71067524077
+      }
+    },
+    {
+      "algorithm": "GRSBM",
+      "graphType": "community",
+      "graphGenerationAlgorithm": "Community Graph",
+      "graphSize": 100,
+      "edges": 886,
+      "executionTime": 46.32147270651515,
+      "memoryUsage": 7179296,
+      "memoryPerVertex": 71792.96,
+      "timestamp": "2025-07-27T23:11:47.956Z",
+      "systemInfo": {
+        "platform": "linux",
+        "arch": "x64",
+        "nodeVersion": "v22.14.0",
+        "v8Version": "12.4.254.21-node.22",
+        "libraryVersion": "1.2.0",
+        "cpu": {
+          "model": "Intel(R) Core(TM) i9-14900KF",
+          "cores": 32,
+          "speed": 5700
+        },
+        "memory": {
+          "total": 100899524608,
+          "totalGB": 94
+        },
+        "os": {
+          "type": "Linux",
+          "release": "5.15.0-136-generic",
+          "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+        }
+      },
+      "metrics": {
+        "opsPerSecond": 21.588260078340497,
+        "samples": 10,
+        "marginOfError": 9.832736715963858,
+        "standardDeviation": 0.006367429841801304,
+        "variance": 0.000040544162790261784,
+        "platform": "node",
+        "testType": "quick",
+        "teps": 19127.19842940968
+      }
+    },
+    {
+      "algorithm": "GRSBM",
+      "graphType": "community",
+      "graphGenerationAlgorithm": "Community Graph",
+      "graphSize": 200,
+      "edges": 3025,
+      "executionTime": 86.56471248095238,
+      "memoryUsage": 6879736,
+      "memoryPerVertex": 34398.68,
+      "timestamp": "2025-07-27T23:11:57.376Z",
+      "systemInfo": {
+        "platform": "linux",
+        "arch": "x64",
+        "nodeVersion": "v22.14.0",
+        "v8Version": "12.4.254.21-node.22",
+        "libraryVersion": "1.2.0",
+        "cpu": {
+          "model": "Intel(R) Core(TM) i9-14900KF",
+          "cores": 32,
+          "speed": 5700
+        },
+        "memory": {
+          "total": 100899524608,
+          "totalGB": 94
+        },
+        "os": {
+          "type": "Linux",
+          "release": "5.15.0-136-generic",
+          "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+        }
+      },
+      "metrics": {
+        "opsPerSecond": 11.552051307512158,
+        "samples": 12,
+        "marginOfError": 9.21192486912098,
+        "standardDeviation": 0.012550524002916461,
+        "variance": 0.00015751565274778223,
+        "platform": "node",
+        "testType": "quick",
+        "teps": 34944.95520522428
+      }
+    },
+    {
+      "algorithm": "Label Propagation",
+      "graphType": "smallWorld",
+      "graphGenerationAlgorithm": "Watts-Strogatz Small-World",
+      "graphSize": 100,
+      "edges": 300,
+      "executionTime": 1.9326332214325848,
+      "memoryUsage": 22031576,
+      "memoryPerVertex": 220315.76,
+      "timestamp": "2025-07-27T23:11:37.794Z",
+      "systemInfo": {
+        "platform": "linux",
+        "arch": "x64",
+        "nodeVersion": "v22.14.0",
+        "v8Version": "12.4.254.21-node.22",
+        "libraryVersion": "1.2.0",
+        "cpu": {
+          "model": "Intel(R) Core(TM) i9-14900KF",
+          "cores": 32,
+          "speed": 5700
+        },
+        "memory": {
+          "total": 100899524608,
+          "totalGB": 94
+        },
+        "os": {
+          "type": "Linux",
+          "release": "5.15.0-136-generic",
+          "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+        }
+      },
+      "metrics": {
+        "opsPerSecond": 517.4287541527095,
+        "samples": 39,
+        "marginOfError": 7.182209730664966,
+        "standardDeviation": 0.0004422662060502169,
+        "variance": 1.955993970140529e-7,
+        "platform": "node",
+        "testType": "quick",
+        "teps": 155228.62624581286
+      }
+    },
+    {
+      "algorithm": "Label Propagation",
+      "graphType": "rmat",
+      "graphGenerationAlgorithm": "RMAT (Recursive Matrix)",
+      "graphSize": 100,
+      "edges": 848,
+      "executionTime": 1.4982058430895053,
+      "memoryUsage": 22137120,
+      "memoryPerVertex": 221371.2,
+      "timestamp": "2025-07-27T23:11:44.633Z",
+      "systemInfo": {
+        "platform": "linux",
+        "arch": "x64",
+        "nodeVersion": "v22.14.0",
+        "v8Version": "12.4.254.21-node.22",
+        "libraryVersion": "1.2.0",
+        "cpu": {
+          "model": "Intel(R) Core(TM) i9-14900KF",
+          "cores": 32,
+          "speed": 5700
+        },
+        "memory": {
+          "total": 100899524608,
+          "totalGB": 94
+        },
+        "os": {
+          "type": "Linux",
+          "release": "5.15.0-136-generic",
+          "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+        }
+      },
+      "metrics": {
+        "opsPerSecond": 667.4650246576687,
+        "samples": 42,
+        "marginOfError": 6.0625834277026405,
+        "standardDeviation": 0.00030032935844486575,
+        "variance": 9.019772354390467e-8,
+        "platform": "node",
+        "testType": "quick",
+        "teps": 566010.340909703
+      }
+    },
+    {
+      "algorithm": "Label Propagation",
+      "graphType": "smallWorld",
+      "graphGenerationAlgorithm": "Watts-Strogatz Small-World",
+      "graphSize": 500,
+      "edges": 1500,
+      "executionTime": 54.92181819270832,
+      "memoryUsage": 19618248,
+      "memoryPerVertex": 39236.496,
+      "timestamp": "2025-07-27T23:11:52.752Z",
+      "systemInfo": {
+        "platform": "linux",
+        "arch": "x64",
+        "nodeVersion": "v22.14.0",
+        "v8Version": "12.4.254.21-node.22",
+        "libraryVersion": "1.2.0",
+        "cpu": {
+          "model": "Intel(R) Core(TM) i9-14900KF",
+          "cores": 32,
+          "speed": 5700
+        },
+        "memory": {
+          "total": 100899524608,
+          "totalGB": 94
+        },
+        "os": {
+          "type": "Linux",
+          "release": "5.15.0-136-generic",
+          "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+        }
+      },
+      "metrics": {
+        "opsPerSecond": 18.207700198329643,
+        "samples": 32,
+        "marginOfError": 10.527557823986486,
+        "standardDeviation": 0.016687506946407336,
+        "variance": 0.0002784728880863931,
+        "platform": "node",
+        "testType": "quick",
+        "teps": 27311.550297494465
+      }
+    },
+    {
+      "algorithm": "Label Propagation",
+      "graphType": "rmat",
+      "graphGenerationAlgorithm": "RMAT (Recursive Matrix)",
+      "graphSize": 500,
+      "edges": 4777,
+      "executionTime": 5.910223820504121,
+      "memoryUsage": 22456128,
+      "memoryPerVertex": 44912.256,
+      "timestamp": "2025-07-27T23:12:00.215Z",
+      "systemInfo": {
+        "platform": "linux",
+        "arch": "x64",
+        "nodeVersion": "v22.14.0",
+        "v8Version": "12.4.254.21-node.22",
+        "libraryVersion": "1.2.0",
+        "cpu": {
+          "model": "Intel(R) Core(TM) i9-14900KF",
+          "cores": 32,
+          "speed": 5700
+        },
+        "memory": {
+          "total": 100899524608,
+          "totalGB": 94
+        },
+        "os": {
+          "type": "Linux",
+          "release": "5.15.0-136-generic",
+          "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+        }
+      },
+      "metrics": {
+        "opsPerSecond": 169.1983299398471,
+        "samples": 41,
+        "marginOfError": 6.30901257374118,
+        "standardDeviation": 0.0012181511453896372,
+        "variance": 0.0000014838922130140852,
+        "platform": "node",
+        "testType": "quick",
+        "teps": 808260.4221226496
+      }
+    },
+    {
+      "algorithm": "Label Propagation",
+      "graphType": "smallWorld",
+      "graphGenerationAlgorithm": "Watts-Strogatz Small-World",
+      "graphSize": 1000,
+      "edges": 5000,
+      "executionTime": 82.5823948064516,
+      "memoryUsage": 6309040,
+      "memoryPerVertex": 6309.04,
+      "timestamp": "2025-07-27T23:12:08.961Z",
+      "systemInfo": {
+        "platform": "linux",
+        "arch": "x64",
+        "nodeVersion": "v22.14.0",
+        "v8Version": "12.4.254.21-node.22",
+        "libraryVersion": "1.2.0",
+        "cpu": {
+          "model": "Intel(R) Core(TM) i9-14900KF",
+          "cores": 32,
+          "speed": 5700
+        },
+        "memory": {
+          "total": 100899524608,
+          "totalGB": 94
+        },
+        "os": {
+          "type": "Linux",
+          "release": "5.15.0-136-generic",
+          "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+        }
+      },
+      "metrics": {
+        "opsPerSecond": 12.109118442783119,
+        "samples": 31,
+        "marginOfError": 7.834832426262485,
+        "standardDeviation": 0.01764177561788633,
+        "variance": 0.00031123224695184866,
+        "platform": "node",
+        "testType": "quick",
+        "teps": 60545.592213915595
+      }
+    },
+    {
+      "algorithm": "Label Propagation",
+      "graphType": "rmat",
+      "graphGenerationAlgorithm": "RMAT (Recursive Matrix)",
+      "graphSize": 1000,
+      "edges": 10623,
+      "executionTime": 7.877414181079671,
+      "memoryUsage": 36687024,
+      "memoryPerVertex": 36687.024,
+      "timestamp": "2025-07-27T23:12:15.661Z",
+      "systemInfo": {
+        "platform": "linux",
+        "arch": "x64",
+        "nodeVersion": "v22.14.0",
+        "v8Version": "12.4.254.21-node.22",
+        "libraryVersion": "1.2.0",
+        "cpu": {
+          "model": "Intel(R) Core(TM) i9-14900KF",
+          "cores": 32,
+          "speed": 5700
+        },
+        "memory": {
+          "total": 100899524608,
+          "totalGB": 94
+        },
+        "os": {
+          "type": "Linux",
+          "release": "5.15.0-136-generic",
+          "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+        }
+      },
+      "metrics": {
+        "opsPerSecond": 126.94521032064623,
+        "samples": 50,
+        "marginOfError": 1.5968230290436782,
+        "standardDeviation": 0.0004538051275129233,
+        "variance": 2.0593909375702058e-7,
+        "platform": "node",
+        "testType": "quick",
+        "teps": 1348538.969236225
+      }
+    },
+    {
+      "algorithm": "Sync Clustering",
+      "graphType": "deep-clustering",
+      "graphGenerationAlgorithm": "Deep Clustering Graph",
+      "graphSize": 50,
+      "edges": 560,
+      "executionTime": 150.7424233,
+      "memoryUsage": 13272392,
+      "memoryPerVertex": 265447.84,
+      "timestamp": "2025-07-27T23:11:45.192Z",
+      "systemInfo": {
+        "platform": "linux",
+        "arch": "x64",
+        "nodeVersion": "v22.14.0",
+        "v8Version": "12.4.254.21-node.22",
+        "libraryVersion": "1.2.0",
+        "cpu": {
+          "model": "Intel(R) Core(TM) i9-14900KF",
+          "cores": 32,
+          "speed": 5700
+        },
+        "memory": {
+          "total": 100899524608,
+          "totalGB": 94
+        },
+        "os": {
+          "type": "Linux",
+          "release": "5.15.0-136-generic",
+          "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+        }
+      },
+      "metrics": {
+        "opsPerSecond": 6.6338325874584765,
+        "samples": 5,
+        "marginOfError": 4.254911659623021,
+        "standardDeviation": 0.005166442267202629,
+        "variance": 0.000026692125700337845,
+        "platform": "node",
+        "testType": "quick",
+        "teps": 3714.9462489767466
+      }
+    },
+    {
+      "algorithm": "Sync Clustering",
+      "graphType": "deep-clustering",
+      "graphGenerationAlgorithm": "Deep Clustering Graph",
+      "graphSize": 100,
+      "edges": 1173,
+      "executionTime": 160.2560280892857,
+      "memoryUsage": 11715264,
+      "memoryPerVertex": 117152.64,
+      "timestamp": "2025-07-27T23:11:58.409Z",
+      "systemInfo": {
+        "platform": "linux",
+        "arch": "x64",
+        "nodeVersion": "v22.14.0",
+        "v8Version": "12.4.254.21-node.22",
+        "libraryVersion": "1.2.0",
+        "cpu": {
+          "model": "Intel(R) Core(TM) i9-14900KF",
+          "cores": 32,
+          "speed": 5700
+        },
+        "memory": {
+          "total": 100899524608,
+          "totalGB": 94
+        },
+        "os": {
+          "type": "Linux",
+          "release": "5.15.0-136-generic",
+          "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+        }
+      },
+      "metrics": {
+        "opsPerSecond": 6.240014880706115,
+        "samples": 7,
+        "marginOfError": 40.07903600231053,
+        "standardDeviation": 0.0694459130851648,
+        "variance": 0.004822734844232264,
+        "platform": "node",
+        "testType": "quick",
+        "teps": 7319.537455068273
+      }
+    },
+    {
+      "algorithm": "Sync Clustering",
+      "graphType": "deep-clustering",
+      "graphGenerationAlgorithm": "Deep Clustering Graph",
+      "graphSize": 200,
+      "edges": 3279,
+      "executionTime": 350.3787713666667,
+      "memoryUsage": 13179720,
+      "memoryPerVertex": 65898.6,
+      "timestamp": "2025-07-27T23:12:07.817Z",
+      "systemInfo": {
+        "platform": "linux",
+        "arch": "x64",
+        "nodeVersion": "v22.14.0",
+        "v8Version": "12.4.254.21-node.22",
+        "libraryVersion": "1.2.0",
+        "cpu": {
+          "model": "Intel(R) Core(TM) i9-14900KF",
+          "cores": 32,
+          "speed": 5700
+        },
+        "memory": {
+          "total": 100899524608,
+          "totalGB": 94
+        },
+        "os": {
+          "type": "Linux",
+          "release": "5.15.0-136-generic",
+          "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+        }
+      },
+      "metrics": {
+        "opsPerSecond": 2.8540541885556,
+        "samples": 5,
+        "marginOfError": 5.663026719385076,
+        "standardDeviation": 0.015982765831341512,
+        "variance": 0.0002554488036194978,
+        "platform": "node",
+        "testType": "quick",
+        "teps": 9358.443684273812
+      }
+    },
+    {
+      "algorithm": "TeraHAC",
+      "graphType": "hierarchical",
+      "graphGenerationAlgorithm": "Hierarchical Graph",
+      "graphSize": 50,
+      "edges": 199,
+      "executionTime": 1.0802165066296898,
+      "memoryUsage": 17701968,
+      "memoryPerVertex": 354039.36,
+      "timestamp": "2025-07-27T23:16:41.965Z",
+      "systemInfo": {
+        "platform": "linux",
+        "arch": "x64",
+        "nodeVersion": "v22.14.0",
+        "v8Version": "12.4.254.21-node.22",
+        "libraryVersion": "1.2.0",
+        "cpu": {
+          "model": "Intel(R) Core(TM) i9-14900KF",
+          "cores": 32,
+          "speed": 5700
+        },
+        "memory": {
+          "total": 100899524608,
+          "totalGB": 94
+        },
+        "os": {
+          "type": "Linux",
+          "release": "5.15.0-136-generic",
+          "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+        }
+      },
+      "metrics": {
+        "opsPerSecond": 925.7403435909641,
+        "samples": 27,
+        "marginOfError": 1.9949630023653002,
+        "standardDeviation": 0.000054463359539171944,
+        "variance": 2.9662575322931118e-9,
+        "platform": "node",
+        "testType": "quick",
+        "teps": 184222.32837460187
+      }
+    },
+    {
+      "algorithm": "TeraHAC",
+      "graphType": "hierarchical",
+      "graphGenerationAlgorithm": "Hierarchical Graph",
+      "graphSize": 50,
+      "edges": 199,
+      "executionTime": 1.0610695524781342,
+      "memoryUsage": 21986160,
+      "memoryPerVertex": 439723.2,
+      "timestamp": "2025-07-27T23:16:48.565Z",
+      "systemInfo": {
+        "platform": "linux",
+        "arch": "x64",
+        "nodeVersion": "v22.14.0",
+        "v8Version": "12.4.254.21-node.22",
+        "libraryVersion": "1.2.0",
+        "cpu": {
+          "model": "Intel(R) Core(TM) i9-14900KF",
+          "cores": 32,
+          "speed": 5700
+        },
+        "memory": {
+          "total": 100899524608,
+          "totalGB": 94
+        },
+        "os": {
+          "type": "Linux",
+          "release": "5.15.0-136-generic",
+          "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+        }
+      },
+      "metrics": {
+        "opsPerSecond": 942.4452880251762,
+        "samples": 28,
+        "marginOfError": 1.865773513742109,
+        "standardDeviation": 0.00005105102137443032,
+        "variance": 2.606206783372541e-9,
+        "platform": "node",
+        "testType": "quick",
+        "teps": 187546.61231701006
+      }
+    },
+    {
+      "algorithm": "TeraHAC",
+      "graphType": "hierarchical",
+      "graphGenerationAlgorithm": "Hierarchical Graph",
+      "graphSize": 50,
+      "edges": 199,
+      "executionTime": 1.0682364293040294,
+      "memoryUsage": 30141960,
+      "memoryPerVertex": 602839.2,
+      "timestamp": "2025-07-27T23:16:55.180Z",
+      "systemInfo": {
+        "platform": "linux",
+        "arch": "x64",
+        "nodeVersion": "v22.14.0",
+        "v8Version": "12.4.254.21-node.22",
+        "libraryVersion": "1.2.0",
+        "cpu": {
+          "model": "Intel(R) Core(TM) i9-14900KF",
+          "cores": 32,
+          "speed": 5700
+        },
+        "memory": {
+          "total": 100899524608,
+          "totalGB": 94
+        },
+        "os": {
+          "type": "Linux",
+          "release": "5.15.0-136-generic",
+          "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+        }
+      },
+      "metrics": {
+        "opsPerSecond": 936.1223532242892,
+        "samples": 28,
+        "marginOfError": 1.8623304661575766,
+        "standardDeviation": 0.00005130099536477886,
+        "variance": 2.6317921254170623e-9,
+        "platform": "node",
+        "testType": "quick",
+        "teps": 186288.34829163353
+      }
+    },
+    {
+      "algorithm": "TeraHAC",
+      "graphType": "hierarchical",
+      "graphGenerationAlgorithm": "Hierarchical Graph",
+      "graphSize": 50,
+      "edges": 199,
+      "executionTime": 1.0887169179866767,
+      "memoryUsage": 20776104,
+      "memoryPerVertex": 415522.08,
+      "timestamp": "2025-07-27T23:17:01.929Z",
+      "systemInfo": {
+        "platform": "linux",
+        "arch": "x64",
+        "nodeVersion": "v22.14.0",
+        "v8Version": "12.4.254.21-node.22",
+        "libraryVersion": "1.2.0",
+        "cpu": {
+          "model": "Intel(R) Core(TM) i9-14900KF",
+          "cores": 32,
+          "speed": 5700
+        },
+        "memory": {
+          "total": 100899524608,
+          "totalGB": 94
+        },
+        "os": {
+          "type": "Linux",
+          "release": "5.15.0-136-generic",
+          "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+        }
+      },
+      "metrics": {
+        "opsPerSecond": 918.5124098643222,
+        "samples": 28,
+        "marginOfError": 1.8432480195679957,
+        "standardDeviation": 0.00005174881470555223,
+        "variance": 2.6779398234295785e-9,
+        "platform": "node",
+        "testType": "quick",
+        "teps": 182783.9695630001
+      }
+    },
+    {
+      "algorithm": "TeraHAC",
+      "graphType": "hierarchical",
+      "graphGenerationAlgorithm": "Hierarchical Graph",
+      "graphSize": 100,
+      "edges": 583,
+      "executionTime": 6.054038112169312,
+      "memoryUsage": -1240392,
+      "memoryPerVertex": -12403.92,
+      "timestamp": "2025-07-27T23:17:08.758Z",
+      "systemInfo": {
+        "platform": "linux",
+        "arch": "x64",
+        "nodeVersion": "v22.14.0",
+        "v8Version": "12.4.254.21-node.22",
+        "libraryVersion": "1.2.0",
+        "cpu": {
+          "model": "Intel(R) Core(TM) i9-14900KF",
+          "cores": 32,
+          "speed": 5700
+        },
+        "memory": {
+          "total": 100899524608,
+          "totalGB": 94
+        },
+        "os": {
+          "type": "Linux",
+          "release": "5.15.0-136-generic",
+          "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+        }
+      },
+      "metrics": {
+        "opsPerSecond": 165.1790063874697,
+        "samples": 27,
+        "marginOfError": 1.9735602912375312,
+        "standardDeviation": 0.00030196340979605054,
+        "variance": 9.118190085565755e-8,
+        "platform": "node",
+        "testType": "quick",
+        "teps": 96299.36072389485
+      }
+    },
+    {
+      "algorithm": "TeraHAC",
+      "graphType": "hierarchical",
+      "graphGenerationAlgorithm": "Hierarchical Graph",
+      "graphSize": 100,
+      "edges": 583,
+      "executionTime": 5.777561615079365,
+      "memoryUsage": 7736160,
+      "memoryPerVertex": 77361.6,
+      "timestamp": "2025-07-27T23:17:15.735Z",
+      "systemInfo": {
+        "platform": "linux",
+        "arch": "x64",
+        "nodeVersion": "v22.14.0",
+        "v8Version": "12.4.254.21-node.22",
+        "libraryVersion": "1.2.0",
+        "cpu": {
+          "model": "Intel(R) Core(TM) i9-14900KF",
+          "cores": 32,
+          "speed": 5700
+        },
+        "memory": {
+          "total": 100899524608,
+          "totalGB": 94
+        },
+        "os": {
+          "type": "Linux",
+          "release": "5.15.0-136-generic",
+          "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+        }
+      },
+      "metrics": {
+        "opsPerSecond": 173.08339860712385,
+        "samples": 28,
+        "marginOfError": 0.4696320921798001,
+        "standardDeviation": 0.00006996873330099617,
+        "variance": 4.895623639745931e-9,
+        "platform": "node",
+        "testType": "quick",
+        "teps": 100907.62138795322
+      }
+    },
+    {
+      "algorithm": "TeraHAC",
+      "graphType": "hierarchical",
+      "graphGenerationAlgorithm": "Hierarchical Graph",
+      "graphSize": 100,
+      "edges": 583,
+      "executionTime": 5.8018732857142865,
+      "memoryUsage": 19260064,
+      "memoryPerVertex": 192600.64,
+      "timestamp": "2025-07-27T23:17:22.720Z",
+      "systemInfo": {
+        "platform": "linux",
+        "arch": "x64",
+        "nodeVersion": "v22.14.0",
+        "v8Version": "12.4.254.21-node.22",
+        "libraryVersion": "1.2.0",
+        "cpu": {
+          "model": "Intel(R) Core(TM) i9-14900KF",
+          "cores": 32,
+          "speed": 5700
+        },
+        "memory": {
+          "total": 100899524608,
+          "totalGB": 94
+        },
+        "os": {
+          "type": "Linux",
+          "release": "5.15.0-136-generic",
+          "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+        }
+      },
+      "metrics": {
+        "opsPerSecond": 172.35812482534888,
+        "samples": 28,
+        "marginOfError": 1.4044244592379982,
+        "standardDeviation": 0.0002101204311029522,
+        "variance": 4.415059556689048e-8,
+        "platform": "node",
+        "testType": "quick",
+        "teps": 100484.78677317839
+      }
+    },
+    {
+      "algorithm": "TeraHAC",
+      "graphType": "hierarchical",
+      "graphGenerationAlgorithm": "Hierarchical Graph",
+      "graphSize": 100,
+      "edges": 583,
+      "executionTime": 5.831580946428573,
+      "memoryUsage": 5526624,
+      "memoryPerVertex": 55266.24,
+      "timestamp": "2025-07-27T23:17:29.531Z",
+      "systemInfo": {
+        "platform": "linux",
+        "arch": "x64",
+        "nodeVersion": "v22.14.0",
+        "v8Version": "12.4.254.21-node.22",
+        "libraryVersion": "1.2.0",
+        "cpu": {
+          "model": "Intel(R) Core(TM) i9-14900KF",
+          "cores": 32,
+          "speed": 5700
+        },
+        "memory": {
+          "total": 100899524608,
+          "totalGB": 94
+        },
+        "os": {
+          "type": "Linux",
+          "release": "5.15.0-136-generic",
+          "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+        }
+      },
+      "metrics": {
+        "opsPerSecond": 171.48008562110908,
+        "samples": 28,
+        "marginOfError": 0.3600062826981331,
+        "standardDeviation": 0.00005413748140015455,
+        "variance": 2.9308668923520796e-9,
+        "platform": "node",
+        "testType": "quick",
+        "teps": 99972.88991710659
+      }
+    },
+    {
+      "algorithm": "TeraHAC",
+      "graphType": "hierarchical",
+      "graphGenerationAlgorithm": "Hierarchical Graph",
+      "graphSize": 200,
+      "edges": 1747,
+      "executionTime": 315.29437635000005,
+      "memoryUsage": 13248552,
+      "memoryPerVertex": 66242.76,
+      "timestamp": "2025-07-27T23:17:38.010Z",
+      "systemInfo": {
+        "platform": "linux",
+        "arch": "x64",
+        "nodeVersion": "v22.14.0",
+        "v8Version": "12.4.254.21-node.22",
+        "libraryVersion": "1.2.0",
+        "cpu": {
+          "model": "Intel(R) Core(TM) i9-14900KF",
+          "cores": 32,
+          "speed": 5700
+        },
+        "memory": {
+          "total": 100899524608,
+          "totalGB": 94
+        },
+        "os": {
+          "type": "Linux",
+          "release": "5.15.0-136-generic",
+          "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+        }
+      },
+      "metrics": {
+        "opsPerSecond": 3.1716391886734003,
+        "samples": 10,
+        "marginOfError": 15.22913730159969,
+        "standardDeviation": 0.06712726088426293,
+        "variance": 0.004506069153823896,
+        "platform": "node",
+        "testType": "quick",
+        "teps": 5540.8536626124305
+      }
+    },
+    {
+      "algorithm": "TeraHAC",
+      "graphType": "hierarchical",
+      "graphGenerationAlgorithm": "Hierarchical Graph",
+      "graphSize": 200,
+      "edges": 1747,
+      "executionTime": 258.5562341363637,
+      "memoryUsage": 1335696,
+      "memoryPerVertex": 6678.48,
+      "timestamp": "2025-07-27T23:17:47.935Z",
+      "systemInfo": {
+        "platform": "linux",
+        "arch": "x64",
+        "nodeVersion": "v22.14.0",
+        "v8Version": "12.4.254.21-node.22",
+        "libraryVersion": "1.2.0",
+        "cpu": {
+          "model": "Intel(R) Core(TM) i9-14900KF",
+          "cores": 32,
+          "speed": 5700
+        },
+        "memory": {
+          "total": 100899524608,
+          "totalGB": 94
+        },
+        "os": {
+          "type": "Linux",
+          "release": "5.15.0-136-generic",
+          "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+        }
+      },
+      "metrics": {
+        "opsPerSecond": 3.8676305885264233,
+        "samples": 11,
+        "marginOfError": 13.991660872894835,
+        "standardDeviation": 0.05385244675301306,
+        "variance": 0.002900086021286107,
+        "platform": "node",
+        "testType": "quick",
+        "teps": 6756.750638155661
+      }
+    },
+    {
+      "algorithm": "TeraHAC",
+      "graphType": "hierarchical",
+      "graphGenerationAlgorithm": "Hierarchical Graph",
+      "graphSize": 200,
+      "edges": 1747,
+      "executionTime": 283.4900615,
+      "memoryUsage": 3107120,
+      "memoryPerVertex": 15535.6,
+      "timestamp": "2025-07-27T23:17:56.995Z",
+      "systemInfo": {
+        "platform": "linux",
+        "arch": "x64",
+        "nodeVersion": "v22.14.0",
+        "v8Version": "12.4.254.21-node.22",
+        "libraryVersion": "1.2.0",
+        "cpu": {
+          "model": "Intel(R) Core(TM) i9-14900KF",
+          "cores": 32,
+          "speed": 5700
+        },
+        "memory": {
+          "total": 100899524608,
+          "totalGB": 94
+        },
+        "os": {
+          "type": "Linux",
+          "release": "5.15.0-136-generic",
+          "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+        }
+      },
+      "metrics": {
+        "opsPerSecond": 3.527460520869089,
+        "samples": 11,
+        "marginOfError": 16.620102433663977,
+        "standardDeviation": 0.0701378889885784,
+        "variance": 0.0049193234717741455,
+        "platform": "node",
+        "testType": "quick",
+        "teps": 6162.473529958298
+      }
+    },
+    {
+      "algorithm": "TeraHAC",
+      "graphType": "hierarchical",
+      "graphGenerationAlgorithm": "Hierarchical Graph",
+      "graphSize": 200,
+      "edges": 1747,
+      "executionTime": 304.55785069999996,
+      "memoryUsage": 2973992,
+      "memoryPerVertex": 14869.96,
+      "timestamp": "2025-07-27T23:18:05.513Z",
+      "systemInfo": {
+        "platform": "linux",
+        "arch": "x64",
+        "nodeVersion": "v22.14.0",
+        "v8Version": "12.4.254.21-node.22",
+        "libraryVersion": "1.2.0",
+        "cpu": {
+          "model": "Intel(R) Core(TM) i9-14900KF",
+          "cores": 32,
+          "speed": 5700
+        },
+        "memory": {
+          "total": 100899524608,
+          "totalGB": 94
+        },
+        "os": {
+          "type": "Linux",
+          "release": "5.15.0-136-generic",
+          "version": "#147-Ubuntu SMP Sat Mar 15 15:53:30 UTC 2025"
+        }
+      },
+      "metrics": {
+        "opsPerSecond": 3.2834484407530007,
+        "samples": 10,
+        "marginOfError": 16.844509683551536,
+        "standardDeviation": 0.07171922241311326,
+        "variance": 0.005143646863541608,
+        "platform": "node",
+        "testType": "quick",
+        "teps": 5736.184425995491
+      }
+    }
+  ]
+}

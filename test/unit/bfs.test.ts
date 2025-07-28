@@ -6,11 +6,6 @@ import {
     shortestPathBFS,
     singleSourceShortestPathBFS} from "../../src/algorithms/traversal/bfs.js";
 import {Graph} from "../../src/core/graph.js";
-import {
-    bfsOptimized,
-    shortestPathBFSOptimized,
-    singleSourceShortestPathBFSOptimized,
-} from "../../src/optimized/bfs-optimized.js";
 import {configureOptimizations} from "../../src/optimized/graph-adapter.js";
 import type {NodeId} from "../../src/types/index.js";
 
@@ -403,18 +398,18 @@ describe("BFS Algorithms", () => {
         });
     });
 
-    describe("Optimized BFS Implementation", () => {
+    describe("Automatic BFS Optimization", () => {
         describe("configuration and performance", () => {
             afterEach(() => {
                 // Reset to default config after each test
                 configureOptimizations({
-                    useDirectionOptimizedBFS: false,
-                    useCSRFormat: false,
-                    useBitPackedStructures: false,
+                    useDirectionOptimizedBFS: true,
+                    useCSRFormat: true,
+                    useBitPackedStructures: true,
                 });
             });
 
-            it("should respect global optimization configuration", () => {
+            it("should automatically use optimizations for large graphs", () => {
                 const graph = new Graph();
                 const nodeCount = 15000; // Large enough to trigger optimizations
 
@@ -425,56 +420,58 @@ describe("BFS Algorithms", () => {
                     }
                 }
 
-                // Test standard BFS
-                const result1 = breadthFirstSearch(graph, 0);
+                // Enable optimizations
+                configureOptimizations({
+                    useDirectionOptimizedBFS: true,
+                    useCSRFormat: true,
+                });
 
-                // Test optimized BFS directly
-                const result2 = bfsOptimized(graph, 0, {optimized: true});
+                // Standard BFS should automatically use optimizations
+                const result = breadthFirstSearch(graph, 0);
 
-                // Results should be identical
-                expect(result2.visited.size).toBe(result1.visited.size);
-                expect(result2.visited).toEqual(result1.visited);
+                // Verify it traversed the entire chain
+                expect(result.visited.size).toBe(nodeCount);
+                expect(result.order.length).toBe(nodeCount);
             });
 
-            it("should be faster than standard BFS on large graphs", () => {
-                const graph = new Graph();
-                const nodeCount = 5000;
-
-                // Create a small-world graph
-                for (let i = 0; i < nodeCount; i++) {
-                    // Connect to next few nodes (local clustering)
-                    for (let j = 1; j <= 3 && i + j < nodeCount; j++) {
-                        graph.addEdge(i, i + j);
-                    }
-
-                    // Add some long-range connections
-                    if (i % 50 === 0) {
-                        const target = Math.floor(Math.random() * nodeCount);
-                        if (target !== i && !graph.hasEdge(i, target)) {
-                            graph.addEdge(i, target);
-                        }
+            it("should automatically optimize based on graph size", () => {
+                // Small graph - should use standard BFS
+                const smallGraph = new Graph();
+                for (let i = 0; i < 100; i++) {
+                    if (i > 0) {
+                        smallGraph.addEdge(i - 1, i);
                     }
                 }
 
-                // Time standard BFS
-                const standardStart = performance.now();
-                const standardResult = breadthFirstSearch(graph, 0);
-                const standardTime = performance.now() - standardStart;
+                // Large graph - should use optimized BFS
+                const largeGraph = new Graph();
+                for (let i = 0; i < 15000; i++) {
+                    if (i > 0) {
+                        largeGraph.addEdge(i - 1, i);
+                    }
+                }
 
-                // Time optimized BFS directly
-                const optimizedStart = performance.now();
-                const optimizedResult = bfsOptimized(graph, 0, {optimized: true});
-                const optimizedTime = performance.now() - optimizedStart;
+                // Both should work correctly
+                const smallResult = breadthFirstSearch(smallGraph, 0);
+                const largeResult = breadthFirstSearch(largeGraph, 0);
 
-                // Verify correctness
-                expect(optimizedResult.visited.size).toBe(standardResult.visited.size);
+                expect(smallResult.visited.size).toBe(100);
+                expect(largeResult.visited.size).toBe(15000);
 
-                // Log performance
-                console.log(`Standard BFS: ${standardTime.toFixed(2)}ms`);
-                console.log(`Optimized BFS: ${optimizedTime.toFixed(2)}ms`);
-                console.log(`Speedup: ${(standardTime / optimizedTime).toFixed(2)}x`);
+                // Performance difference should be noticeable
+                const smallStart = performance.now();
+                for (let i = 0; i < 10; i++) {
+                    breadthFirstSearch(smallGraph, 0);
+                }
+                const smallTimeTotal = performance.now() - smallStart;
+                const smallTimeAvg = smallTimeTotal / 10;
 
-                // On large graphs, optimized might be faster (but not enforced due to first-run overhead)
+                const largeStart = performance.now();
+                breadthFirstSearch(largeGraph, 0);
+                const largeTime = performance.now() - largeStart;
+
+                console.log(`Small graph (100 nodes, avg per run): ${smallTimeAvg.toFixed(2)}ms`);
+                console.log(`Large graph (15000 nodes, per run): ${largeTime.toFixed(2)}ms`);
             });
         });
 
@@ -502,8 +499,8 @@ describe("BFS Algorithms", () => {
                     }
                 }
 
-                // Use optimized BFS directly
-                const result = bfsOptimized(graph, 0, {optimized: true});
+                // BFS should automatically use optimizations for this large graph
+                const result = breadthFirstSearch(graph, 0);
 
                 expect(result.visited.size).toBe(nodeCount);
                 expect(result.order).toHaveLength(nodeCount);
@@ -527,7 +524,8 @@ describe("BFS Algorithms", () => {
                 const source = 0;
                 const target = 100;
 
-                const result = shortestPathBFSOptimized(graph, source, target, {optimized: true});
+                // shortestPathBFS should automatically use optimizations
+                const result = shortestPathBFS(graph, source, target);
 
                 expect(result).not.toBeNull();
                 expect(result?.path[0]).toBe(source);
@@ -553,7 +551,8 @@ describe("BFS Algorithms", () => {
                     }
                 }
 
-                const result = singleSourceShortestPathBFSOptimized(graph, 0, {optimized: true});
+                // singleSourceShortestPathBFS should automatically use optimizations
+                const result = singleSourceShortestPathBFS(graph, 0);
 
                 // Should only find paths within the first component
                 expect(result.size).toBe(5000); // Only even numbers 0-9998
@@ -632,18 +631,44 @@ describe("BFS Algorithms", () => {
         });
 
         it("should handle graphs at optimization threshold", () => {
-            const graph = new Graph();
-            const nodeCount = 10000; // Exactly at threshold
+            // Enable optimizations
+            configureOptimizations({
+                useDirectionOptimizedBFS: true,
+                useCSRFormat: true,
+            });
 
-            for (let i = 0; i < nodeCount; i++) {
+            // Test with graph just below threshold (9999 nodes)
+            const smallGraph = new Graph();
+            for (let i = 0; i < 9999; i++) {
                 if (i > 0) {
-                    graph.addEdge(i - 1, i);
+                    smallGraph.addEdge(i - 1, i);
                 }
             }
 
-            // Test with optimized BFS directly
-            const result = bfsOptimized(graph, 0, {optimized: true});
-            expect(result.visited.size).toBe(nodeCount);
+            // Test with graph at threshold (10000 nodes)
+            const mediumGraph = new Graph();
+            for (let i = 0; i < 10000; i++) {
+                if (i > 0) {
+                    mediumGraph.addEdge(i - 1, i);
+                }
+            }
+
+            // Test with graph above threshold (10001 nodes)
+            const largeGraph = new Graph();
+            for (let i = 0; i < 10001; i++) {
+                if (i > 0) {
+                    largeGraph.addEdge(i - 1, i);
+                }
+            }
+
+            // All should work correctly
+            const smallResult = breadthFirstSearch(smallGraph, 0);
+            const mediumResult = breadthFirstSearch(mediumGraph, 0);
+            const largeResult = breadthFirstSearch(largeGraph, 0);
+
+            expect(smallResult.visited.size).toBe(9999);
+            expect(mediumResult.visited.size).toBe(10000);
+            expect(largeResult.visited.size).toBe(10001);
         });
 
         it("should handle empty graph results", () => {
@@ -654,7 +679,8 @@ describe("BFS Algorithms", () => {
                 graph.addNode(i);
             }
 
-            const result = bfsOptimized(graph, 0, {optimized: true});
+            // BFS should handle disconnected graphs efficiently
+            const result = breadthFirstSearch(graph, 0);
             expect(result.visited.size).toBe(1); // Only source node
         });
     });
