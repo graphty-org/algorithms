@@ -7,3 +7,6 @@
 
 ## Testing
 - don't increase testing or test coverage of the floyd-warshall module or it will cause vitest to hang
+
+## Product Design
+- our users will expect the most optimized performance without having to think about api settings, environment variables, configuration, or figuring out which api to call
