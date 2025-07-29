@@ -72,6 +72,12 @@ export interface TraversalOptions {
 
 export interface DijkstraOptions {
     target?: NodeId;
+    /**
+     * Use bidirectional search optimization for point-to-point queries.
+     * Defaults to true for graphs with >10 nodes, false for smaller graphs.
+     * Set explicitly to override automatic heuristic.
+     */
+    bidirectional?: boolean;
 }
 
 export interface BellmanFordResult {

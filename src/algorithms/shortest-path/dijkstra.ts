@@ -2,6 +2,7 @@ import type {Graph} from "../../core/graph.js";
 import {PriorityQueue} from "../../data-structures/priority-queue.js";
 import type {DijkstraOptions, NodeId, ShortestPathResult} from "../../types/index.js";
 import {reconstructPath} from "../../utils/graph-utilities.js";
+import {BidirectionalDijkstra} from "./bidirectional-dijkstra.js";
 
 /**
  * Dijkstra's algorithm implementation for single-source shortest paths
@@ -114,12 +115,16 @@ export function dijkstra(
 }
 
 /**
- * Find shortest path between two specific nodes using Dijkstra's algorithm
+ * Find shortest path between two specific nodes using optimized Dijkstra's algorithm
+ *
+ * Uses bidirectional search by default for improved performance on point-to-point queries.
+ * Automatically falls back to standard Dijkstra for very small graphs or when explicitly disabled.
  */
 export function dijkstraPath(
     graph: Graph,
     source: NodeId,
     target: NodeId,
+    options: DijkstraOptions = {},
 ): ShortestPathResult | null {
     if (!graph.hasNode(source)) {
         throw new Error(`Source node ${String(source)} not found in graph`);
@@ -138,6 +143,16 @@ export function dijkstraPath(
         };
     }
 
+    // Use bidirectional search by default for point-to-point queries
+    // Only disable if explicitly requested or graph is very small (overhead dominates)
+    const useBidirectional = options.bidirectional !== false && graph.nodeCount > 10;
+
+    if (useBidirectional) {
+        const biDijkstra = new BidirectionalDijkstra(graph);
+        return biDijkstra.findShortestPath(source, target);
+    }
+
+    // Fallback to standard dijkstra
     const results = dijkstra(graph, source, {target});
     return results.get(target) ?? null;
 }

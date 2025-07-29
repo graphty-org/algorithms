@@ -328,32 +328,59 @@ Given the graphty ecosystem's focus on graph visualization (@graphty/graphty-ele
    - Clear dependency visualization
    - Sugiyama-style layered drawings
 
+### Integration with @graphty/layout
+
+These algorithms would enhance the existing layout package:
+
+```typescript
+// Example: Graph Coloring Integration
+const colored = greedyColoring(graph, { maxColors: 6 });
+// Use colors in force-directed layout to separate communities
+
+// Example: Planar Graph Integration  
+const isPlanar = planarityTest(graph);
+if (isPlanar) {
+  const embedding = planarEmbedding(graph);
+  // Use specialized planar layout algorithms
+}
+
+// Example: Graph Partitioning Integration
+const partitions = graphPartition(graph, { k: 4 });
+// Layout each partition separately, then combine
+
+// Example: Graph Embedding Integration
+const embedding = node2vec(graph, { dimensions: 2 });
+// Use as initial positions for force-directed layout
+```
+
 ## Recommendations
 
-### Phase 1: Core Algorithms (Q1-Q2)
-Focus on **High Priority** categories that provide immediate value and fill fundamental gaps:
-- Implement graph coloring algorithms (greedy, Welsh-Powell, DSATUR)
-- Add topological sorting with Kahn's and DFS-based approaches
-- Develop comprehensive cycle detection suite
+### Phase 1: Visualization-First Algorithms (Q1-Q2)
+Focus on algorithms with immediate visual impact:
+- **Graph Coloring** (greedy, Welsh-Powell, DSATUR) for visual clarity
+- **Planar Graph Testing** and embedding for crossing-free layouts
+- **Graph Partitioning** (METIS-style) for large graph visualization
+- **Topological Sorting** for DAG layouts
 
-### Phase 2: Strategic Expansion (Q3-Q4)
-Add **Medium Priority** categories that expand library capabilities:
-- Eulerian and Hamiltonian path algorithms
-- Tree-specific algorithms (LCA, decompositions)
-- Random walk implementations
-- Basic graph partitioning algorithms
+### Phase 2: Layout Enhancement (Q3-Q4)
+Add algorithms that improve layout quality:
+- **Graph Decomposition** for hierarchical visualization
+- **Random Walk Embeddings** (Node2Vec) for better initial positions
+- **Tree Algorithms** (LCA, centroid) for tree-based layouts
+- **Temporal Graph** support for animation
 
-### Phase 3: Advanced Features (Year 2)
-Implement specialized and emerging algorithm categories:
-- Temporal graph algorithms for dynamic systems
-- Graph embedding for ML integration
-- Planar graph specialized algorithms
+### Phase 3: Advanced Visualization (Year 2)
+Implement specialized visualization algorithms:
+- **Graph Drawing Algorithms** specific to planar graphs
+- **Multi-level Graph Algorithms** for scalable visualization
+- **Edge Bundling** support via Eulerian paths
+- **3D Graph Embeddings** for @graphty/graphty-element
 
 ### Phase 4: Research Integration (Future)
-Explore cutting-edge algorithm categories:
-- Quantum graph algorithms for future quantum computing
-- Advanced probabilistic methods
-- Hypergraph extensions
+Explore cutting-edge visualization techniques:
+- **Quantum-inspired layouts** for complex graphs
+- **Probabilistic visualization** for uncertain data
+- **Hypergraph visualization** algorithms
 
 ## Technical Considerations
 
