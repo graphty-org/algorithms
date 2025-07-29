@@ -42,7 +42,7 @@ Graph coloring is fundamental in scheduling, register allocation, and map colori
 - Essential for making dense graphs readable
 - Can be directly integrated with force-directed layouts to improve visual clarity
 
-### 2. Topological Sorting Algorithms ⭐ HIGH PRIORITY
+### 2. Topological Sorting Algorithms ⭐ HIGH PRIORITY | 🎨 VISUALIZATION
 
 Essential for dependency resolution and workflow management.
 
@@ -52,6 +52,13 @@ Essential for dependency resolution and workflow management.
 - **Lexicographic Topological Sort** - For multiple valid orderings
 
 **Applications:** Build systems, dependency management, task scheduling, course prerequisites.
+
+**Visualization Benefits:**
+- Creates natural left-to-right/top-to-bottom layouts for DAGs
+- Shows dependency flow clearly with hierarchical positioning
+- Essential for workflow/pipeline visualization
+- Enables Sugiyama-style layered graph drawing
+- Helps identify critical paths and bottlenecks visually
 
 ### 3. Cycle Detection Algorithms ⭐ HIGH PRIORITY
 
@@ -65,7 +72,7 @@ Critical for deadlock detection and graph validation.
 
 **Applications:** Deadlock detection, dependency cycle detection, financial system validation.
 
-### 4. Eulerian and Hamiltonian Path Algorithms 🔶 MEDIUM PRIORITY
+### 4. Eulerian and Hamiltonian Path Algorithms 🔶 MEDIUM PRIORITY | 🎨 VISUALIZATION
 
 Important for route optimization and network traversal.
 
@@ -77,7 +84,14 @@ Important for route optimization and network traversal.
 
 **Applications:** GPS navigation, circuit design, DNA sequencing, traveling salesman problems.
 
-### 5. Tree Algorithms 🔶 MEDIUM PRIORITY
+**Visualization Benefits:**
+- Highlights special paths for tour visualizations
+- Useful for showing graph traversability properties
+- Can guide edge bundling algorithms
+- Enables animated path following visualizations
+- Shows optimal routes in transportation networks
+
+### 5. Tree Algorithms 🔶 MEDIUM PRIORITY | 🎨 VISUALIZATION
 
 Specialized algorithms for tree structures and spanning tree variants.
 
@@ -89,7 +103,14 @@ Specialized algorithms for tree structures and spanning tree variants.
 
 **Applications:** Phylogenetic analysis, hierarchical data queries, tree-based databases.
 
-### 6. Random Walk Algorithms 🔶 MEDIUM PRIORITY
+**Visualization Benefits:**
+- **LCA** helps with hierarchical layout positioning and path highlighting
+- **Centroid decomposition** finds natural center points for radial layouts
+- Useful for tree-based graph layouts (radial, hierarchical, treemap)
+- Enables efficient level-of-detail rendering for large trees
+- Supports interactive tree expansion/collapse visualizations
+
+### 6. Random Walk Algorithms 🔶 MEDIUM PRIORITY | 🎨 VISUALIZATION
 
 Essential for sampling, ranking, and probabilistic analysis.
 
@@ -102,7 +123,14 @@ Essential for sampling, ranking, and probabilistic analysis.
 
 **Applications:** Web crawling, recommendation systems, graph sampling, network analysis.
 
-### 7. Planar Graph Algorithms 🔶 MEDIUM PRIORITY
+**Visualization Benefits:**
+- **Node2Vec** embeddings help position similar nodes together
+- Improves force-directed layouts by providing better initial positions
+- Can animate random walks to show graph exploration patterns
+- Creates natural clustering for community visualization
+- Enables heat map visualizations of node visit frequencies
+
+### 7. Planar Graph Algorithms 🔶 MEDIUM PRIORITY | 🎨 VISUALIZATION
 
 Specialized for planar graphs with unique properties.
 
@@ -114,7 +142,14 @@ Specialized for planar graphs with unique properties.
 
 **Applications:** Circuit layout, map analysis, molecular structure analysis.
 
-### 8. Graph Decomposition Algorithms 🔶 MEDIUM PRIORITY
+**Visualization Benefits:**
+- **Planarity testing** determines if graph can be drawn without edge crossings
+- **Planar embeddings** create cleaner 2D visualizations with no overlaps
+- Critical for circuit/map-like visualizations
+- Reduces visual complexity significantly
+- Enables specialized planar layout algorithms (Tutte embedding)
+
+### 8. Graph Decomposition Algorithms 🔶 MEDIUM PRIORITY | 🎨 VISUALIZATION
 
 Breaking graphs into simpler components for analysis.
 
@@ -126,7 +161,14 @@ Breaking graphs into simpler components for analysis.
 
 **Applications:** Graph databases optimization, parallel processing, complexity analysis.
 
-### 9. Temporal/Dynamic Graph Algorithms 🔶 MEDIUM PRIORITY
+**Visualization Benefits:**
+- **Modular decomposition** identifies visual groupings and nested structures
+- **Tree decomposition** creates hierarchical visualizations
+- Helps create multi-level/abstracted views of complex graphs
+- Essential for visualizing large graphs with structure
+- Enables "overview+detail" interaction patterns
+
+### 9. Temporal/Dynamic Graph Algorithms 🔶 MEDIUM PRIORITY | 🎨 VISUALIZATION
 
 For graphs that change over time.
 
@@ -138,7 +180,14 @@ For graphs that change over time.
 
 **Applications:** Social network evolution, transportation networks, financial markets.
 
-### 10. Graph Partitioning Algorithms 🔶 MEDIUM PRIORITY
+**Visualization Benefits:**
+- Animates graph evolution over time with smooth transitions
+- Shows how communities/structure changes dynamically
+- Essential for dynamic network visualization
+- Enables time-slider controls and playback features
+- Supports diff visualizations between time steps
+
+### 10. Graph Partitioning Algorithms 🔶 MEDIUM PRIORITY | 🎨 VISUALIZATION
 
 Dividing graphs for parallel processing and analysis.
 
@@ -150,7 +199,14 @@ Dividing graphs for parallel processing and analysis.
 
 **Applications:** Parallel computing, load balancing, VLSI design, distributed systems.
 
-### 11. Graph Embedding Algorithms 🔶 MEDIUM PRIORITY
+**Visualization Benefits:**
+- Divides graph into balanced visual regions with clear boundaries
+- Creates natural clustering for layout algorithms
+- Enables "overview+detail" visualization patterns
+- Improves performance by processing partitions separately
+- Supports multi-resolution rendering of large graphs
+
+### 11. Graph Embedding Algorithms 🔶 MEDIUM PRIORITY | 🎨 VISUALIZATION
 
 Converting graphs to vector representations for machine learning.
 
@@ -161,6 +217,13 @@ Converting graphs to vector representations for machine learning.
 - **Graph2Vec** - Whole graph embeddings
 
 **Applications:** Graph neural networks, recommendation systems, drug discovery.
+
+**Visualization Benefits:**
+- Converts graphs to 2D/3D coordinates for direct visualization
+- Preserves graph structure in visual space
+- Enables dimensionality reduction for complex graphs
+- Provides meaningful initial positions for layout algorithms
+- Supports similarity-based node positioning
 
 ### 12. Quantum Graph Algorithms 🔷 LOW PRIORITY
 
@@ -214,25 +277,56 @@ Specialized algorithms for biological networks and molecular graphs.
 ## Implementation Priority Matrix
 
 ### High Priority (Immediate Value) ⭐
-1. **Graph Coloring** - Fundamental algorithm class with broad applications
-2. **Topological Sorting** - Essential for dependency management
+1. **Graph Coloring** - Fundamental algorithm class with broad applications and visualization benefits
+2. **Topological Sorting** - Essential for dependency management and DAG visualization
 3. **Cycle Detection** - Critical for validation and deadlock detection
 
 ### Medium Priority (Strategic Expansion) 🔶
 4. **Eulerian/Hamiltonian Paths** - Route optimization and circuit design
-5. **Tree Algorithms** - Hierarchical data processing
-6. **Random Walk Algorithms** - Probabilistic analysis and ranking
-7. **Planar Graph Algorithms** - Specialized geometric applications
-8. **Graph Decomposition** - Advanced structural analysis
-9. **Temporal Graph Algorithms** - Modern dynamic systems
-10. **Graph Partitioning** - Parallel processing and scalability
-11. **Graph Embedding** - Machine learning integration
+5. **Tree Algorithms** - Hierarchical data processing and tree layouts
+6. **Random Walk Algorithms** - Probabilistic analysis and layout optimization
+7. **Planar Graph Algorithms** - Clean 2D visualizations without edge crossings
+8. **Graph Decomposition** - Multi-level visualization and abstraction
+9. **Temporal Graph Algorithms** - Dynamic visualization and animation
+10. **Graph Partitioning** - Visual clustering and performance optimization
+11. **Graph Embedding** - Direct coordinate generation for visualization
 
 ### Low Priority (Research/Specialized) 🔷
 12. **Quantum Graph Algorithms** - Future technology preparation
 13. **Probabilistic Graph Algorithms** - Uncertainty handling
 14. **Hypergraph Algorithms** - Specialized high-order relationships
 15. **Bioinformatics Algorithms** - Domain-specific applications
+
+## Visualization-Specific Priority Recommendations
+
+Given the graphty ecosystem's focus on graph visualization (@graphty/graphty-element and @graphty/layout), we recommend prioritizing algorithms that directly enhance visual representation:
+
+### 🎨 Top Visualization Priorities
+
+1. **Graph Coloring Algorithms** (HIGH)
+   - Immediate visual impact by reducing clutter
+   - Direct integration with existing layouts
+   - Enhances community detection visualization
+
+2. **Planar Graph Algorithms** (HIGH)
+   - Eliminates edge crossings for cleaner visualizations
+   - Essential for circuit and map-like graphs
+   - Complements force-directed layouts
+
+3. **Graph Partitioning Algorithms** (HIGH)
+   - Enables efficient rendering of large graphs
+   - Natural visual clustering
+   - Supports level-of-detail rendering
+
+4. **Graph Decomposition Algorithms** (MEDIUM)
+   - Multi-resolution visualization
+   - Hierarchical graph exploration
+   - Overview+detail interaction patterns
+
+5. **Topological Sorting** (MEDIUM)
+   - DAG-specific layouts
+   - Clear dependency visualization
+   - Sugiyama-style layered drawings
 
 ## Recommendations
 
