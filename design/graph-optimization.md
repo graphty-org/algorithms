@@ -277,15 +277,11 @@ While inherently sequential, DFS can still benefit from optimizations:
 
 ### Priority 3: Advanced Techniques
 
-1. **Contraction Hierarchies** (if targeting road networks)
-   - Massive speedups but complex implementation
-   - High memory requirements
-
-2. **SIMD Vectorization**
+1. **SIMD Vectorization**
    - Platform-specific
    - Requires careful implementation
 
-3. **Cache Blocking**
+2. **Cache Blocking**
    - Complex to tune
    - Very large graphs only
 

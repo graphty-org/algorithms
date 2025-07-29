@@ -22,7 +22,7 @@ The @graphty/algorithms library currently implements **11 categories** of graph 
 
 ## Missing Graph Algorithm Categories
 
-### 1. Graph Coloring Algorithms ⭐ HIGH PRIORITY
+### 1. Graph Coloring Algorithms ⭐ HIGH PRIORITY | 🎨 VISUALIZATION
 
 Graph coloring is fundamental in scheduling, register allocation, and map coloring problems.
 
@@ -34,6 +34,13 @@ Graph coloring is fundamental in scheduling, register allocation, and map colori
 - **Edge Coloring Algorithms** - For scheduling and timetabling
 
 **Applications:** Course scheduling, register allocation in compilers, frequency assignment in wireless networks, sudoku solving.
+
+**Visualization Benefits:**
+- **Vertex coloring** helps distinguish communities/clusters visually
+- **Edge coloring** can show different relationship types  
+- Reduces visual clutter by ensuring adjacent nodes have different colors
+- Essential for making dense graphs readable
+- Can be directly integrated with force-directed layouts to improve visual clarity
 
 ### 2. Topological Sorting Algorithms ⭐ HIGH PRIORITY
 

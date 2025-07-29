@@ -42,11 +42,5 @@ export * from "./data-structures/index.js";
 // Optimized algorithm exports
 export * from "./optimized/index.js";
 
-// Configuration exports
-export {
-    configureGlobalOptimizations,
-    getOptimizationConfiguration,
-    getRecommendedPreset,
-    OPTIMIZATION_PRESETS,
-    shouldUseOptimizations,
-} from "./config/optimization.js";
+// Note: Configuration exports have been removed.
+// The library now automatically optimizes based on graph size.

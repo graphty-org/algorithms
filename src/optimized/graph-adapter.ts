@@ -109,25 +109,21 @@ export interface GraphAlgorithmConfig {
     enableCaching?: boolean;
 }
 
-// Global configuration
-let globalConfig: GraphAlgorithmConfig = {
-    useDirectionOptimizedBFS: false,
-    useCSRFormat: false,
-    useBitPackedStructures: false,
-};
-
 /**
  * Configure optimizations globally
+ * @deprecated This function is a no-op and will be removed in a future version
  */
-export function configureOptimizations(config: GraphAlgorithmConfig): void {
-    globalConfig = {... globalConfig, ... config};
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function configureOptimizations(_config: GraphAlgorithmConfig): void {
+    // No-op for backward compatibility
 }
 
 /**
  * Get current configuration
+ * @deprecated This function returns empty config and will be removed in a future version
  */
 export function getOptimizationConfig(): GraphAlgorithmConfig {
-    return {... globalConfig};
+    return {};
 }
 
 /**

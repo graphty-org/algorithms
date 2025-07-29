@@ -292,4 +292,100 @@ describe("BFS Variants", () => {
             expect(distances.get("D")).toBe(4); // A->B->C->D = 1+2+1
         });
     });
+
+    describe("CSR-optimized variants", () => {
+        function createLargeGraph(nodeCount: number): Graph {
+            const graph = new Graph();
+            // Create a connected graph
+            for (let i = 0; i < nodeCount; i++) {
+                graph.addNode(i);
+                if (i > 0) {
+                    graph.addEdge(i - 1, i);
+                }
+                // Add some cross edges
+                if (i > 10) {
+                    graph.addEdge(i, i - 10);
+                }
+            }
+            return graph;
+        }
+
+        it("should use CSR optimization for bfsWithPathCounting on large graphs", () => {
+            const graph = createLargeGraph(15000);
+            const result = bfsWithPathCounting(graph, 0, {optimized: true});
+
+            expect(result.distances.get(0)).toBe(0);
+            expect(result.distances.get(1)).toBe(1);
+            expect(result.sigma.get(0)).toBe(1);
+            expect(result.stack.length).toBeGreaterThan(0);
+            expect(result.predecessors.get(1)).toContain(0);
+        });
+
+        it("should use CSR optimization for bfsDistancesOnly on large graphs", () => {
+            const graph = createLargeGraph(15000);
+            const distances = bfsDistancesOnly(graph, 0, undefined, {optimized: true});
+
+            expect(distances.get(0)).toBe(0);
+            expect(distances.get(1)).toBe(1);
+            expect(distances.get(5)).toBe(5); // Before cross-edges start
+        });
+
+        it("should respect cutoff in CSR-optimized bfsDistancesOnly", () => {
+            const graph = createLargeGraph(15000);
+            const distances = bfsDistancesOnly(graph, 0, 5, {optimized: true});
+
+            expect(distances.get(0)).toBe(0);
+            expect(distances.get(5)).toBe(5);
+            expect(distances.has(6)).toBe(false); // Beyond cutoff
+        });
+
+        it("should use CSR optimization for bfsWeightedDistances on large graphs", () => {
+            const graph = createLargeGraph(15000);
+            const distances = bfsWeightedDistances(graph, 0, undefined, {optimized: true});
+
+            expect(distances.get(0)).toBe(0);
+            expect(distances.get(1)).toBe(1);
+            // CSR version uses weight 1 by default
+            expect(distances.get(11)).toBe(2); // Via node 1
+        });
+
+        it("should respect cutoff in CSR-optimized bfsWeightedDistances", () => {
+            const graph = createLargeGraph(15000);
+            const distances = bfsWeightedDistances(graph, 0, 3, {optimized: true});
+
+            expect(distances.get(0)).toBe(0);
+            expect(distances.get(1)).toBe(1);
+            expect(distances.has(4)).toBe(false); // Beyond cutoff
+        });
+
+        it("should handle empty neighbors in CSR optimization", () => {
+            const graph = new Graph();
+            // Create a large disconnected graph
+            for (let i = 0; i < 15000; i++) {
+                graph.addNode(i);
+            }
+
+            const result = bfsWithPathCounting(graph, 0, {optimized: true});
+            expect(result.distances.size).toBe(1); // Only source
+            expect(result.stack).toEqual([0]);
+        });
+
+        it("should produce same results with and without optimization", () => {
+            const graph = createLargeGraph(15000);
+
+            // Test bfsWithPathCounting
+            const resultNormal = bfsWithPathCounting(graph, 0, {optimized: false});
+            const resultOptimized = bfsWithPathCounting(graph, 0, {optimized: true});
+
+            expect(resultOptimized.distances.get(50)).toBe(resultNormal.distances.get(50));
+            expect(resultOptimized.sigma.get(50)).toBe(resultNormal.sigma.get(50));
+
+            // Test bfsDistancesOnly
+            const distNormal = bfsDistancesOnly(graph, 0, 10, {optimized: false});
+            const distOptimized = bfsDistancesOnly(graph, 0, 10, {optimized: true});
+
+            expect(distOptimized.size).toBe(distNormal.size);
+            expect(distOptimized.get(5)).toBe(distNormal.get(5));
+        });
+    });
 });

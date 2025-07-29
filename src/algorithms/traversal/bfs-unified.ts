@@ -1,4 +1,3 @@
-import {getOptimizationConfiguration} from "../../config/optimization.js";
 import type {Graph} from "../../core/graph.js";
 import {CSRGraph} from "../../optimized/csr-graph.js";
 import {DirectionOptimizedBFS} from "../../optimized/direction-optimized-bfs.js";
@@ -47,10 +46,8 @@ export function breadthFirstSearch(
         throw new Error(`Start node ${String(startNode)} not found in graph`);
     }
 
-    const config = getOptimizationConfiguration();
-
     // Automatically use optimized implementation for large graphs
-    if (config.useDirectionOptimizedBFS && graph.nodeCount > 10000) {
+    if (graph.nodeCount > 10000) {
         return breadthFirstSearchOptimized(graph, startNode, options);
     }
 
@@ -115,12 +112,11 @@ function breadthFirstSearchOptimized(
     startNode: NodeId,
     options: TraversalOptions = {},
 ): TraversalResult {
-    const config = getOptimizationConfiguration();
     const csrGraph = getCSRGraph(graph);
 
     const dobfs = new DirectionOptimizedBFS(csrGraph, {
-        alpha: config.bfsAlpha ?? 15.0,
-        beta: config.bfsBeta ?? 20.0,
+        alpha: 15.0,
+        beta: 20.0,
     });
 
     const result = dobfs.search(startNode);
@@ -191,10 +187,8 @@ export function shortestPathBFS(
         };
     }
 
-    const config = getOptimizationConfiguration();
-
     // Use optimized implementation for large graphs
-    if (config.useDirectionOptimizedBFS && graph.nodeCount > 10000) {
+    if (graph.nodeCount > 10000) {
         return shortestPathBFSOptimized(graph, source, target);
     }
 
@@ -258,11 +252,10 @@ function shortestPathBFSOptimized(
     target: NodeId,
 ): ShortestPathResult | null {
     const csrGraph = getCSRGraph(graph);
-    const config = getOptimizationConfiguration();
 
     const dobfs = new DirectionOptimizedBFS(csrGraph, {
-        alpha: config.bfsAlpha ?? 15.0,
-        beta: config.bfsBeta ?? 20.0,
+        alpha: 15.0,
+        beta: 20.0,
     });
 
     // Perform BFS
@@ -297,10 +290,8 @@ export function singleSourceShortestPathBFS(
         throw new Error(`Source node ${String(source)} not found in graph`);
     }
 
-    const config = getOptimizationConfiguration();
-
     // Use optimized implementation for large graphs
-    if (config.useDirectionOptimizedBFS && graph.nodeCount > 10000) {
+    if (graph.nodeCount > 10000) {
         return singleSourceShortestPathBFSOptimized(graph, source);
     }
 
@@ -319,11 +310,13 @@ function singleSourceShortestPathBFSStandard(
     const visited = new Set<NodeId>();
     const queue: {node: NodeId, distance: number}[] = [];
     const predecessor = new Map<NodeId, NodeId | null>();
+    const distances = new Map<NodeId, number>();
 
     // Initialize BFS
     queue.push({node: source, distance: 0});
     visited.add(source);
     predecessor.set(source, null);
+    distances.set(source, 0);
 
     while (queue.length > 0) {
         const current = queue.shift();
@@ -331,22 +324,26 @@ function singleSourceShortestPathBFSStandard(
             break;
         }
 
-        // Store result for current node
-        const path = reconstructPath(current.node, predecessor);
-        results.set(current.node, {
-            distance: current.distance,
-            path,
-            predecessor: new Map(predecessor),
-        });
-
         // Explore neighbors
         for (const neighbor of graph.neighbors(current.node)) {
             if (!visited.has(neighbor)) {
                 visited.add(neighbor);
                 predecessor.set(neighbor, current.node);
+                distances.set(neighbor, current.distance + 1);
                 queue.push({node: neighbor, distance: current.distance + 1});
             }
         }
+    }
+
+    // Build results after BFS completes
+    // This avoids copying the predecessor map for each node
+    for (const [node, distance] of distances) {
+        const path = reconstructPath(node, predecessor);
+        results.set(node, {
+            distance,
+            path,
+            predecessor, // Share the same predecessor map
+        });
     }
 
     return results;
@@ -360,11 +357,10 @@ function singleSourceShortestPathBFSOptimized(
     source: NodeId,
 ): Map<NodeId, ShortestPathResult> {
     const csrGraph = getCSRGraph(graph);
-    const config = getOptimizationConfiguration();
 
     const dobfs = new DirectionOptimizedBFS(csrGraph, {
-        alpha: config.bfsAlpha ?? 15.0,
-        beta: config.bfsBeta ?? 20.0,
+        alpha: 15.0,
+        beta: 20.0,
     });
 
     const bfsResult = dobfs.search(source);
@@ -379,7 +375,7 @@ function singleSourceShortestPathBFSOptimized(
         results.set(nodeId, {
             distance,
             path,
-            predecessor: new Map(bfsResult.parents),
+            predecessor: bfsResult.parents, // Share the same predecessor map
         });
     }
 

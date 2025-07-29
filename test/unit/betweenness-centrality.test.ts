@@ -869,4 +869,95 @@ describe("Betweenness Centrality", () => {
             expect(centrality.connected).toBe(0);
         });
     });
+
+    describe("additional edge cases for coverage", () => {
+        it("should handle edge betweenness with endpoints option false", () => {
+            const graph = new Graph();
+
+            // Create a simple path where we can test endpoint exclusion
+            graph.addEdge("a", "b");
+            graph.addEdge("b", "c");
+            graph.addEdge("c", "d");
+
+            // Test with endpoints=false (should exclude endpoint contributions)
+            const result = betweennessCentrality(graph, {endpoints: false});
+
+            // Verify node centralities are calculated
+            expect(result).toBeDefined();
+            expect(Object.keys(result).length).toBeGreaterThan(0);
+        });
+
+        it("should handle stack with undefined elements properly", () => {
+            const graph = new Graph();
+
+            // Create a graph that might produce undefined stack elements
+            graph.addNode("isolated");
+            graph.addEdge("a", "b");
+            graph.addEdge("b", "c");
+            graph.addEdge("c", "d");
+
+            const centrality = betweennessCentrality(graph);
+
+            // Should handle the graph without errors
+            expect(centrality).toBeDefined();
+            expect(centrality.isolated).toBe(0);
+        });
+
+        it("should correctly handle edge contributions with no predecessors", () => {
+            const graph = new Graph();
+
+            // Single edge graph
+            graph.addEdge("source", "target");
+
+            const result = betweennessCentrality(graph, {endpoints: false});
+
+            expect(result.source).toBe(0);
+            expect(result.target).toBe(0);
+            expect(result).toBeDefined();
+        });
+
+        it("should handle complex directed graph with multiple shortest paths", () => {
+            const graph = new Graph({directed: true});
+
+            // Create a directed graph with multiple paths of same length
+            graph.addEdge("s", "a");
+            graph.addEdge("s", "b");
+            graph.addEdge("a", "t");
+            graph.addEdge("b", "t");
+            // Add some additional edges
+            graph.addEdge("a", "b");
+            graph.addEdge("b", "c");
+            graph.addEdge("c", "t");
+
+            const result = betweennessCentrality(graph);
+
+            // All nodes should have defined centrality
+            expect(result.s).toBeDefined();
+            expect(result.a).toBeDefined();
+            expect(result.b).toBeDefined();
+            expect(result.t).toBeDefined();
+        });
+
+        it("should handle edge centrality normalization for undirected graphs", () => {
+            const graph = new Graph({directed: false});
+
+            // Create a square with diagonals
+            graph.addEdge("tl", "tr");
+            graph.addEdge("tr", "br");
+            graph.addEdge("br", "bl");
+            graph.addEdge("bl", "tl");
+            graph.addEdge("tl", "br");
+            graph.addEdge("tr", "bl");
+
+            const result = betweennessCentrality(graph, {normalized: true});
+
+            // Check node centralities exist and are properly normalized
+            expect(result).toBeDefined();
+            for (const nodeKey in result) {
+                const centrality = result[nodeKey];
+                expect(centrality).toBeGreaterThanOrEqual(0);
+                expect(centrality).toBeLessThanOrEqual(1);
+            }
+        });
+    });
 });

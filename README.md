@@ -6,18 +6,54 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Examples](https://img.shields.io/badge/demo-github%20pages-blue)](https://graphty-org.github.io/algorithms/)
 
-A comprehensive TypeScript graph algorithms library with 32 algorithms optimized for browser environments and visualization applications.
+A comprehensive TypeScript graph algorithms library with 98 algorithms optimized for browser environments and visualization applications.
 
 ## Features
 
 - **TypeScript-first**: Full type safety with comprehensive type definitions
 - **Browser-optimized**: Designed to run efficiently in web browsers
 - **Modular**: Import only the algorithms you need
-- **Comprehensive**: 32 graph algorithms including traversal, shortest paths, centrality, clustering, flow, matching, link prediction, and more
+- **Comprehensive**: 98 graph algorithms including traversal, shortest paths, centrality, clustering, flow, matching, link prediction, and more
 - **Interactive Examples**: [Live demos](https://graphty-org.github.io/algorithms/) with visualizations for all algorithms
 - **Performance Analysis**: [Detailed benchmarks](https://graphty-org.github.io/algorithms/benchmarks/) comparing algorithm performance
 - **Well-tested**: Extensive test suite with high coverage
 - **Standards-compliant**: Follows conventional commits and semantic versioning
+
+## Performance Optimizations
+
+The library automatically optimizes performance for large graphs (≥10,000 nodes) using:
+
+- **Direction-Optimized BFS**: Dynamically switches between top-down and bottom-up search strategies, providing up to 42x speedup on large graphs
+- **CSR Graph Format**: Compressed Sparse Row format for cache-efficient memory access
+- **Bit-Packed Data Structures**: 8x memory reduction using bit arrays for boolean data
+
+These optimizations are applied automatically - no configuration needed! Just use the standard API:
+
+```typescript
+// Automatically uses optimized implementation for large graphs
+const result = breadthFirstSearch(largeGraph, startNode);
+```
+
+All BFS-based algorithms benefit from these optimizations:
+- `breadthFirstSearch`, `shortestPathBFS`, `singleSourceShortestPathBFS`
+- `betweennessCentrality`, `closenessCentrality`
+- Connected component algorithms
+
+### Performance Benchmarks
+
+| Graph Size | Standard BFS | Optimized BFS | Speedup |
+|------------|--------------|---------------|---------|
+| 10K nodes  | 4.40ms      | 6.34ms        | 0.69x   |
+| 50K nodes  | 158.64ms    | 44.27ms       | 3.58x   |
+| 100K nodes | 5,370ms     | 126ms         | 42.58x  |
+
+*Note: Optimizations activate automatically for graphs ≥10K nodes to avoid conversion overhead on smaller graphs.*
+
+### Learn More
+
+- 📖 [Performance Guide](docs/PERFORMANCE_GUIDE.md) - Detailed optimization explanations
+- 🔄 [Migration Guide](docs/MIGRATION_GUIDE.md) - Upgrading from older versions
+- 💾 [Memory vs Speed Tradeoffs](docs/PERFORMANCE_GUIDE.md#memory-vs-speed-tradeoffs) - Making the right choices
 
 ## Installation
 
@@ -170,6 +206,9 @@ graph.clone(): Graph
 
 // Clear all nodes and edges
 graph.clear(): void
+
+// Get a copy of the graph configuration
+graph.getConfig(): GraphConfig
 ```
 
 ### Traversal Algorithms
@@ -181,18 +220,24 @@ import { breadthFirstSearch, shortestPathBFS, singleSourceShortestPathBFS, isBip
 
 // Basic BFS traversal
 const result = breadthFirstSearch(graph, startNode, {
-  maxDepth?: number,     // Optional: limit traversal depth
-  visitCallback?: (node: NodeId, depth: number) => void
+  targetNode?: NodeId,     // Optional: stop when target is reached
+  visitCallback?: (node: NodeId, level: number) => void
 });
-// Returns: TraversalResult { visited: Set<NodeId>, order: NodeId[], tree?: Map<NodeId, NodeId> }
+// Returns: TraversalResult { visited: Set<NodeId>, order: NodeId[], tree?: Map<NodeId, NodeId | null> }
+
+// Note: For graphs with ≥10K nodes, BFS automatically uses:
+// - Direction-Optimized BFS (switches between top-down/bottom-up)
+// - CSR graph format for cache efficiency
+// - Bit-packed data structures for memory efficiency
 
 // Find shortest path between two nodes (unweighted)
 const path = shortestPathBFS(graph, source, target);
-// Returns: NodeId[] | null
+// Returns: ShortestPathResult | null
+// ShortestPathResult = { distance: number, path: NodeId[], predecessor: Map<NodeId, NodeId | null> }
 
 // Find all shortest paths from a source
 const paths = singleSourceShortestPathBFS(graph, source);
-// Returns: Map<NodeId, NodeId[]>
+// Returns: Map<NodeId, ShortestPathResult>
 
 // Check if graph is bipartite
 const bipartite = isBipartite(graph);
@@ -206,8 +251,10 @@ import { depthFirstSearch, topologicalSort, hasCycleDFS, findStronglyConnectedCo
 
 // Basic DFS traversal
 const result = depthFirstSearch(graph, startNode, {
-  previsitCallback?: (node: NodeId) => void,
-  postvisitCallback?: (node: NodeId) => void
+  targetNode?: NodeId,      // Optional: stop when target is reached
+  visitCallback?: (node: NodeId, level: number) => void,
+  recursive?: boolean,      // Use recursive implementation (default: false)
+  preOrder?: boolean        // Visit nodes in pre-order (default: true)
 });
 // Returns: TraversalResult
 
@@ -238,7 +285,7 @@ import {
 
 // Single-source shortest paths
 const result = dijkstra(graph, source, {
-  target: NodeId // Optional: stop when target is reached
+  target?: NodeId // Optional: stop when target is reached
 })
 // Returns: Map<NodeId, ShortestPathResult>
 // ShortestPathResult = { distance: number, path: NodeId[], predecessor: Map<NodeId, NodeId | null> }
@@ -377,6 +424,13 @@ const centralities = weightedClosenessCentrality(graph, {
   weight: string // Edge property for weights
 })
 // Returns: CentralityResult (Record<string, number>)
+
+// Single node weighted closeness
+const centrality = nodeWeightedClosenessCentrality(graph, nodeId, {
+  normalized: boolean,
+  weight: string // Edge property for weights
+})
+// Returns: number
 ```
 
 #### PageRank
@@ -406,6 +460,10 @@ const ranks = personalizedPageRank(graph, personalization, options)
 // Get top N nodes by PageRank
 const topNodes = topPageRankNodes(graph, n, options)
 // Returns: Array<{ node: NodeId, rank: number }>
+
+// Alternative PageRank that returns CentralityResult format
+const centralities = pageRankCentrality(graph, options)
+// Returns: CentralityResult (Record<string, number>)
 ```
 
 #### Eigenvector Centrality
@@ -676,18 +734,16 @@ const dendrogram = girvanNewman(graph, {
 #### A\* Algorithm
 
 ```typescript
-import { astar, astarWithDetails, heuristics } from '@graphty/algorithms'
+import { astar } from '@graphty/algorithms'
 
 // A* pathfinding with heuristic
-const path = astar(graph, start, goal, {
-  heuristic: heuristics.euclidean, // or manhattan, chebyshev, zero
-  weight: (edge: Edge) => number
-})
-// Returns: { path: NodeId[], cost: number } | null
-
-// A* with search details
-const result = astarWithDetails(graph, start, goal, options)
-// Returns: { path: NodeId[], cost: number, explored: Set<NodeId>, parent: Map<NodeId, NodeId> } | null
+const path = astar(
+  graph, // Map<T, Map<T, number>> adjacency list
+  start,
+  goal,
+  heuristic // (node: T, goal: T) => number
+)
+// Returns: { path: T[], cost: number } | null
 ```
 
 ### Flow Algorithms
@@ -801,7 +857,7 @@ const result = spectralClustering(graph, {
 #### Markov Clustering (MCL)
 
 ```typescript
-import { markovClustering } from '@graphty/algorithms'
+import { markovClustering, calculateMCLModularity } from '@graphty/algorithms'
 
 // MCL algorithm for network clustering
 const result = markovClustering(graph, {
@@ -811,6 +867,10 @@ const result = markovClustering(graph, {
   tolerance: number // Default: 1e-6
 })
 // Returns: MCLResult { communities: NodeId[][], attractors: Set<NodeId>, iterations: number, converged: boolean }
+
+// Calculate modularity of MCL clustering result
+const modularity = calculateMCLModularity(graph, result.communities)
+// Returns: number
 ```
 
 ### Matching Algorithms
@@ -1216,20 +1276,20 @@ interface Edge {
 interface TraversalResult {
   visited: Set<NodeId>
   order: NodeId[]
-  tree?: Map<NodeId, NodeId>
+  tree?: Map<NodeId, NodeId | null>
 }
 
 interface ShortestPathResult {
-  path: NodeId[]
   distance: number
-  predecessor: NodeId | null
+  path: NodeId[]
+  predecessor: Map<NodeId, NodeId | null>
 }
 
 interface BellmanFordResult {
   distances: Map<NodeId, number>
-  predecessors: Map<NodeId, NodeId | null>
+  previous: Map<NodeId, NodeId | null>
   hasNegativeCycle: boolean
-  negativeCycleNodes?: Set<NodeId>
+  negativeCycleNodes?: NodeId[]
 }
 
 type CentralityResult = Record<string, number>

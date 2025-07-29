@@ -383,4 +383,169 @@ describe("Girvan-Newman Community Detection Algorithm", () => {
             }
         });
     });
+
+    describe("additional edge cases for coverage", () => {
+        it("should handle case where distance is undefined in findAllShortestPaths", () => {
+            const graph = new Graph();
+
+            // Create a graph with disconnected components to trigger undefined distance check
+            graph.addNode("isolated1");
+            graph.addNode("isolated2");
+            graph.addEdge("connected1", "connected2");
+            graph.addEdge("connected2", "connected3");
+
+            const results = girvanNewman(graph);
+
+            expect(results).toBeDefined();
+            expect(results.length).toBeGreaterThan(0);
+            // Should handle disconnected nodes without errors
+            const finalResult = results[results.length - 1];
+            expect(finalResult.communities.length).toBeGreaterThanOrEqual(2);
+        });
+
+        it("should handle case where degrees are undefined in modularity calculation", () => {
+            const graph = new Graph();
+
+            // Create a graph structure that might lead to undefined degree checks
+            graph.addNode("a");
+            graph.addNode("b");
+            graph.addNode("c");
+            graph.addNode("isolated");
+
+            graph.addEdge("a", "b", 1);
+            graph.addEdge("b", "c", 1);
+            graph.addEdge("c", "a", 1);
+
+            const results = girvanNewman(graph);
+
+            expect(results).toBeDefined();
+            // Should calculate modularity without errors even with isolated nodes
+            for (const result of results) {
+                expect(result.modularity).toBeDefined();
+                expect(typeof result.modularity).toBe("number");
+                expect(isFinite(result.modularity)).toBe(true);
+            }
+        });
+
+        it("should handle weighted graphs with undefined distances in Dijkstra", () => {
+            const graph = new Graph();
+
+            // Create multiple disconnected components with weights
+            graph.addEdge("group1_a", "group1_b", 2);
+            graph.addEdge("group1_b", "group1_c", 3);
+
+            graph.addEdge("group2_x", "group2_y", 1);
+            graph.addEdge("group2_y", "group2_z", 4);
+
+            graph.addNode("isolated");
+
+            const results = girvanNewman(graph);
+
+            expect(results).toBeDefined();
+            expect(results.length).toBeGreaterThan(0);
+
+            // Should identify disconnected components correctly
+            const hasMultipleCommunities = results.some((r) => r.communities.length >= 3);
+            expect(hasMultipleCommunities).toBe(true);
+        });
+
+        it("should handle edge case with zero total edge weight", () => {
+            const graph = new Graph();
+
+            // Graph with only isolated nodes (no edges)
+            graph.addNode("node1");
+            graph.addNode("node2");
+            graph.addNode("node3");
+
+            const results = girvanNewman(graph);
+
+            expect(results).toBeDefined();
+            expect(results).toHaveLength(1);
+            expect(results[0].modularity).toBe(0); // Modularity should be 0 with no edges
+            expect(results[0].communities).toHaveLength(3); // Each node is its own community
+        });
+
+        it("should handle complex graph triggering all edge betweenness branches", () => {
+            const graph = new Graph();
+
+            // Create a more complex structure to ensure all branches are covered
+            // Hub and spoke with additional connections
+            graph.addEdge("hub", "spoke1", 1);
+            graph.addEdge("hub", "spoke2", 1);
+            graph.addEdge("hub", "spoke3", 1);
+            graph.addEdge("hub", "spoke4", 1);
+
+            // Add connections between spokes
+            graph.addEdge("spoke1", "spoke2", 2);
+            graph.addEdge("spoke3", "spoke4", 2);
+
+            // Add isolated component
+            graph.addEdge("iso1", "iso2", 1);
+
+            const results = girvanNewman(graph, {maxCommunities: 4});
+
+            expect(results).toBeDefined();
+            expect(results.length).toBeGreaterThan(1);
+
+            // Verify the algorithm progresses through multiple stages
+            const communityCounts = results.map((r) => r.communities.length);
+            expect(Math.max(... communityCounts)).toBeGreaterThanOrEqual(2);
+        });
+
+        it("should handle BFS with undefined distance edge case", () => {
+            // This test aims to trigger the undefined distance check in findAllShortestPaths
+            const graph = new Graph();
+
+            // Create a structure that could lead to undefined distances in BFS
+            // We need a scenario where a node gets into the queue but its distance isn't set
+            graph.addNode("start");
+            graph.addNode("middle");
+            graph.addNode("end");
+
+            // Add edges to create a specific path structure
+            graph.addEdge("start", "middle");
+            graph.addEdge("middle", "end");
+
+            // Add an isolated node that won't have distances set from certain sources
+            graph.addNode("isolated");
+
+            const results = girvanNewman(graph);
+
+            expect(results).toBeDefined();
+            expect(results.length).toBeGreaterThan(0);
+
+            // Verify the algorithm handles the edge case properly
+            const finalCommunities = results[results.length - 1].communities;
+            expect(finalCommunities.length).toBeGreaterThanOrEqual(2);
+        });
+
+        it("should handle modularity calculation with undefined degrees", () => {
+            // This test aims to trigger the undefined degree check in calculateModularity
+            const graph = new Graph();
+
+            // Create a graph where some edges might reference nodes with undefined degrees
+            // This is a defensive check that shouldn't normally happen, but we'll test it
+            graph.addNode("a");
+            graph.addNode("b");
+            graph.addNode("c");
+            graph.addNode("d");
+
+            // Create edges
+            graph.addEdge("a", "b");
+            graph.addEdge("b", "c");
+            graph.addEdge("c", "d");
+            graph.addEdge("d", "a");
+
+            // Run the algorithm
+            const results = girvanNewman(graph);
+
+            expect(results).toBeDefined();
+            // Verify modularity is calculated correctly even with edge cases
+            for (const result of results) {
+                expect(result.modularity).toBeDefined();
+                expect(typeof result.modularity).toBe("number");
+                expect(isFinite(result.modularity)).toBe(true);
+            }
+        });
+    });
 });

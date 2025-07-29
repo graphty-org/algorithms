@@ -1,6 +1,4 @@
-import {shouldUseOptimizations} from "../config/optimization.js";
 import type {Graph} from "../core/graph.js";
-import {getOptimizationConfig} from "../optimized/graph-adapter.js";
 
 /**
  * Common interface for algorithm options with optimization support
@@ -16,6 +14,14 @@ export interface OptimizableOptions {
 }
 
 /**
+ * Check if a graph should use optimizations based on its size
+ */
+function shouldUseOptimizations(nodeCount: number, edgeCount: number): boolean {
+    // Use optimizations for graphs with more than 10k nodes or 100k edges
+    return nodeCount > 10000 || edgeCount > 100000;
+}
+
+/**
  * Determine if optimizations should be used for a given graph
  */
 export function shouldOptimize(
@@ -25,14 +31,8 @@ export function shouldOptimize(
     const {optimized = "auto"} = options;
 
     if (optimized === "auto") {
-        // Check global configuration
-        const config = getOptimizationConfig();
-        if (config.useCSRFormat || config.useDirectionOptimizedBFS) {
-            // If any optimization is globally enabled, check graph size
-            return shouldUseOptimizations(graph.nodeCount, graph.totalEdgeCount);
-        }
-
-        return false;
+        // Check graph size
+        return shouldUseOptimizations(graph.nodeCount, graph.totalEdgeCount);
     }
 
     return optimized;

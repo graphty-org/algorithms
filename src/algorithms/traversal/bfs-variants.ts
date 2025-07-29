@@ -2,7 +2,7 @@ import type {Graph} from "../../core/graph.js";
 import {PriorityQueue} from "../../data-structures/priority-queue.js";
 import {CSRGraph} from "../../optimized/csr-graph.js";
 import {DirectionOptimizedBFS} from "../../optimized/direction-optimized-bfs.js";
-import {getOptimizationConfig, toCSRGraph} from "../../optimized/graph-adapter.js";
+import {toCSRGraph} from "../../optimized/graph-adapter.js";
 import type {NodeId} from "../../types/index.js";
 
 /**
@@ -24,8 +24,7 @@ export function bfsWithPathCounting(
         sigma: Map<NodeId, number>;
         stack: NodeId[];
     } {
-    const config = getOptimizationConfig();
-    const useOptimized = options.optimized ?? config.useCSRFormat;
+    const useOptimized = options.optimized ?? false;
 
     // Use CSR format for large graphs
     if (useOptimized && graph.nodeCount > 10000) {
@@ -95,8 +94,7 @@ export function bfsDistancesOnly(
     cutoff?: number,
     options: {optimized?: boolean} = {},
 ): Map<NodeId, number> {
-    const config = getOptimizationConfig();
-    const useOptimized = options.optimized ?? config.useCSRFormat;
+    const useOptimized = options.optimized ?? false;
 
     // Use CSR format for large graphs
     if (useOptimized && graph.nodeCount > 10000) {
@@ -262,8 +260,7 @@ export function bfsWeightedDistances(
     cutoff?: number,
     options: {optimized?: boolean} = {},
 ): Map<NodeId, number> {
-    const config = getOptimizationConfig();
-    const useOptimized = options.optimized ?? config.useCSRFormat;
+    const useOptimized = options.optimized ?? false;
 
     // Use CSR format for large graphs
     if (useOptimized && graph.nodeCount > 10000) {
@@ -388,8 +385,7 @@ function bfsDistancesOnlyCSR(
     cutoff?: number,
 ): Map<NodeId, number> {
     // Use Direction-Optimized BFS for best performance
-    const config = getOptimizationConfig();
-    if (config.useDirectionOptimizedBFS && graph.nodeCount() > 10000) {
+    if (graph.nodeCount() > 10000) {
         const dobfs = new DirectionOptimizedBFS(graph);
         const result = dobfs.search(source);
 
