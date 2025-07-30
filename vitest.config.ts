@@ -62,6 +62,8 @@ export default defineConfig({
         },
         reporters: ["verbose"],
         slowTestThreshold: 5000,
+        // Force exit after tests complete to prevent hanging
+        teardownTimeout: 1000,
     },
     resolve: {
         alias: {

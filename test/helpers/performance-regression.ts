@@ -473,19 +473,5 @@ class PerformanceRegressionTest {
     }
 }
 
-// Run tests if called directly
-if (import.meta.url === `file://${process.argv[1] ?? ""}`) {
-    const test = new PerformanceRegressionTest();
-
-    const updateBaselines = process.argv.includes("--update-baselines");
-
-    if (updateBaselines) {
-        test.updateBaselines();
-    } else {
-        const success = test.runAll();
-        process.exit(success ? 0 : 1);
-    }
-}
-
 export {PerformanceRegressionTest};
 

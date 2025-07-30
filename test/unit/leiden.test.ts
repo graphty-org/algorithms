@@ -1,10 +1,11 @@
 import {describe, expect, it} from "vitest";
 
 import {leiden} from "../../src/algorithms/community/leiden";
+import {createGraphFromMap} from "../helpers/graph-test-utils";
 
 describe("Leiden Algorithm", () => {
     it("should detect communities in a simple graph", () => {
-        const graph = new Map([
+        const graphMap = new Map([
             ["a", new Map([["b", 1], ["c", 1]])],
             ["b", new Map([["a", 1], ["c", 1]])],
             ["c", new Map([["a", 1], ["b", 1]])],
@@ -12,6 +13,7 @@ describe("Leiden Algorithm", () => {
             ["e", new Map([["d", 1], ["f", 1]])],
             ["f", new Map([["d", 1], ["e", 1]])],
         ]);
+        const graph = createGraphFromMap(graphMap);
 
         const result = leiden(graph);
 
@@ -25,7 +27,8 @@ describe("Leiden Algorithm", () => {
     });
 
     it("should handle empty graph", () => {
-        const graph = new Map<string, Map<string, number>>();
+        const graphMap = new Map<string, Map<string, number>>();
+        const graph = createGraphFromMap(graphMap);
 
         const result = leiden(graph);
 
@@ -35,9 +38,10 @@ describe("Leiden Algorithm", () => {
     });
 
     it("should handle single node graph", () => {
-        const graph = new Map([
+        const graphMap = new Map([
             ["a", new Map<string, number>()],
         ]);
+        const graph = createGraphFromMap(graphMap);
 
         const result = leiden(graph);
 
@@ -47,12 +51,13 @@ describe("Leiden Algorithm", () => {
     });
 
     it("should handle complete graph", () => {
-        const graph = new Map([
+        const graphMap = new Map([
             ["a", new Map([["b", 1], ["c", 1], ["d", 1]])],
             ["b", new Map([["a", 1], ["c", 1], ["d", 1]])],
             ["c", new Map([["a", 1], ["b", 1], ["d", 1]])],
             ["d", new Map([["a", 1], ["b", 1], ["c", 1]])],
         ]);
+        const graph = createGraphFromMap(graphMap);
 
         const result = leiden(graph);
 
@@ -63,13 +68,14 @@ describe("Leiden Algorithm", () => {
     });
 
     it("should handle star graph", () => {
-        const graph = new Map([
+        const graphMap = new Map([
             ["center", new Map([["a", 1], ["b", 1], ["c", 1], ["d", 1]])],
             ["a", new Map([["center", 1]])],
             ["b", new Map([["center", 1]])],
             ["c", new Map([["center", 1]])],
             ["d", new Map([["center", 1]])],
         ]);
+        const graph = createGraphFromMap(graphMap);
 
         const result = leiden(graph);
 
@@ -80,7 +86,7 @@ describe("Leiden Algorithm", () => {
     });
 
     it("should respect resolution parameter", () => {
-        const graph = new Map([
+        const graphMap = new Map([
             ["a", new Map([["b", 1], ["c", 1]])],
             ["b", new Map([["a", 1], ["c", 1], ["d", 0.1]])],
             ["c", new Map([["a", 1], ["b", 1]])],
@@ -88,6 +94,7 @@ describe("Leiden Algorithm", () => {
             ["e", new Map([["d", 1], ["f", 1]])],
             ["f", new Map([["d", 1], ["e", 1]])],
         ]);
+        const graph = createGraphFromMap(graphMap);
 
         // Lower resolution should merge communities
         const lowRes = leiden(graph, {resolution: 0.5});
@@ -101,7 +108,7 @@ describe("Leiden Algorithm", () => {
     });
 
     it("should converge within max iterations", () => {
-        const graph = new Map([
+        const graphMap = new Map([
             ["a", new Map([["b", 1], ["c", 1]])],
             ["b", new Map([["a", 1], ["c", 1]])],
             ["c", new Map([["a", 1], ["b", 1]])],
@@ -109,6 +116,7 @@ describe("Leiden Algorithm", () => {
             ["e", new Map([["d", 1], ["f", 1]])],
             ["f", new Map([["d", 1], ["e", 1]])],
         ]);
+        const graph = createGraphFromMap(graphMap);
 
         const result = leiden(graph, {maxIterations: 5});
 
@@ -116,7 +124,7 @@ describe("Leiden Algorithm", () => {
     });
 
     it("should handle weighted edges correctly", () => {
-        const graph = new Map([
+        const graphMap = new Map([
             ["a", new Map([["b", 10], ["c", 10], ["d", 0.1]])],
             ["b", new Map([["a", 10], ["c", 10], ["e", 0.1]])],
             ["c", new Map([["a", 10], ["b", 10], ["f", 0.1]])],
@@ -124,6 +132,7 @@ describe("Leiden Algorithm", () => {
             ["e", new Map([["b", 0.1], ["d", 10], ["f", 10]])],
             ["f", new Map([["c", 0.1], ["d", 10], ["e", 10]])],
         ]);
+        const graph = createGraphFromMap(graphMap);
 
         const result = leiden(graph);
 
@@ -155,7 +164,7 @@ describe("Leiden Algorithm", () => {
     });
 
     it("should produce deterministic results with same seed", () => {
-        const graph = new Map([
+        const graphMap = new Map([
             ["a", new Map([["b", 1], ["c", 1]])],
             ["b", new Map([["a", 1], ["c", 1], ["d", 1]])],
             ["c", new Map([["a", 1], ["b", 1], ["d", 1]])],
@@ -163,6 +172,7 @@ describe("Leiden Algorithm", () => {
             ["e", new Map([["d", 1], ["f", 1]])],
             ["f", new Map([["e", 1]])],
         ]);
+        const graph = createGraphFromMap(graphMap);
 
         const result1 = leiden(graph, {randomSeed: 42});
         const result2 = leiden(graph, {randomSeed: 42});

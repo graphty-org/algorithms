@@ -7,17 +7,19 @@ import {
     kCoreDecomposition,
     kTruss,
     toUndirected} from "../../src/clustering/k-core";
+import {createGraphFromAdjacencySet} from "../helpers/graph-test-utils";
 
 describe("K-Core Decomposition", () => {
     describe("kCoreDecomposition", () => {
         it("should find k-cores in a simple graph", () => {
-            const graph = new Map([
+            const adjacencySet = new Map([
                 ["a", new Set(["b", "c"])],
                 ["b", new Set(["a", "c", "d"])],
                 ["c", new Set(["a", "b", "d"])],
                 ["d", new Set(["b", "c", "e"])],
                 ["e", new Set(["d"])],
             ]);
+            const graph = createGraphFromAdjacencySet(adjacencySet);
 
             const result = kCoreDecomposition(graph);
 
@@ -34,12 +36,13 @@ describe("K-Core Decomposition", () => {
         });
 
         it("should handle complete graph", () => {
-            const graph = new Map([
+            const adjacencySet = new Map([
                 ["a", new Set(["b", "c", "d"])],
                 ["b", new Set(["a", "c", "d"])],
                 ["c", new Set(["a", "b", "d"])],
                 ["d", new Set(["a", "b", "c"])],
             ]);
+            const graph = createGraphFromAdjacencySet(adjacencySet);
 
             const result = kCoreDecomposition(graph);
 
@@ -50,7 +53,7 @@ describe("K-Core Decomposition", () => {
         });
 
         it("should handle star graph", () => {
-            const graph = new Map([
+            const adjacencySet = new Map([
                 ["center", new Set(["a", "b", "c", "d", "e"])],
                 ["a", new Set(["center"])],
                 ["b", new Set(["center"])],
@@ -58,22 +61,24 @@ describe("K-Core Decomposition", () => {
                 ["d", new Set(["center"])],
                 ["e", new Set(["center"])],
             ]);
+            const graph = createGraphFromAdjacencySet(adjacencySet);
 
             const result = kCoreDecomposition(graph);
 
             expect(result.maxCore).toBe(1); // Star graph has max core 1
-            for (const node of graph.keys()) {
+            for (const node of adjacencySet.keys()) {
                 expect(result.coreness.get(node)).toBe(1);
             }
         });
 
         it("should handle disconnected graph", () => {
-            const graph = new Map([
+            const adjacencySet = new Map([
                 ["a", new Set(["b"])],
                 ["b", new Set(["a"])],
                 ["c", new Set(["d"])],
                 ["d", new Set(["c"])],
             ]);
+            const graph = createGraphFromAdjacencySet(adjacencySet);
 
             const result = kCoreDecomposition(graph);
 
@@ -82,7 +87,8 @@ describe("K-Core Decomposition", () => {
         });
 
         it("should handle empty graph", () => {
-            const graph = new Map<string, Set<string>>();
+            const adjacencySet = new Map<string, Set<string>>();
+            const graph = createGraphFromAdjacencySet(adjacencySet);
 
             const result = kCoreDecomposition(graph);
 
@@ -92,9 +98,10 @@ describe("K-Core Decomposition", () => {
         });
 
         it("should handle single node", () => {
-            const graph = new Map([
+            const adjacencySet = new Map([
                 ["a", new Set<string>()],
             ]);
+            const graph = createGraphFromAdjacencySet(adjacencySet);
 
             const result = kCoreDecomposition(graph);
 
@@ -103,7 +110,7 @@ describe("K-Core Decomposition", () => {
         });
 
         it("should handle graph with varying densities", () => {
-            const graph = new Map([
+            const adjacencySet = new Map([
                 // Dense cluster
                 ["a", new Set(["b", "c", "d"])],
                 ["b", new Set(["a", "c", "d"])],
@@ -116,6 +123,7 @@ describe("K-Core Decomposition", () => {
                 ["g", new Set(["f", "h"])],
                 ["h", new Set(["f", "g"])],
             ]);
+            const graph = createGraphFromAdjacencySet(adjacencySet);
 
             const result = kCoreDecomposition(graph);
 
@@ -127,13 +135,14 @@ describe("K-Core Decomposition", () => {
 
     describe("getKCore", () => {
         it("should extract k-core nodes", () => {
-            const graph = new Map([
+            const adjacencySet = new Map([
                 ["a", new Set(["b", "c", "d"])],
                 ["b", new Set(["a", "c", "d"])],
                 ["c", new Set(["a", "b", "d"])],
                 ["d", new Set(["a", "b", "c", "e"])],
                 ["e", new Set(["d"])],
             ]);
+            const graph = createGraphFromAdjacencySet(adjacencySet);
 
             const core2 = getKCore(graph, 2);
             const core3 = getKCore(graph, 3);
@@ -144,10 +153,11 @@ describe("K-Core Decomposition", () => {
         });
 
         it("should return empty set for k > max core", () => {
-            const graph = new Map([
+            const adjacencySet = new Map([
                 ["a", new Set(["b"])],
                 ["b", new Set(["a"])],
             ]);
+            const graph = createGraphFromAdjacencySet(adjacencySet);
 
             const core5 = getKCore(graph, 5);
 
@@ -157,7 +167,7 @@ describe("K-Core Decomposition", () => {
 
     describe("getKCoreSubgraph", () => {
         it("should extract k-core subgraph", () => {
-            const graph = new Map([
+            const adjacencySet = new Map([
                 ["a", new Set(["b", "c", "d"])],
                 ["b", new Set(["a", "c", "d"])],
                 ["c", new Set(["a", "b", "d"])],
@@ -165,6 +175,7 @@ describe("K-Core Decomposition", () => {
                 ["e", new Set(["d", "f"])],
                 ["f", new Set(["e"])],
             ]);
+            const graph = createGraphFromAdjacencySet(adjacencySet);
 
             const subgraph = getKCoreSubgraph(graph, 3);
 
@@ -174,10 +185,11 @@ describe("K-Core Decomposition", () => {
         });
 
         it("should handle empty k-core", () => {
-            const graph = new Map([
+            const adjacencySet = new Map([
                 ["a", new Set(["b"])],
                 ["b", new Set(["a"])],
             ]);
+            const graph = createGraphFromAdjacencySet(adjacencySet);
 
             const subgraph = getKCoreSubgraph(graph, 5);
 
@@ -187,13 +199,14 @@ describe("K-Core Decomposition", () => {
 
     describe("degeneracyOrdering", () => {
         it("should produce valid degeneracy ordering", () => {
-            const graph = new Map([
+            const adjacencySet = new Map([
                 ["a", new Set(["b", "c"])],
                 ["b", new Set(["a", "c", "d"])],
                 ["c", new Set(["a", "b", "d"])],
                 ["d", new Set(["b", "c", "e"])],
                 ["e", new Set(["d"])],
             ]);
+            const graph = createGraphFromAdjacencySet(adjacencySet);
 
             const ordering = degeneracyOrdering(graph);
 
@@ -203,12 +216,13 @@ describe("K-Core Decomposition", () => {
         });
 
         it("should handle ties consistently", () => {
-            const graph = new Map([
+            const adjacencySet = new Map([
                 ["a", new Set(["b"])],
                 ["b", new Set(["a"])],
                 ["c", new Set(["d"])],
                 ["d", new Set(["c"])],
             ]);
+            const graph = createGraphFromAdjacencySet(adjacencySet);
 
             const ordering = degeneracyOrdering(graph);
 
@@ -219,11 +233,12 @@ describe("K-Core Decomposition", () => {
 
     describe("kTruss", () => {
         it("should find k-truss in triangle", () => {
-            const graph = new Map([
+            const adjacencySet = new Map([
                 ["a", new Set(["b", "c"])],
                 ["b", new Set(["a", "c"])],
                 ["c", new Set(["a", "b"])],
             ]);
+            const graph = createGraphFromAdjacencySet(adjacencySet);
 
             const truss3 = kTruss(graph, 3);
 
@@ -234,13 +249,14 @@ describe("K-Core Decomposition", () => {
         });
 
         it("should find k-truss in larger graph", () => {
-            const graph = new Map([
+            const adjacencySet = new Map([
                 ["a", new Set(["b", "c", "d"])],
                 ["b", new Set(["a", "c", "d"])],
                 ["c", new Set(["a", "b", "d"])],
                 ["d", new Set(["a", "b", "c", "e"])],
                 ["e", new Set(["d"])],
             ]);
+            const graph = createGraphFromAdjacencySet(adjacencySet);
 
             const truss3 = kTruss(graph, 3);
             const truss4 = kTruss(graph, 4);
@@ -250,12 +266,13 @@ describe("K-Core Decomposition", () => {
         });
 
         it("should handle graph with no triangles", () => {
-            const graph = new Map([
+            const adjacencySet = new Map([
                 ["a", new Set(["b"])],
                 ["b", new Set(["a", "c"])],
                 ["c", new Set(["b", "d"])],
                 ["d", new Set(["c"])],
             ]);
+            const graph = createGraphFromAdjacencySet(adjacencySet);
 
             const truss3 = kTruss(graph, 3);
 
@@ -263,21 +280,23 @@ describe("K-Core Decomposition", () => {
         });
 
         it("should throw error for k < 2", () => {
-            const graph = new Map([
+            const adjacencySet = new Map([
                 ["a", new Set(["b"])],
                 ["b", new Set(["a"])],
             ]);
+            const graph = createGraphFromAdjacencySet(adjacencySet);
 
             expect(() => kTruss(graph, 1)).toThrow("k must be at least 2");
         });
 
         it("should handle diamond graph", () => {
-            const graph = new Map([
+            const adjacencySet = new Map([
                 ["a", new Set(["b", "c"])],
                 ["b", new Set(["a", "c", "d"])],
                 ["c", new Set(["a", "b", "d"])],
                 ["d", new Set(["b", "c"])],
             ]);
+            const graph = createGraphFromAdjacencySet(adjacencySet);
 
             const truss3 = kTruss(graph, 3);
 
@@ -323,11 +342,11 @@ describe("K-Core Decomposition", () => {
 
     describe("performance tests", () => {
         it("should handle large sparse graph efficiently", () => {
-            const graph = new Map<number, Set<number>>();
+            const adjacencySet = new Map<number, Set<number>>();
 
             // Create a sparse graph with 1000 nodes
             for (let i = 0; i < 1000; i++) {
-                graph.set(i, new Set());
+                adjacencySet.set(i, new Set());
             }
 
             // Add edges to create a sparse structure
@@ -337,13 +356,14 @@ describe("K-Core Decomposition", () => {
                 for (let j = 0; j < degree; j++) {
                     const neighbor = Math.floor(Math.random() * 1000);
                     if (neighbor !== i) {
-                        graph.get(i)!.add(neighbor);
-                        graph.get(neighbor)!.add(i);
+                        adjacencySet.get(i)!.add(neighbor);
+                        adjacencySet.get(neighbor)!.add(i);
                     }
                 }
             }
 
             const startTime = Date.now();
+            const graph = createGraphFromAdjacencySet(adjacencySet);
             const result = kCoreDecomposition(graph);
             const endTime = Date.now();
 

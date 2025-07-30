@@ -560,11 +560,11 @@ function aggregateCommunities(
  * Space Complexity: O(n + m)
  */
 export function leiden(
-    graph: Graph | Map<string, Map<string, number>>,
+    graph: Graph,
     options: LeidenOptions = {},
 ): LeidenResult {
-    // Convert Graph to Map representation if needed
-    const graphMap = graph instanceof Map ? graph : graphToMap(graph);
+    // Convert Graph to Map representation
+    const graphMap = graphToMap(graph);
     return leidenImpl(graphMap, options);
 }
 

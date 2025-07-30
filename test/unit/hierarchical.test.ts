@@ -6,16 +6,18 @@ import {
     cutDendrogramKClusters,
     hierarchicalClustering,
     modularityHierarchicalClustering} from "../../src/clustering/hierarchical";
+import {createGraphFromAdjacencySet} from "../helpers/graph-test-utils";
 
 describe("Hierarchical Clustering", () => {
     describe("hierarchicalClustering", () => {
         it("should cluster a simple chain graph", () => {
-            const graph = new Map([
+            const adjacencySet = new Map([
                 ["a", new Set(["b"])],
                 ["b", new Set(["a", "c"])],
                 ["c", new Set(["b", "d"])],
                 ["d", new Set(["c"])],
             ]);
+            const graph = createGraphFromAdjacencySet(adjacencySet);
 
             const result = hierarchicalClustering(graph, "single");
 
@@ -25,12 +27,13 @@ describe("Hierarchical Clustering", () => {
         });
 
         it("should handle complete graph", () => {
-            const graph = new Map([
+            const adjacencySet = new Map([
                 ["a", new Set(["b", "c", "d"])],
                 ["b", new Set(["a", "c", "d"])],
                 ["c", new Set(["a", "b", "d"])],
                 ["d", new Set(["a", "b", "c"])],
             ]);
+            const graph = createGraphFromAdjacencySet(adjacencySet);
 
             const result = hierarchicalClustering(graph, "complete");
 
@@ -40,31 +43,33 @@ describe("Hierarchical Clustering", () => {
         });
 
         it("should handle disconnected components", () => {
-            const graph = new Map([
+            const adjacencySet = new Map([
                 ["a", new Set(["b"])],
                 ["b", new Set(["a"])],
                 ["c", new Set(["d"])],
                 ["d", new Set(["c"])],
             ]);
+            const graph = createGraphFromAdjacencySet(adjacencySet);
 
             const result = hierarchicalClustering(graph, "single");
 
             // With disconnected components, the algorithm may not merge all nodes
-            expect(result.root.members.size).toBeLessThanOrEqual(graph.size);
+            expect(result.root.members.size).toBeLessThanOrEqual(graph.nodeCount);
             // Distance between disconnected components is infinite
-            if (result.root.members.size === graph.size) {
+            if (result.root.members.size === graph.nodeCount) {
                 expect(result.root.distance).toBe(Infinity);
             }
         });
 
         it("should produce different results with different linkage methods", () => {
-            const graph = new Map([
+            const adjacencySet = new Map([
                 ["a", new Set(["b", "c"])],
                 ["b", new Set(["a", "c", "d"])],
                 ["c", new Set(["a", "b"])],
                 ["d", new Set(["b", "e"])],
                 ["e", new Set(["d"])],
             ]);
+            const graph = createGraphFromAdjacencySet(adjacencySet);
 
             const single = hierarchicalClustering(graph, "single");
             const complete = hierarchicalClustering(graph, "complete");
@@ -82,7 +87,8 @@ describe("Hierarchical Clustering", () => {
         });
 
         it("should handle empty graph", () => {
-            const graph = new Map<string, Set<string>>();
+            const adjacencySet = new Map<string, Set<string>>();
+            const graph = createGraphFromAdjacencySet(adjacencySet);
 
             const result = hierarchicalClustering(graph);
 
@@ -91,9 +97,10 @@ describe("Hierarchical Clustering", () => {
         });
 
         it("should handle single node", () => {
-            const graph = new Map([
+            const adjacencySet = new Map([
                 ["a", new Set<string>()],
             ]);
+            const graph = createGraphFromAdjacencySet(adjacencySet);
 
             const result = hierarchicalClustering(graph);
 
@@ -103,13 +110,14 @@ describe("Hierarchical Clustering", () => {
         });
 
         it("should create correct cluster hierarchy", () => {
-            const graph = new Map([
+            const adjacencySet = new Map([
                 ["a", new Set(["b"])],
                 ["b", new Set(["a"])],
                 ["c", new Set(["d"])],
                 ["d", new Set(["c"])],
                 ["e", new Set<string>()],
             ]);
+            const graph = createGraphFromAdjacencySet(adjacencySet);
 
             const result = hierarchicalClustering(graph, "single");
 
@@ -127,12 +135,13 @@ describe("Hierarchical Clustering", () => {
 
     describe("cutDendrogram", () => {
         it("should cut dendrogram at specified height", () => {
-            const graph = new Map([
+            const adjacencySet = new Map([
                 ["a", new Set(["b"])],
                 ["b", new Set(["a", "c"])],
                 ["c", new Set(["b", "d"])],
                 ["d", new Set(["c"])],
             ]);
+            const graph = createGraphFromAdjacencySet(adjacencySet);
 
             const result = hierarchicalClustering(graph, "single");
 
@@ -162,13 +171,14 @@ describe("Hierarchical Clustering", () => {
 
     describe("cutDendrogramKClusters", () => {
         it("should produce k clusters", () => {
-            const graph = new Map([
+            const adjacencySet = new Map([
                 ["a", new Set(["b"])],
                 ["b", new Set(["a", "c"])],
                 ["c", new Set(["b", "d"])],
                 ["d", new Set(["c", "e"])],
                 ["e", new Set(["d"])],
             ]);
+            const graph = createGraphFromAdjacencySet(adjacencySet);
 
             const result = hierarchicalClustering(graph, "single");
 
@@ -188,10 +198,11 @@ describe("Hierarchical Clustering", () => {
         });
 
         it("should handle edge cases", () => {
-            const graph = new Map([
+            const adjacencySet = new Map([
                 ["a", new Set(["b"])],
                 ["b", new Set(["a"])],
             ]);
+            const graph = createGraphFromAdjacencySet(adjacencySet);
 
             const result = hierarchicalClustering(graph);
 
@@ -206,7 +217,7 @@ describe("Hierarchical Clustering", () => {
     describe("modularityHierarchicalClustering", () => {
         it("should cluster based on modularity", () => {
             // Two clear communities
-            const graph = new Map([
+            const adjacencySet = new Map([
                 ["a", new Set(["b", "c"])],
                 ["b", new Set(["a", "c"])],
                 ["c", new Set(["a", "b", "d"])],
@@ -214,6 +225,7 @@ describe("Hierarchical Clustering", () => {
                 ["e", new Set(["d", "f"])],
                 ["f", new Set(["d", "e"])],
             ]);
+            const graph = createGraphFromAdjacencySet(adjacencySet);
 
             const result = modularityHierarchicalClustering(graph);
 
@@ -234,12 +246,13 @@ describe("Hierarchical Clustering", () => {
         });
 
         it("should handle clique", () => {
-            const graph = new Map([
+            const adjacencySet = new Map([
                 ["a", new Set(["b", "c", "d"])],
                 ["b", new Set(["a", "c", "d"])],
                 ["c", new Set(["a", "b", "d"])],
                 ["d", new Set(["a", "b", "c"])],
             ]);
+            const graph = createGraphFromAdjacencySet(adjacencySet);
 
             const result = modularityHierarchicalClustering(graph);
 
@@ -249,13 +262,14 @@ describe("Hierarchical Clustering", () => {
         });
 
         it("should handle star graph", () => {
-            const graph = new Map([
+            const adjacencySet = new Map([
                 ["center", new Set(["a", "b", "c", "d"])],
                 ["a", new Set(["center"])],
                 ["b", new Set(["center"])],
                 ["c", new Set(["center"])],
                 ["d", new Set(["center"])],
             ]);
+            const graph = createGraphFromAdjacencySet(adjacencySet);
 
             const result = modularityHierarchicalClustering(graph);
 
@@ -264,7 +278,8 @@ describe("Hierarchical Clustering", () => {
         });
 
         it("should handle empty graph", () => {
-            const graph = new Map<string, Set<string>>();
+            const adjacencySet = new Map<string, Set<string>>();
+            const graph = createGraphFromAdjacencySet(adjacencySet);
 
             const result = modularityHierarchicalClustering(graph);
 
@@ -275,18 +290,18 @@ describe("Hierarchical Clustering", () => {
 
     describe("performance", () => {
         it("should handle medium-sized graphs", () => {
-            const graph = new Map<number, Set<number>>();
+            const adjacencySet = new Map<number, Set<number>>();
 
             // Create a graph with 50 nodes in 5 communities
             for (let c = 0; c < 5; c++) {
                 for (let i = 0; i < 10; i++) {
                     const node = (c * 10) + i;
-                    graph.set(node, new Set());
+                    adjacencySet.set(node, new Set());
 
                     // Connect within community
                     for (let j = 0; j < 10; j++) {
                         if (i !== j) {
-                            graph.get(node)!.add((c * 10) + j);
+                            adjacencySet.get(node)!.add((c * 10) + j);
                         }
                     }
 
@@ -296,15 +311,16 @@ describe("Hierarchical Clustering", () => {
 
             // Add connections between communities
             for (let c = 0; c < 4; c++) {
-                graph.get(c * 10)!.add((c + 1) * 10);
-                graph.get((c + 1) * 10)!.add(c * 10);
+                adjacencySet.get(c * 10)!.add((c + 1) * 10);
+                adjacencySet.get((c + 1) * 10)!.add(c * 10);
             }
 
             const start = Date.now();
+            const graph = createGraphFromAdjacencySet(adjacencySet);
             const result = hierarchicalClustering(graph, "average");
             const elapsed = Date.now() - start;
 
-            expect(result.root.members.size).toBe(graph.size);
+            expect(result.root.members.size).toBe(adjacencySet.size);
             expect(elapsed).toBeLessThan(5000); // Should complete within 5 seconds
 
             // Should identify 5 communities
@@ -315,13 +331,14 @@ describe("Hierarchical Clustering", () => {
 
     describe("clustering validation", () => {
         it("should maintain cluster properties", () => {
-            const graph = new Map([
+            const adjacencySet = new Map([
                 ["a", new Set(["b", "c"])],
                 ["b", new Set(["a", "c"])],
                 ["c", new Set(["a", "b", "d"])],
                 ["d", new Set(["c", "e"])],
                 ["e", new Set(["d"])],
             ]);
+            const graph = createGraphFromAdjacencySet(adjacencySet);
 
             const result = hierarchicalClustering(graph, "complete");
 

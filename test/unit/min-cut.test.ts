@@ -4,16 +4,18 @@ import {
     kargerMinCut,
     minSTCut,
     stoerWagner} from "../../src/flow/min-cut";
+import {createGraphFromMap} from "../helpers/graph-test-utils";
 
 describe("Minimum Cut Algorithms", () => {
     describe("minSTCut", () => {
         it("should find minimum s-t cut in simple graph", () => {
-            const graph = new Map([
+            const graphMap = new Map([
                 ["s", new Map([["a", 3], ["b", 2]])],
                 ["a", new Map([["t", 2]])],
                 ["b", new Map([["t", 3]])],
                 ["t", new Map()],
             ]);
+            const graph = createGraphFromMap(graphMap);
 
             const result = minSTCut(graph, "s", "t");
 
@@ -28,13 +30,14 @@ describe("Minimum Cut Algorithms", () => {
         });
 
         it("should find bottleneck cut", () => {
-            const graph = new Map([
+            const graphMap = new Map([
                 ["s", new Map([["a", 10], ["b", 10]])],
                 ["a", new Map([["c", 1]])], // Bottleneck
                 ["b", new Map([["c", 1]])], // Bottleneck
                 ["c", new Map([["t", 10]])],
                 ["t", new Map()],
             ]);
+            const graph = createGraphFromMap(graphMap);
 
             const result = minSTCut(graph, "s", "t");
 
@@ -48,12 +51,13 @@ describe("Minimum Cut Algorithms", () => {
         });
 
         it("should handle single edge cut", () => {
-            const graph = new Map([
+            const graphMap = new Map([
                 ["s", new Map([["a", 5]])],
                 ["a", new Map([["b", 3]])], // Min cut
                 ["b", new Map([["t", 4]])],
                 ["t", new Map()],
             ]);
+            const graph = createGraphFromMap(graphMap);
 
             const result = minSTCut(graph, "s", "t");
 
@@ -63,9 +67,10 @@ describe("Minimum Cut Algorithms", () => {
         });
 
         it("should return empty cut for non-existent nodes", () => {
-            const graph = new Map([
+            const graphMap = new Map([
                 ["a", new Map([["b", 10]])],
             ]);
+            const graph = createGraphFromMap(graphMap);
 
             const result = minSTCut(graph, "x", "y");
 
@@ -75,12 +80,13 @@ describe("Minimum Cut Algorithms", () => {
         });
 
         it("should handle disconnected source and sink", () => {
-            const graph = new Map([
+            const graphMap = new Map([
                 ["s", new Map([["a", 10]])],
                 ["a", new Map()],
                 ["b", new Map([["t", 10]])],
                 ["t", new Map()],
             ]);
+            const graph = createGraphFromMap(graphMap);
 
             const result = minSTCut(graph, "s", "t");
 

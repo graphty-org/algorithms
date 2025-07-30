@@ -7,7 +7,6 @@
  */
 
 import type {Graph} from "../core/graph.js";
-import type {NodeId} from "../types/index.js";
 
 /**
  * Convert Graph to adjacency set representation for clustering
@@ -392,10 +391,11 @@ export function cutDendrogramKClusters<T>(
  * Compute modularity-based hierarchical clustering
  * Uses modularity gain to decide merges
  */
-export function modularityHierarchicalClustering<T>(
-    graph: Map<T, Set<T>>,
-): HierarchicalClusteringResult<T> {
-    const nodes = Array.from(graph.keys());
+export function modularityHierarchicalClustering(
+    graph: Graph,
+): HierarchicalClusteringResult<string> {
+    const adjacencySet = graphToAdjacencySet(graph);
+    const nodes = Array.from(adjacencySet.keys());
     const n = nodes.length;
 
     if (n === 0) {
@@ -407,10 +407,10 @@ export function modularityHierarchicalClustering<T>(
     }
 
     // Compute degrees
-    const degrees = new Map<T, number>();
+    const degrees = new Map<string, number>();
     let totalEdges = 0;
 
-    for (const [node, neighbors] of graph) {
+    for (const [node, neighbors] of adjacencySet) {
         degrees.set(node, neighbors.size);
         totalEdges += neighbors.size;
     }
@@ -419,28 +419,28 @@ export function modularityHierarchicalClustering<T>(
     totalEdges = totalEdges / 2;
 
     // Initialize clusters
-    const clusters: ClusterNode<T>[] = nodes.map((node, i) => ({
+    const clusters: ClusterNode<string>[] = nodes.map((node, i) => ({
         id: `leaf-${String(i)}`,
         members: new Set([node]),
         distance: 0,
         height: 0,
     }));
 
-    const dendrogram: ClusterNode<T>[] = [... clusters];
+    const dendrogram: ClusterNode<string>[] = [... clusters];
     let clusterCount = n;
 
     // Active clusters
     const activeClusters = new Set(clusters);
 
     // Community assignments
-    const communities = new Map<T, number>();
+    const communities = new Map<string, number>();
     nodes.forEach((node, i) => communities.set(node, i));
 
     // Merge clusters based on modularity gain
     while (activeClusters.size > 1) {
         let maxGain = -Infinity;
-        let mergeCluster1: ClusterNode<T> | null = null;
-        let mergeCluster2: ClusterNode<T> | null = null;
+        let mergeCluster1: ClusterNode<string> | null = null;
+        let mergeCluster2: ClusterNode<string> | null = null;
 
         for (const cluster1 of activeClusters) {
             for (const cluster2 of activeClusters) {
@@ -453,7 +453,7 @@ export function modularityHierarchicalClustering<T>(
                 let degreeProduct = 0;
 
                 for (const node1 of cluster1.members) {
-                    const neighbors = graph.get(node1);
+                    const neighbors = adjacencySet.get(node1);
                     const degree1 = degrees.get(node1) ?? 0;
 
                     for (const node2 of cluster2.members) {
@@ -482,7 +482,7 @@ export function modularityHierarchicalClustering<T>(
         }
 
         // Create new cluster
-        const newCluster: ClusterNode<T> = {
+        const newCluster: ClusterNode<string> = {
             id: `cluster-${String(clusterCount++)}`,
             members: new Set([... mergeCluster1.members, ... mergeCluster2.members]),
             left: mergeCluster1,
@@ -503,7 +503,7 @@ export function modularityHierarchicalClustering<T>(
     const root = Array.from(activeClusters)[0] ?? dendrogram[dendrogram.length - 1];
 
     // Generate clusters at different heights
-    const clustersByLevel = new Map<number, Set<T>[]>();
+    const clustersByLevel = new Map<number, Set<string>[]>();
 
     if (!root) {
         return {
@@ -535,16 +535,11 @@ export function modularityHierarchicalClustering<T>(
  * Time Complexity: O(n³) naive, O(n² log n) with heap
  * Space Complexity: O(n²)
  */
-export function hierarchicalClustering<T = NodeId>(
-    graph: Graph | Map<T, Set<T>>,
+export function hierarchicalClustering(
+    graph: Graph,
     linkage: LinkageMethod = "single",
-): HierarchicalClusteringResult<T> {
-    if (graph instanceof Map) {
-        return hierarchicalClusteringImpl(graph, linkage);
-    }
-
+): HierarchicalClusteringResult<string> {
     // Convert Graph to adjacency set representation
     const adjacencySet = graphToAdjacencySet(graph);
-    // Type assertion needed because we know the keys are strings
-    return hierarchicalClusteringImpl(adjacencySet as Map<T, Set<T>>, linkage);
+    return hierarchicalClusteringImpl(adjacencySet, linkage);
 }

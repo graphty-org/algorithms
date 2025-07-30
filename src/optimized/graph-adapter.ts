@@ -49,6 +49,29 @@ export class GraphAdapter<TNodeId = NodeId> implements ReadonlyGraph<TNodeId> {
 
                 adjacencyList.set(nodeId, neighbors);
             }
+        } else if ("nodeIds" in graph && typeof graph.nodeIds === "function") {
+            // Handle ReadonlyGraph with nodeIds method
+            interface ReadonlyGraphWithNodeIds {
+                nodeIds(): Iterable<TNodeId>;
+                edges?(): Iterable<{source: TNodeId, target: TNodeId, weight?: number}>;
+            }
+            const readonlyGraph = graph as ReadonlyGraphWithNodeIds;
+            for (const nodeId of readonlyGraph.nodeIds()) {
+                adjacencyList.set(nodeId, []);
+            }
+
+            // Build adjacency from edges
+            if ("edges" in readonlyGraph && typeof readonlyGraph.edges === "function") {
+                for (const edge of readonlyGraph.edges()) {
+                    const neighbors = adjacencyList.get(edge.source);
+                    if (neighbors) {
+                        neighbors.push(edge.target);
+                        if (edge.weight !== undefined) {
+                            weights.set(`${String(edge.source)}-${String(edge.target)}`, edge.weight);
+                        }
+                    }
+                }
+            }
         }
 
         return new CSRGraph(adjacencyList, weights.size > 0 ? weights : undefined);

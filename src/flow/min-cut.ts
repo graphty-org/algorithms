@@ -19,7 +19,7 @@ export interface MinCutResult {
  * Find minimum s-t cut using max flow
  * The minimum cut value equals the maximum flow value (max-flow min-cut theorem)
  *
- * @param graph - Weighted graph - accepts Graph class or Map representation
+ * @param graph - Weighted graph
  * @param source - Source node
  * @param sink - Sink node
  * @returns Minimum cut information
@@ -27,13 +27,11 @@ export interface MinCutResult {
  * Time Complexity: Same as max flow algorithm used
  */
 export function minSTCut(
-    graph: Graph | Map<string, Map<string, number>>,
+    graph: Graph,
     source: string,
     sink: string,
 ): MinCutResult {
-    // Convert Graph to Map representation if needed
-    const graphMap = graph instanceof Map ? graph : graphToMap(graph);
-    const flowResult = fordFulkerson(graphMap, source, sink);
+    const flowResult = fordFulkerson(graph, source, sink);
 
     if (!flowResult.minCut) {
         return {
@@ -48,7 +46,8 @@ export function minSTCut(
 
     // Find actual cut edges and their weights
     for (const [u, v] of flowResult.minCut.edges) {
-        const weight = graphMap.get(u)?.get(v) ?? 0;
+        const edge = graph.getEdge(u, v);
+        const weight = edge?.weight ?? 0;
         if (weight > 0) {
             cutEdges.push({from: u, to: v, weight});
         }

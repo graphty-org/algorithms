@@ -367,7 +367,7 @@ function labelPropagationSemiSupervisedImpl(
  * Label Propagation Algorithm
  * Each node adopts the most frequent label among its neighbors
  *
- * @param graph - Undirected graph (can be weighted) - accepts Graph class or Map representation
+ * @param graph - Undirected graph (can be weighted)
  * @param options - Algorithm options
  * @returns Community assignments
  *
@@ -375,11 +375,11 @@ function labelPropagationSemiSupervisedImpl(
  * Space Complexity: O(n)
  */
 export function labelPropagation(
-    graph: Graph | Map<string, Map<string, number>>,
+    graph: Graph,
     options: LabelPropagationOptions = {},
 ): LabelPropagationResult {
-    // Convert Graph to Map representation if needed
-    const graphMap = graph instanceof Map ? graph : graphToMap(graph);
+    // Convert Graph to Map representation
+    const graphMap = graphToMap(graph);
     return labelPropagationImpl(graphMap, options);
 }
 
@@ -387,16 +387,16 @@ export function labelPropagation(
  * Asynchronous Label Propagation
  * Updates all nodes simultaneously (can lead to oscillations)
  *
- * @param graph - Undirected graph (can be weighted) - accepts Graph class or Map representation
+ * @param graph - Undirected graph (can be weighted)
  * @param options - Algorithm options
  * @returns Community assignments
  */
 export function labelPropagationAsync(
-    graph: Graph | Map<string, Map<string, number>>,
+    graph: Graph,
     options: LabelPropagationOptions = {},
 ): LabelPropagationResult {
-    // Convert Graph to Map representation if needed
-    const graphMap = graph instanceof Map ? graph : graphToMap(graph);
+    // Convert Graph to Map representation
+    const graphMap = graphToMap(graph);
     return labelPropagationAsyncImpl(graphMap, options);
 }
 
@@ -404,18 +404,18 @@ export function labelPropagationAsync(
  * Semi-supervised Label Propagation
  * Some nodes have fixed labels that don't change
  *
- * @param graph - Undirected graph (can be weighted) - accepts Graph class or Map representation
+ * @param graph - Undirected graph (can be weighted)
  * @param seedLabels - Initial fixed labels for some nodes
  * @param options - Algorithm options
  * @returns Community assignments
  */
 export function labelPropagationSemiSupervised(
-    graph: Graph | Map<string, Map<string, number>>,
+    graph: Graph,
     seedLabels: Map<string, number>,
     options: LabelPropagationOptions = {},
 ): LabelPropagationResult {
-    // Convert Graph to Map representation if needed
-    const graphMap = graph instanceof Map ? graph : graphToMap(graph);
+    // Convert Graph to Map representation
+    const graphMap = graphToMap(graph);
     return labelPropagationSemiSupervisedImpl(graphMap, seedLabels, options);
 }
 

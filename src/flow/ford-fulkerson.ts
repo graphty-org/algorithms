@@ -360,12 +360,12 @@ export function createBipartiteFlowNetwork(
  * Space Complexity: O(V + E)
  */
 export function fordFulkerson(
-    graph: Graph | Map<string, Map<string, number>>,
+    graph: Graph,
     source: string,
     sink: string,
 ): MaxFlowResult {
-    // Convert Graph to Map representation if needed
-    const graphMap = graph instanceof Map ? graph : graphToMap(graph);
+    // Convert Graph to Map representation
+    const graphMap = graphToMap(graph);
     return fordFulkersonImpl(graphMap, source, sink);
 }
 

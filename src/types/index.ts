@@ -104,6 +104,7 @@ export interface LouvainOptions {
     resolution?: number; // Resolution parameter (default: 1.0)
     maxIterations?: number; // Maximum iterations (default: 100)
     tolerance?: number; // Improvement tolerance (default: 1e-6)
+    useOptimized?: boolean; // Use optimized implementation for large graphs (default: true for graphs > 50 nodes)
 }
 
 export interface GirvanNewmanOptions {

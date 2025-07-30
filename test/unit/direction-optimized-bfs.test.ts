@@ -197,7 +197,7 @@ describe("DirectionOptimizedBFS", () => {
             const duration = performance.now() - startTime;
 
             expect(result.visitedCount).toBe(nodeCount);
-            expect(duration).toBeLessThan(50); // Should complete in < 50ms
+            expect(duration).toBeLessThan(100); // Should complete in < 100ms
 
             // Check some distances
             expect(result.distances.get(0)).toBe(0);

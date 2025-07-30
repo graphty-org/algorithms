@@ -282,8 +282,13 @@ describe("isCSRGraph", () => {
     });
 });
 
-describe("optimization configuration", () => {
-    it("should configure and get optimization settings", () => {
+describe("optimization configuration (deprecated)", () => {
+    it("should return empty object from getOptimizationConfig", () => {
+        const config = getOptimizationConfig();
+        expect(config).toEqual({});
+    });
+
+    it("should not store configuration (no-op)", () => {
         const config = {
             useDirectionOptimizedBFS: true,
             useCSRFormat: false,
@@ -297,32 +302,7 @@ describe("optimization configuration", () => {
         configureOptimizations(config);
         const retrieved = getOptimizationConfig();
 
-        expect(retrieved).toEqual(config);
-    });
-
-    it("should handle partial configuration updates", () => {
-        const initialConfig = getOptimizationConfig();
-
-        configureOptimizations({
-            useCSRFormat: true,
-            bfsAlpha: 30.0,
-        });
-
-        const updated = getOptimizationConfig();
-        expect(updated.useCSRFormat).toBe(true);
-        expect(updated.bfsAlpha).toBe(30.0);
-        expect(updated.bfsBeta).toBe(initialConfig.bfsBeta);
-    });
-
-    it("should provide default configuration", () => {
-        const config = getOptimizationConfig();
-
-        expect(config).toHaveProperty("useDirectionOptimizedBFS");
-        expect(config).toHaveProperty("useCSRFormat");
-        expect(config).toHaveProperty("useBitPackedStructures");
-        expect(config).toHaveProperty("bfsAlpha");
-        expect(config).toHaveProperty("bfsBeta");
-        expect(config).toHaveProperty("preallocateSize");
-        expect(config).toHaveProperty("enableCaching");
+        // Should still return empty object since it's a no-op
+        expect(retrieved).toEqual({});
     });
 });

@@ -7,7 +7,6 @@
  */
 
 import type {Graph} from "../core/graph.js";
-import type {NodeId} from "../types/index.js";
 
 /**
  * Convert Graph to adjacency set representation
@@ -220,12 +219,12 @@ function kCoreDecompositionImpl<T>(
  * @param k - Core number
  * @returns Set of nodes in k-core or higher
  */
-export function getKCore<T>(
-    graph: Map<T, Set<T>>,
+export function getKCore(
+    graph: Graph,
     k: number,
-): Set<T> {
+): Set<string> {
     const {coreness} = kCoreDecomposition(graph);
-    const kCore = new Set<T>();
+    const kCore = new Set<string>();
 
     for (const [node, core] of coreness) {
         if (core >= k) {
@@ -244,17 +243,18 @@ export function getKCore<T>(
  * @param k - Core number
  * @returns K-core subgraph
  */
-export function getKCoreSubgraph<T>(
-    graph: Map<T, Set<T>>,
+export function getKCoreSubgraph(
+    graph: Graph,
     k: number,
-): Map<T, Set<T>> {
+): Map<string, Set<string>> {
     const kCoreNodes = getKCore(graph, k);
-    const subgraph = new Map<T, Set<T>>();
+    const adjacencySet = graphToAdjacencySet(graph);
+    const subgraph = new Map<string, Set<string>>();
 
     for (const node of kCoreNodes) {
-        const neighbors = graph.get(node);
+        const neighbors = adjacencySet.get(node);
         if (neighbors) {
-            const coreNeighbors = new Set<T>();
+            const coreNeighbors = new Set<string>();
             for (const neighbor of neighbors) {
                 if (kCoreNodes.has(neighbor)) {
                     coreNeighbors.add(neighbor);
@@ -274,24 +274,25 @@ export function getKCoreSubgraph<T>(
  * @param graph - Undirected graph
  * @returns Array of nodes ordered by degeneracy
  */
-export function degeneracyOrdering<T>(
-    graph: Map<T, Set<T>>,
-): T[] {
-    const degree = new Map<T, number>();
-    const remaining = new Map<T, Set<T>>();
-    const ordering: T[] = [];
+export function degeneracyOrdering(
+    graph: Graph,
+): string[] {
+    const adjacencySet = graphToAdjacencySet(graph);
+    const degree = new Map<string, number>();
+    const remaining = new Map<string, Set<string>>();
+    const ordering: string[] = [];
 
     // Initialize
-    for (const [node, neighbors] of graph) {
+    for (const [node, neighbors] of adjacencySet) {
         degree.set(node, neighbors.size);
         remaining.set(node, new Set(neighbors));
     }
 
     // Build ordering
-    while (ordering.length < graph.size) {
+    while (ordering.length < adjacencySet.size) {
     // Find minimum degree node
         let minDegree = Infinity;
-        let minNode: T | undefined;
+        let minNode: string | undefined;
 
         for (const [node, deg] of degree) {
             if (!ordering.includes(node) && deg < minDegree) {
@@ -331,20 +332,22 @@ export function degeneracyOrdering<T>(
  * @param k - Truss number (k >= 2)
  * @returns Edges in k-truss
  */
-export function kTruss<T>(
-    graph: Map<T, Set<T>>,
+export function kTruss(
+    graph: Graph,
     k: number,
 ): Set<string> {
     if (k < 2) {
         throw new Error("k must be at least 2 for k-truss");
     }
 
+    const adjacencySet = graphToAdjacencySet(graph);
+
     // Count triangles for each edge
     const edgeTriangles = new Map<string, number>();
     const edges = new Set<string>();
 
     // Initialize edges
-    for (const [u, neighbors] of graph) {
+    for (const [u, neighbors] of adjacencySet) {
         for (const v of neighbors) {
             if (u < v) { // Avoid duplicates
                 const edge = `${String(u)},${String(v)}`;
@@ -355,10 +358,10 @@ export function kTruss<T>(
     }
 
     // Count triangles
-    for (const [u, uNeighbors] of graph) {
+    for (const [u, uNeighbors] of adjacencySet) {
         for (const v of uNeighbors) {
             if (u < v) {
-                const vNeighbors = graph.get(v);
+                const vNeighbors = adjacencySet.get(v);
                 if (vNeighbors) {
                     // Find common neighbors (triangles)
                     for (const w of uNeighbors) {
@@ -419,16 +422,14 @@ export function kTruss<T>(
             }
 
             // Update triangle counts for affected edges
-            const uNode = u as T;
-            const vNode = v as T;
-            const uNeighbors = graph.get(uNode);
-            const vNeighbors = graph.get(vNode);
+            const uNeighbors = adjacencySet.get(u);
+            const vNeighbors = adjacencySet.get(v);
 
             if (uNeighbors && vNeighbors) {
                 for (const w of uNeighbors) {
                     if (vNeighbors.has(w)) {
-                        const edge1 = uNode < w ? `${String(uNode)},${String(w)}` : `${String(w)},${String(uNode)}`;
-                        const edge2 = vNode < w ? `${String(vNode)},${String(w)}` : `${String(w)},${String(vNode)}`;
+                        const edge1 = u < w ? `${String(u)},${String(w)}` : `${String(w)},${String(u)}`;
+                        const edge2 = v < w ? `${String(v)},${String(w)}` : `${String(w)},${String(v)}`;
 
                         if (kTrussEdges.has(edge1)) {
                             const edge1Count = edgeTriangles.get(edge1);
@@ -497,16 +498,11 @@ export function toUndirected<T>(
  * Time Complexity: O(V + E)
  * Space Complexity: O(V)
  */
-export function kCoreDecomposition<T = NodeId>(
-    graph: Graph | Map<T, Set<T>>,
-): KCoreResult<T> {
-    if (graph instanceof Map) {
-        return kCoreDecompositionImpl(graph);
-    }
-
+export function kCoreDecomposition(
+    graph: Graph,
+): KCoreResult<string> {
     // Convert Graph to adjacency set representation
     const adjacencySet = graphToAdjacencySet(graph);
-    // Type assertion needed because we know the keys are strings
-    return kCoreDecompositionImpl(adjacencySet as Map<T, Set<T>>);
+    return kCoreDecompositionImpl(adjacencySet);
 }
 

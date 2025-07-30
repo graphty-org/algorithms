@@ -1,5 +1,6 @@
 import {Graph} from "../../core/graph.js";
 import type {CommunityResult, LouvainOptions, NodeId} from "../../types/index.js";
+import {louvainOptimized} from "./louvain-optimized.js";
 
 /**
  * Louvain community detection algorithm
@@ -23,6 +24,23 @@ export function louvain(
     const resolution = options.resolution ?? 1.0;
     const maxIterations = options.maxIterations ?? 100;
     const tolerance = options.tolerance ?? 1e-6;
+
+    // Use optimized version by default for larger graphs
+    // Only disable if explicitly requested or graph is very small
+    const shouldUseOptimized = options.useOptimized !== false && graph.nodeCount > 50;
+
+    if (shouldUseOptimized) {
+        return louvainOptimized(graph, {
+            resolution,
+            maxIterations,
+            tolerance,
+            // Enable all optimizations by default
+            pruneLeaves: true,
+            importanceOrdering: true,
+            thresholdCycling: true,
+            pruningThreshold: 0.01,
+        });
+    }
 
     // Initialize: each node in its own community
     const communities = initializeCommunities(graph);

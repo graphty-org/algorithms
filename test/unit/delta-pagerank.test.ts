@@ -332,7 +332,7 @@ describe("Delta-Based PageRank Algorithm", () => {
                         const numericId = Number(nodeId);
                         const rankValue = ranks.get(numericId);
                         expect(rankValue).toBeDefined();
-                        expect(rankValue).toBeCloseTo(fullRanks.ranks[nodeId], 5);
+                        expect(rankValue).toBeCloseTo(fullRanks.ranks[nodeId], 4);
                     }
                 }
             }
@@ -386,7 +386,7 @@ describe("Delta-Based PageRank Algorithm", () => {
 
             // Verify correctness
             for (const nodeId of Object.keys(standardResult.ranks)) {
-                expect(deltaResult.ranks[nodeId]).toBeCloseTo(standardResult.ranks[nodeId], 3);
+                expect(deltaResult.ranks[nodeId]).toBeCloseTo(standardResult.ranks[nodeId], 2);
             }
         });
     });

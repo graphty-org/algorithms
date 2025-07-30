@@ -5,11 +5,12 @@ import {
     labelPropagationAsync,
     labelPropagationSemiSupervised,
 } from "../../src/algorithms/community/label-propagation";
+import {createGraphFromMap} from "../helpers/graph-test-utils";
 
 describe("Label Propagation Algorithm", () => {
     describe("labelPropagation", () => {
         it("should detect communities in a simple graph", () => {
-            const graph = new Map([
+            const graphMap = new Map([
                 ["a", new Map([["b", 1], ["c", 1]])],
                 ["b", new Map([["a", 1], ["c", 1]])],
                 ["c", new Map([["a", 1], ["b", 1]])],
@@ -17,6 +18,7 @@ describe("Label Propagation Algorithm", () => {
                 ["e", new Map([["d", 1], ["f", 1]])],
                 ["f", new Map([["d", 1], ["e", 1]])],
             ]);
+            const graph = createGraphFromMap(graphMap);
 
             const result = labelPropagation(graph);
 
@@ -30,7 +32,8 @@ describe("Label Propagation Algorithm", () => {
         });
 
         it("should handle empty graph", () => {
-            const graph = new Map<string, Map<string, number>>();
+            const graphMap = new Map<string, Map<string, number>>();
+            const graph = createGraphFromMap(graphMap);
 
             const result = labelPropagation(graph);
 
@@ -40,9 +43,10 @@ describe("Label Propagation Algorithm", () => {
         });
 
         it("should handle single node graph", () => {
-            const graph = new Map([
+            const graphMap = new Map([
                 ["a", new Map<string, number>()],
             ]);
+            const graph = createGraphFromMap(graphMap);
 
             const result = labelPropagation(graph);
 
@@ -52,12 +56,13 @@ describe("Label Propagation Algorithm", () => {
         });
 
         it("should handle disconnected components", () => {
-            const graph = new Map([
+            const graphMap = new Map([
                 ["a", new Map([["b", 1]])],
                 ["b", new Map([["a", 1]])],
                 ["c", new Map([["d", 1]])],
                 ["d", new Map([["c", 1]])],
             ]);
+            const graph = createGraphFromMap(graphMap);
 
             const result = labelPropagation(graph);
 
@@ -72,12 +77,13 @@ describe("Label Propagation Algorithm", () => {
         });
 
         it("should respect max iterations", () => {
-            const graph = new Map([
+            const graphMap = new Map([
                 ["a", new Map([["b", 1], ["c", 1]])],
                 ["b", new Map([["a", 1], ["c", 1], ["d", 1]])],
                 ["c", new Map([["a", 1], ["b", 1], ["d", 1]])],
                 ["d", new Map([["b", 1], ["c", 1]])],
             ]);
+            const graph = createGraphFromMap(graphMap);
 
             const result = labelPropagation(graph, {maxIterations: 1});
 
@@ -85,7 +91,7 @@ describe("Label Propagation Algorithm", () => {
         });
 
         it("should handle weighted edges correctly", () => {
-            const graph = new Map([
+            const graphMap = new Map([
                 ["a", new Map([["b", 10], ["d", 1]])],
                 ["b", new Map([["a", 10], ["c", 10], ["d", 1]])],
                 ["c", new Map([["b", 10], ["d", 1]])],
@@ -93,6 +99,7 @@ describe("Label Propagation Algorithm", () => {
                 ["e", new Map([["d", 10], ["f", 10]])],
                 ["f", new Map([["e", 10]])],
             ]);
+            const graph = createGraphFromMap(graphMap);
 
             const result = labelPropagation(graph);
 
@@ -104,12 +111,13 @@ describe("Label Propagation Algorithm", () => {
         });
 
         it("should produce consistent results with same seed", () => {
-            const graph = new Map([
+            const graphMap = new Map([
                 ["a", new Map([["b", 1], ["c", 1], ["d", 1]])],
                 ["b", new Map([["a", 1], ["c", 1], ["d", 1]])],
                 ["c", new Map([["a", 1], ["b", 1], ["d", 1]])],
                 ["d", new Map([["a", 1], ["b", 1], ["c", 1]])],
             ]);
+            const graph = createGraphFromMap(graphMap);
 
             const result1 = labelPropagation(graph, {randomSeed: 42});
             const result2 = labelPropagation(graph, {randomSeed: 42});
@@ -124,7 +132,7 @@ describe("Label Propagation Algorithm", () => {
 
     describe("labelPropagationAsync", () => {
         it("should detect communities using asynchronous updates", () => {
-            const graph = new Map([
+            const graphMap = new Map([
                 ["a", new Map([["b", 1], ["c", 1]])],
                 ["b", new Map([["a", 1], ["c", 1]])],
                 ["c", new Map([["a", 1], ["b", 1]])],
@@ -132,6 +140,7 @@ describe("Label Propagation Algorithm", () => {
                 ["e", new Map([["d", 1], ["f", 1]])],
                 ["f", new Map([["d", 1], ["e", 1]])],
             ]);
+            const graph = createGraphFromMap(graphMap);
 
             const result = labelPropagationAsync(graph);
 
@@ -145,13 +154,14 @@ describe("Label Propagation Algorithm", () => {
         });
 
         it("should converge faster than synchronous version", () => {
-            const graph = new Map([
+            const graphMap = new Map([
                 ["a", new Map([["b", 1], ["e", 1]])],
                 ["b", new Map([["a", 1], ["c", 1]])],
                 ["c", new Map([["b", 1], ["d", 1]])],
                 ["d", new Map([["c", 1], ["e", 1]])],
                 ["e", new Map([["d", 1], ["a", 1]])],
             ]);
+            const graph = createGraphFromMap(graphMap);
 
             const syncResult = labelPropagation(graph, {randomSeed: 42});
             const asyncResult = labelPropagationAsync(graph, {randomSeed: 42});
@@ -163,7 +173,7 @@ describe("Label Propagation Algorithm", () => {
 
     describe("labelPropagationSemiSupervised", () => {
         it("should respect seed labels", () => {
-            const graph = new Map([
+            const graphMap = new Map([
                 ["a", new Map([["b", 1], ["c", 1]])],
                 ["b", new Map([["a", 1], ["c", 1], ["d", 1]])],
                 ["c", new Map([["a", 1], ["b", 1]])],
@@ -171,6 +181,7 @@ describe("Label Propagation Algorithm", () => {
                 ["e", new Map([["d", 1], ["f", 1]])],
                 ["f", new Map([["d", 1], ["e", 1]])],
             ]);
+            const graph = createGraphFromMap(graphMap);
 
             const seedLabels = new Map([
                 ["a", 0],
@@ -190,10 +201,11 @@ describe("Label Propagation Algorithm", () => {
         });
 
         it("should handle empty seed labels", () => {
-            const graph = new Map([
+            const graphMap = new Map([
                 ["a", new Map([["b", 1]])],
                 ["b", new Map([["a", 1]])],
             ]);
+            const graph = createGraphFromMap(graphMap);
 
             const seedLabels = new Map<string, number>();
 
@@ -204,11 +216,12 @@ describe("Label Propagation Algorithm", () => {
         });
 
         it("should handle all nodes labeled", () => {
-            const graph = new Map([
+            const graphMap = new Map([
                 ["a", new Map([["b", 1]])],
                 ["b", new Map([["a", 1], ["c", 1]])],
                 ["c", new Map([["b", 1]])],
             ]);
+            const graph = createGraphFromMap(graphMap);
 
             const seedLabels = new Map([
                 ["a", 0],
@@ -226,12 +239,13 @@ describe("Label Propagation Algorithm", () => {
         });
 
         it("should propagate labels through weighted edges", () => {
-            const graph = new Map([
+            const graphMap = new Map([
                 ["a", new Map([["b", 20], ["c", 1]])],
                 ["b", new Map([["a", 20], ["d", 5]])],
                 ["c", new Map([["a", 1], ["d", 20]])],
                 ["d", new Map([["b", 5], ["c", 20]])],
             ]);
+            const graph = createGraphFromMap(graphMap);
 
             const seedLabels = new Map([
                 ["a", 0],
@@ -249,10 +263,11 @@ describe("Label Propagation Algorithm", () => {
 
     describe("edge cases", () => {
         it("should handle self-loops", () => {
-            const graph = new Map([
+            const graphMap = new Map([
                 ["a", new Map([["a", 1], ["b", 1]])],
                 ["b", new Map([["a", 1], ["b", 1]])],
             ]);
+            const graph = createGraphFromMap(graphMap);
 
             const result = labelPropagation(graph);
 
@@ -261,12 +276,13 @@ describe("Label Propagation Algorithm", () => {
         });
 
         it("should handle isolated nodes", () => {
-            const graph = new Map([
+            const graphMap = new Map([
                 ["a", new Map([["b", 1]])],
                 ["b", new Map([["a", 1]])],
                 ["c", new Map<string, number>()],
                 ["d", new Map<string, number>()],
             ]);
+            const graph = createGraphFromMap(graphMap);
 
             const result = labelPropagation(graph);
 
@@ -277,11 +293,12 @@ describe("Label Propagation Algorithm", () => {
         });
 
         it("should handle very large weights", () => {
-            const graph = new Map([
+            const graphMap = new Map([
                 ["a", new Map([["b", 1e10]])],
                 ["b", new Map([["a", 1e10], ["c", 1]])],
                 ["c", new Map([["b", 1]])],
             ]);
+            const graph = createGraphFromMap(graphMap);
 
             const result = labelPropagation(graph);
 
