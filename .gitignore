@@ -59,3 +59,12 @@ tmp/
 
 # GitHub Pages
 gh-pages
+
+
+# PUPT
+.pt-config.json.backup
+.pthistory
+.git-prompts
+
+# wtt worktrees
+.worktrees/

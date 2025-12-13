@@ -1,0 +1,10 @@
+{
+  "version": "1.0.0",
+  "projectName": "algorithms",
+  "mainBranch": "master",
+  "baseDir": ".worktrees",
+  "tmux": true,
+  "commands": {},
+  "autoSort": true,
+  "availablePorts": "9000-9099"
+}

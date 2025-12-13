@@ -1,0 +1,35 @@
+{
+  "promptDirs": [
+    "/home/apowers/Projects/graphty-monorepo/algorithms/.prompts",
+    "node_modules/pupt/prompts"
+  ],
+  "historyDir": "/home/apowers/Projects/graphty-monorepo/algorithms/.pthistory",
+  "defaultCmd": "claude",
+  "defaultCmdArgs": [
+    "--permission-mode",
+    "acceptEdits"
+  ],
+  "defaultCmdOptions": {
+    "Continue with last context?": "--continue"
+  },
+  "autoReview": true,
+  "autoRun": true,
+  "gitPromptDir": "/home/apowers/Projects/graphty-monorepo/algorithms/.git-prompts",
+  "handlebarsExtensions": [],
+  "version": "4.0.0",
+  "outputCapture": {
+    "enabled": false,
+    "directory": "/home/apowers/Projects/graphty-monorepo/algorithms/.pt-output",
+    "maxSizeMB": 50,
+    "retentionDays": 30
+  },
+  "autoAnnotate": {
+    "enabled": false,
+    "triggers": [
+      "claude",
+      "ai",
+      "assistant"
+    ],
+    "analysisPrompt": "analyze-execution"
+  }
+}
