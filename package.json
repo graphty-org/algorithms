@@ -120,6 +120,7 @@
     "vitest": "^3.2.4"
   },
   "dependencies": {
+    "pupt": "^1.3.2",
     "typedfastbitset": "^0.6.1"
   }
 }
