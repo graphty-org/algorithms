@@ -7,6 +7,8 @@ export {betweennessCentrality, edgeBetweennessCentrality, nodeBetweennessCentral
 export type {ClosenessCentralityOptions} from "./closeness.js";
 export {closenessCentrality, nodeClosenessCentrality, nodeWeightedClosenessCentrality, weightedClosenessCentrality} from "./closeness.js";
 export {degreeCentrality, nodeDegreeCentrality} from "./degree.js";
+export type {DeltaPageRankOptions} from "./delta-pagerank.js";
+export {DeltaPageRank, PriorityDeltaPageRank} from "./delta-pagerank.js";
 export type {EigenvectorCentralityOptions} from "./eigenvector.js";
 export {eigenvectorCentrality, nodeEigenvectorCentrality} from "./eigenvector.js";
 export type {HITSOptions, HITSResult} from "./hits.js";

@@ -62,6 +62,9 @@ export * from './src/research/index';
 
 // Data structure exports
 export * from './src/data-structures/index';
+
+// Optimized algorithm exports
+export * from './src/optimized/index';
 `;
     
     const outputPath = path.resolve(__dirname, '../dist/algorithms.d.ts');
