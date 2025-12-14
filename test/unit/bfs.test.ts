@@ -493,7 +493,7 @@ describe("BFS Algorithms", () => {
                     // Some long-range connections
                     if (i % 100 === 0) {
                         const target = Math.floor(Math.random() * nodeCount);
-                        if (target !== i) {
+                        if (target !== i && !graph.hasEdge(i, target)) {
                             graph.addEdge(i, target);
                         }
                     }

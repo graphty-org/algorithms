@@ -364,7 +364,11 @@ describe("PerformanceRegressionTest", () => {
 
             runBenchmark("TestAlgo", benchmarkFn, mockGraph, "test-type");
 
-            expect(benchmarkFn).toHaveBeenCalledTimes(13); // 3 warmup + 10 benchmark
+            // In CI: 1 warmup + 3 benchmark = 4 calls
+            // Locally: 3 warmup + 10 benchmark = 13 calls
+            const isCI = process.env.CI === "true";
+            const expectedCalls = isCI ? 4 : 13;
+            expect(benchmarkFn).toHaveBeenCalledTimes(expectedCalls);
             expect(console.log).toHaveBeenCalledWith(
                 expect.stringContaining("new baseline"),
             );
