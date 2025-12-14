@@ -40,8 +40,10 @@ interface RegressionResult {
 // Configuration
 const REGRESSION_THRESHOLD = 0.1; // 10% regression threshold
 const BASELINE_FILE = join(process.cwd(), "test/performance-baseline.json");
-const WARMUP_RUNS = 3;
-const BENCHMARK_RUNS = 10;
+// Use lighter benchmarks in CI environment to prevent OOM
+const IS_CI = process.env.CI === "true";
+const WARMUP_RUNS = IS_CI ? 1 : 3;
+const BENCHMARK_RUNS = IS_CI ? 3 : 10;
 
 // Graph types to test
 enum GraphType {
@@ -99,8 +101,20 @@ class PerformanceRegressionTest {
         console.log("🔥 Performance Regression Test Suite");
         console.log("====================================\n");
 
-        // Test configurations
-        const configs = [
+        // Test configurations - use smaller graphs in CI to prevent OOM
+        const configs = IS_CI ? [
+            // Small graphs (baseline)
+            {nodeCount: 1000, graphType: GraphType.SMALL_WORLD},
+            {nodeCount: 1000, graphType: GraphType.SCALE_FREE},
+            {nodeCount: 1000, graphType: GraphType.RANDOM},
+
+            // Medium graphs (reduced from 10K to 5K in CI)
+            {nodeCount: 5000, graphType: GraphType.SMALL_WORLD},
+            {nodeCount: 5000, graphType: GraphType.SCALE_FREE},
+
+            // Large graphs (reduced from 50K to 10K in CI)
+            {nodeCount: 10000, graphType: GraphType.SMALL_WORLD},
+        ] : [
             // Small graphs (baseline)
             {nodeCount: 1000, graphType: GraphType.SMALL_WORLD},
             {nodeCount: 1000, graphType: GraphType.SCALE_FREE},
@@ -144,6 +158,11 @@ class PerformanceRegressionTest {
                 }
 
                 this.runBenchmark(algo.name, algo.fn, graph, config.graphType);
+            }
+
+            // Force garbage collection between graph tests to prevent OOM in CI
+            if (IS_CI && global.gc) {
+                global.gc();
             }
         }
 

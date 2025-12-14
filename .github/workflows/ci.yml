@@ -110,6 +110,10 @@ jobs:
         
       - name: Run performance regression tests
         run: npm run test:performance
+        env:
+          CI: 'true'
+          # Increase Node.js heap size and expose GC for memory management
+          NODE_OPTIONS: '--max-old-space-size=8192 --expose-gc'
         
       - name: Upload performance baseline
         if: github.ref == 'refs/heads/master' && github.event_name == 'push'
