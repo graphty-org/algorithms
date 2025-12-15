@@ -1,3 +1,18 @@
+# [1.3.0](https://github.com/graphty-org/algorithms/compare/v1.2.0...v1.3.0) (2025-12-15)
+
+
+### Bug Fixes
+
+* algorithm exports ([27b6f2c](https://github.com/graphty-org/algorithms/commit/27b6f2cec4b1347988f2817f06756cae7619d27a))
+* continued performance optimizations and benchmarking ([0f896a4](https://github.com/graphty-org/algorithms/commit/0f896a4dcf20c3a47bfaa70c9bf8f9cf2845ebdb))
+* implement next round of performance optimizations ([3687913](https://github.com/graphty-org/algorithms/commit/36879131e98bc266a366b138a8edc362ab885fb4))
+
+
+### Features
+
+* implement delta pagerank and dijkstra optimizations ([9fa8803](https://github.com/graphty-org/algorithms/commit/9fa880359949dabc10a86996996fbf8baf004750))
+* optimized bfs, start refactoring common code ([e9a0012](https://github.com/graphty-org/algorithms/commit/e9a0012da948ecc1d3331a7674bf7bb3c59c0ee2))
+
 # [1.2.0](https://github.com/graphty-org/algorithms/compare/v1.1.0...v1.2.0) (2025-07-24)
 
 
