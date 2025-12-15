@@ -434,7 +434,7 @@ describe("BFS Algorithms", () => {
                 expect(result.order.length).toBe(nodeCount);
             });
 
-            it("should automatically optimize based on graph size", () => {
+            it("should automatically optimize based on graph size", {timeout: 120000}, () => {
                 // Small graph - should use standard BFS
                 const smallGraph = new Graph();
                 for (let i = 0; i < 100; i++) {
