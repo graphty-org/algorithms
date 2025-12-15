@@ -1,6 +1,1 @@
-# Skip interactive commitizen in CI environments or when no TTY is available
-if [ -n "$CI" ] || [ ! -t 0 ]; then
-  exit 0
-fi
-
 exec < /dev/tty && npx cz --hook || true
