@@ -1,3 +1,10 @@
+## [1.3.1](https://github.com/graphty-org/algorithms/compare/v1.3.0...v1.3.1) (2025-12-16)
+
+
+### Bug Fixes
+
+* code review and bug fixes ([6db77af](https://github.com/graphty-org/algorithms/commit/6db77af799463fb31ec35287d7fcc056cd049cb1))
+
 # [1.3.0](https://github.com/graphty-org/algorithms/compare/v1.2.0...v1.3.0) (2025-12-15)
 
 
