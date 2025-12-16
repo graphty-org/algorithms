@@ -222,7 +222,7 @@ export class Graph {
      * Get all edges in the graph
      */
     *edges(): IterableIterator<Edge> {
-        for (const [source, edges] of Array.from(this.adjacencyList)) {
+        for (const [source, edges] of this.adjacencyList) {
             for (const edge of edges.values()) {
                 // For undirected graphs, only yield each edge once
                 if (!this.config.directed && source > edge.target) {
@@ -300,12 +300,12 @@ export class Graph {
         const cloned = new Graph(this.config);
 
         // Copy nodes
-        for (const node of Array.from(this.nodeMap.values())) {
+        for (const node of this.nodeMap.values()) {
             cloned.addNode(node.id, node.data ? {... node.data} : undefined);
         }
 
         // Copy edges
-        for (const edge of Array.from(this.edges())) {
+        for (const edge of this.edges()) {
             cloned.addEdge(
                 edge.source,
                 edge.target,
@@ -346,7 +346,7 @@ export class Graph {
         // For undirected graphs, we need to count each edge only once
         let count = 0;
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        for (const _edge of Array.from(this.edges())) {
+        for (const _edge of this.edges()) {
             count++;
         }
         return count;

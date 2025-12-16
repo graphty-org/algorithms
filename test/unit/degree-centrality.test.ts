@@ -246,6 +246,35 @@ describe("Degree Centrality", () => {
         });
     });
 
+    describe("normalization", () => {
+        it("should normalize correctly for directed and undirected graphs", () => {
+            const undirectedGraph = new Graph({directed: false});
+            undirectedGraph.addEdge("A", "B");
+            undirectedGraph.addEdge("B", "C");
+            undirectedGraph.addEdge("C", "A");
+
+            const directedGraph = new Graph({directed: true});
+            directedGraph.addEdge("A", "B");
+            directedGraph.addEdge("B", "C");
+            directedGraph.addEdge("C", "A");
+
+            const undirResult = degreeCentrality(undirectedGraph, {normalized: true});
+            const dirResult = degreeCentrality(directedGraph, {normalized: true});
+
+            // Both should have same normalization factor (nodeCount - 1)
+            // Undirected: A has degree 2 (edges to B and C), normalized: 2/(3-1) = 1
+            expect(undirResult.A).toBeCloseTo(1, 5);
+            // Directed with default mode (total): A has in-degree 1 (from C) + out-degree 1 (to B) = 2
+            // normalized: 2/(3-1) = 1
+            expect(dirResult.A).toBeCloseTo(1, 5);
+
+            // To demonstrate the difference, use out-degree mode for directed graph
+            const dirOutResult = degreeCentrality(directedGraph, {normalized: true, mode: "out"});
+            // A has out-degree 1 (to B), normalized: 1/(3-1) = 0.5
+            expect(dirOutResult.A).toBeCloseTo(0.5, 5);
+        });
+    });
+
     describe("edge cases", () => {
         it("should handle graph with only self-loops", () => {
             const graph = new Graph({allowSelfLoops: true});

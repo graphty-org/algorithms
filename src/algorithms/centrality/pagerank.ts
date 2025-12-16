@@ -290,6 +290,11 @@ export function personalizedPageRank(
     personalNodes: NodeId[],
     options: Omit<PageRankOptions, "personalization"> = {},
 ): PageRankResult {
+    // Handle empty personal nodes by falling back to standard PageRank
+    if (personalNodes.length === 0) {
+        return pageRank(graph, options);
+    }
+
     const nodes = Array.from(graph.nodes()).map((node) => node.id);
     const personalization = new Map<NodeId, number>();
 

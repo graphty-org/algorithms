@@ -85,7 +85,28 @@ function calculateClosenessFromDistances(
 }
 
 /**
- * Calculate closeness centrality for all nodes
+ * Calculate closeness centrality for all nodes in the graph
+ *
+ * Closeness centrality measures how close a node is to all other nodes
+ * in the graph. It is the reciprocal of the sum of the shortest path
+ * distances to all other reachable nodes.
+ *
+ * @param graph - The input graph
+ * @param options - Algorithm options
+ * @returns Centrality scores for each node
+ *
+ * @example
+ * ```typescript
+ * const graph = new Graph();
+ * graph.addEdge("A", "B");
+ * graph.addEdge("B", "C");
+ *
+ * const centrality = closenessCentrality(graph);
+ * // { A: 0.5, B: 1.0, C: 0.5 }
+ * ```
+ *
+ * Time Complexity: O(V * (V + E)) for unweighted graphs
+ * Space Complexity: O(V)
  */
 export function closenessCentrality(
     graph: Graph,

@@ -65,9 +65,9 @@ export class CSRGraph<TNodeId = NodeId> implements ReadonlyGraph<TNodeId> {
             }
         }
 
-        // Sort nodes for consistent ordering (helps with testing and debugging)
+        // Sort nodes for consistent ordering. Numeric IDs sort numerically,
+        // string IDs sort lexicographically for predictable iteration order.
         const nodes = Array.from(allNodes).sort((a, b) => {
-            // Try to sort numerically if possible, otherwise use string comparison
             if (typeof a === "number" && typeof b === "number") {
                 return a - b;
             }

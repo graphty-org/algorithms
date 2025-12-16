@@ -163,6 +163,26 @@ describe("Leiden Algorithm", () => {
         expect(commA).not.toBe(commD);
     });
 
+    describe("graph parameter handling", () => {
+        it("should not modify the original graph", () => {
+            const graphMap = new Map([
+                ["a", new Map([["b", 1], ["c", 1]])],
+                ["b", new Map([["a", 1], ["c", 1]])],
+                ["c", new Map([["a", 1], ["b", 1]])],
+            ]);
+            const graph = createGraphFromMap(graphMap);
+
+            const originalNodeCount = graph.nodeCount;
+            const originalEdgeCount = graph.totalEdgeCount;
+
+            leiden(graph, {maxIterations: 10});
+
+            // Original graph should be unchanged
+            expect(graph.nodeCount).toBe(originalNodeCount);
+            expect(graph.totalEdgeCount).toBe(originalEdgeCount);
+        });
+    });
+
     it("should produce deterministic results with same seed", () => {
         const graphMap = new Map([
             ["a", new Map([["b", 1], ["c", 1]])],

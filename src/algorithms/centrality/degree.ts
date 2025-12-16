@@ -18,10 +18,10 @@ export function degreeCentrality(
     const centrality: CentralityResult = {};
     const {nodeCount} = graph;
 
-    // Calculate normalization factor
-    const maxPossibleDegree = graph.isDirected ? nodeCount - 1 : nodeCount - 1;
+    // Calculate normalization factor (same for both directed and undirected graphs)
+    const maxPossibleDegree = nodeCount - 1;
 
-    for (const node of Array.from(graph.nodes())) {
+    for (const node of graph.nodes()) {
         let degree: number;
 
         if (graph.isDirected && options.mode) {

@@ -365,6 +365,30 @@ describe("TeraHAC (Hierarchical Agglomerative Clustering)", () => {
             }).not.toThrow();
         });
 
+        it("should use custom warning handler", () => {
+            const graph = new Graph();
+
+            // Create graph larger than maxNodes
+            for (let i = 0; i < 100; i++) {
+                graph.addNode(`node${i}`);
+            }
+            for (let i = 0; i < 99; i++) {
+                graph.addEdge(`node${i}`, `node${i + 1}`);
+            }
+
+            const warnings: string[] = [];
+            const config: TeraHACConfig = {
+                maxNodes: 50,
+                onWarning: (msg) => warnings.push(msg),
+            };
+
+            teraHAC(graph, config);
+
+            expect(warnings.length).toBe(1);
+            expect(warnings[0]).toContain("100 nodes");
+            expect(warnings[0]).toContain("exceeds maxNodes");
+        });
+
         it("should handle weighted edges", () => {
             const graph = new Graph();
             graph.addNode("A");
@@ -430,6 +454,60 @@ describe("TeraHAC (Hierarchical Agglomerative Clustering)", () => {
             // Should produce identical results for same input
             expect(result1.clusters).toEqual(result2.clusters);
             expect(result1.numClusters).toBe(result2.numClusters);
+        });
+    });
+
+    describe("Algorithm termination", () => {
+        it("should terminate with valid result when merge candidates exhaust", () => {
+            // Create graph where clusters can't always merge
+            const graph = new Graph();
+            for (let i = 0; i < 10; i++) {
+                graph.addNode(`isolated_${i}`);
+            }
+
+            const config: TeraHACConfig = {distanceThreshold: 0.5};
+            const result = teraHAC(graph, config);
+
+            // Should complete without hanging
+            expect(result.dendrogram).toBeDefined();
+            expect(result.clusters.size).toBe(10);
+        });
+
+        it("should break out of loop when no valid clusters found", () => {
+            const graph = new Graph();
+            graph.addNode("A");
+            graph.addNode("B");
+            // No edges - disconnected
+
+            const config: TeraHACConfig = {numClusters: 1};
+            const result = teraHAC(graph, config);
+
+            // Should complete and have dendrogram
+            expect(result.dendrogram).toBeDefined();
+        });
+
+        it("should not throw when all merge candidates are processed", () => {
+            // This test verifies defensive check: `mergeCandidates.length > 0` in loop condition.
+            // In normal operation, candidates don't get exhausted while clusters.size > 1
+            // because updateMergeCandidates adds new candidates after each merge.
+            // However, the check prevents potential "No merge candidates available" error
+            // in edge cases where stale candidates might be consumed without replacement.
+            const graph = new Graph();
+
+            // Create a simple graph that will fully merge
+            graph.addNode("A");
+            graph.addNode("B");
+            graph.addEdge("A", "B");
+
+            // Request merging to a single cluster - all candidates will be consumed
+            const config: TeraHACConfig = {numClusters: 1};
+
+            // Should complete without throwing "No merge candidates available"
+            expect(() => teraHAC(graph, config)).not.toThrow();
+
+            const result = teraHAC(graph, config);
+            expect(result.dendrogram).toBeDefined();
+            expect(result.dendrogram.members.size).toBe(2);
         });
     });
 

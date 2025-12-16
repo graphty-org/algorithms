@@ -232,6 +232,29 @@ describe("Spectral Clustering", () => {
         });
     });
 
+    describe("eigenvalue computation", () => {
+        it("should use approximate eigenvalues (known limitation)", () => {
+            const graph = new Graph();
+            // Create a simple graph
+            graph.addEdge("A", "B");
+            graph.addEdge("B", "C");
+            graph.addEdge("C", "A");
+
+            const result = spectralClustering(graph, {k: 2});
+
+            // Eigenvalues are approximate - document this behavior
+            if (result.eigenvalues) {
+                // First eigenvalue for normalized Laplacian should be 0
+                expect(result.eigenvalues[0]).toBeCloseTo(0, 1);
+                // Second eigenvalue is approximate
+                expect(result.eigenvalues[1]).toBeDefined();
+            }
+
+            // Despite approximate eigenvalues, clustering should still work
+            expect(result.communities.length).toBeGreaterThan(0);
+        });
+    });
+
     describe("clustering quality", () => {
         it("should separate well-defined clusters (requires full eigendecomposition)", () => {
             const graph = new Graph();
@@ -332,11 +355,9 @@ describe("Spectral Clustering", () => {
     });
 
     describe("k-means clustering edge cases", () => {
-        it("should handle k-means when data is empty", () => {
+        it("should throw for k=0 (invalid parameter)", () => {
             const graph = new Graph();
-            const result = spectralClustering(graph, {k: 0});
-            expect(result.communities).toHaveLength(0);
-            expect(result.clusterAssignments.size).toBe(0);
+            expect(() => spectralClustering(graph, {k: 0})).toThrow("k must be a positive integer");
         });
 
         it("should handle graph with nodes but no edges (isolated nodes)", () => {

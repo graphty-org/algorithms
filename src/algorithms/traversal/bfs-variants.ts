@@ -6,6 +6,13 @@ import {toCSRGraph} from "../../optimized/graph-adapter.js";
 import type {NodeId} from "../../types/index.js";
 
 /**
+ * Threshold for switching to CSR-optimized implementations.
+ * Based on benchmarks showing CSR benefits at this scale due to
+ * improved cache locality and reduced memory allocation overhead.
+ */
+const LARGE_GRAPH_THRESHOLD = 10000;
+
+/**
  * BFS that tracks shortest path counts (for betweenness centrality)
  *
  * This variant of BFS computes:
@@ -27,7 +34,7 @@ export function bfsWithPathCounting(
     const useOptimized = options.optimized ?? false;
 
     // Use CSR format for large graphs
-    if (useOptimized && graph.nodeCount > 10000) {
+    if (useOptimized && graph.nodeCount > LARGE_GRAPH_THRESHOLD) {
         const csrGraph = toCSRGraph(graph);
         return bfsWithPathCountingCSR(csrGraph, source);
     }
@@ -97,7 +104,7 @@ export function bfsDistancesOnly(
     const useOptimized = options.optimized ?? false;
 
     // Use CSR format for large graphs
-    if (useOptimized && graph.nodeCount > 10000) {
+    if (useOptimized && graph.nodeCount > LARGE_GRAPH_THRESHOLD) {
         const csrGraph = toCSRGraph(graph);
         return bfsDistancesOnlyCSR(csrGraph, source, cutoff);
     }
@@ -263,7 +270,7 @@ export function bfsWeightedDistances(
     const useOptimized = options.optimized ?? false;
 
     // Use CSR format for large graphs
-    if (useOptimized && graph.nodeCount > 10000) {
+    if (useOptimized && graph.nodeCount > LARGE_GRAPH_THRESHOLD) {
         const csrGraph = toCSRGraph(graph);
         return bfsWeightedDistancesCSR(csrGraph, source, cutoff);
     }
@@ -385,7 +392,7 @@ function bfsDistancesOnlyCSR(
     cutoff?: number,
 ): Map<NodeId, number> {
     // Use Direction-Optimized BFS for best performance
-    if (graph.nodeCount() > 10000) {
+    if (graph.nodeCount() > LARGE_GRAPH_THRESHOLD) {
         const dobfs = new DirectionOptimizedBFS(graph);
         const result = dobfs.search(source);
 
@@ -472,8 +479,8 @@ function bfsWeightedDistancesCSR(
 
         for (const neighbor of graph.neighbors(current)) {
             if (!visited.has(neighbor)) {
-                // CSRGraph doesn't have edge weights in the interface, default to 1
-                const weight = 1;
+                // Use actual edge weight from CSR graph, default to 1
+                const weight = graph.getEdgeWeight(current, neighbor) ?? 1;
                 const newDistance = currentDist + weight;
 
                 const oldDistance = distances.get(neighbor);

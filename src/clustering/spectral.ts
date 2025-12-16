@@ -28,6 +28,14 @@ export interface SpectralClusteringResult {
 
 /**
  * Perform spectral clustering on a graph
+ *
+ * @warning This implementation uses simplified power iteration for eigenvector
+ * computation with approximate eigenvalues. For production use cases requiring
+ * precise clustering, consider using a proper linear algebra library like ml-matrix.
+ *
+ * The approximate eigenvalues (0.1, 0.2 for second and third eigenvectors) work
+ * well for most graph structures but may produce suboptimal results for graphs
+ * with unusual spectral properties.
  */
 export function spectralClustering(
     graph: Graph,
@@ -37,7 +45,13 @@ export function spectralClustering(
         k,
         laplacianType = "normalized",
         maxIterations = 100,
+        tolerance = 1e-4,
     } = options;
+
+    // Input validation
+    if (k < 1 || !Number.isInteger(k)) {
+        throw new Error("k must be a positive integer");
+    }
 
     const nodes = Array.from(graph.nodes());
     const nodeIds = nodes.map((node) => node.id);
@@ -80,7 +94,7 @@ export function spectralClustering(
         normalizeRows(dataPoints);
     }
 
-    const kmeans = kMeansClustering(dataPoints, k, maxIterations);
+    const kmeans = kMeansClustering(dataPoints, k, maxIterations, tolerance);
 
     // Build communities
     const communities: NodeId[][] = Array.from({length: k}, () => []);
@@ -417,6 +431,7 @@ function kMeansClustering(
     data: number[][],
     k: number,
     maxIterations: number,
+    tolerance = 1e-4,
 ): {assignments: number[], centroids: number[][]} {
     const n = data.length;
     const d = data[0]?.length ?? 0;
@@ -481,20 +496,23 @@ function kMeansClustering(
             assignments[i] = bestCluster;
         }
 
-        // Check for convergence
-        let changed = false;
+        // Check for convergence based on assignment changes
+        let assignmentsChanged = false;
         for (let i = 0; i < n; i++) {
             if (assignments[i] !== oldAssignments[i]) {
-                changed = true;
+                assignmentsChanged = true;
                 break;
             }
         }
 
-        if (!changed) {
+        if (!assignmentsChanged) {
             break;
         }
 
         oldAssignments = [... assignments];
+
+        // Store old centroids for tolerance-based convergence check
+        const oldCentroids = centroids.map((c) => [... c]);
 
         // Update centroids
         const counts = Array(k).fill(0) as number[];
@@ -535,14 +553,31 @@ function kMeansClustering(
                     for (let j = 0; j < d; j++) {
                         const sumVal = sumsRow[j];
                         if (sumVal !== undefined) {
-                            const countVal = counts[i];
-                            if (countVal !== undefined) {
-                                centroidsRow[j] = sumVal / countVal;
+                            const countValInner = counts[i];
+                            if (countValInner !== undefined) {
+                                centroidsRow[j] = sumVal / countValInner;
                             }
                         }
                     }
                 }
             }
+        }
+
+        // Check for tolerance-based convergence (centroid movement)
+        let maxCentroidShift = 0;
+        for (let i = 0; i < k; i++) {
+            const oldCentroid = oldCentroids[i];
+            const newCentroid = centroids[i];
+            if (oldCentroid && newCentroid) {
+                const shift = euclideanDistance(oldCentroid, newCentroid);
+                if (shift > maxCentroidShift) {
+                    maxCentroidShift = shift;
+                }
+            }
+        }
+
+        if (maxCentroidShift < tolerance) {
+            break;
         }
     }
 

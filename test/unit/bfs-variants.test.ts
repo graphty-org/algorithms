@@ -293,6 +293,52 @@ describe("BFS Variants", () => {
         });
     });
 
+    describe("bfsWeightedDistancesCSR", () => {
+        it("should use actual edge weights from CSR graph", () => {
+            const graph = new Graph({directed: false});
+            graph.addEdge("A", "B", 1);
+            graph.addEdge("B", "C", 5);
+            graph.addEdge("A", "C", 10);
+
+            // Direct route A->C: weight 10
+            // Via B route A->B->C: weight 1+5=6
+
+            const distances = bfsWeightedDistances(graph, "A", undefined, {optimized: true});
+
+            // Should find weighted shortest path
+            expect(distances.get("C")).toBe(6); // Via B, not 10 direct
+        });
+
+        it("should use actual edge weights in large CSR graph", () => {
+            // Create a large graph that triggers CSR optimization
+            const graph = new Graph({directed: false});
+
+            // Add 10001 nodes to trigger CSR optimization (threshold is 10000)
+            for (let i = 0; i < 10001; i++) {
+                graph.addNode(i);
+            }
+
+            // Create a path with specific weights
+            // 0 -> 1 (weight 1) -> 2 (weight 5)
+            // 0 -> 2 (weight 10) direct path
+            graph.addEdge(0, 1, 1);
+            graph.addEdge(1, 2, 5);
+            graph.addEdge(0, 2, 10);
+
+            // Connect remaining nodes to make graph connected
+            for (let i = 3; i < 10001; i++) {
+                graph.addEdge(i - 1, i, 1);
+            }
+
+            const distances = bfsWeightedDistances(graph, 0, undefined, {optimized: true});
+
+            // Should find weighted shortest path via node 1
+            expect(distances.get(0)).toBe(0);
+            expect(distances.get(1)).toBe(1);
+            expect(distances.get(2)).toBe(6); // Via node 1 (1+5), not direct (10)
+        });
+    });
+
     describe("CSR-optimized variants", () => {
         function createLargeGraph(nodeCount: number): Graph {
             const graph = new Graph();

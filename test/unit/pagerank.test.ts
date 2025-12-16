@@ -246,14 +246,22 @@ describe("PageRank Algorithm", () => {
             }).toThrow("Personal node X not found in graph");
         });
 
-        it("should handle empty personal nodes array", () => {
+        it("should handle empty personal nodes array gracefully", () => {
             const graph = new Graph({directed: true});
             graph.addEdge("A", "B");
+            graph.addEdge("B", "C");
+            graph.addEdge("C", "A");
 
-            // Empty array will cause division by zero when calculating personalValue
+            // Should NOT produce NaN values
             const result = personalizedPageRank(graph, []);
-            // Should handle gracefully, all values will be NaN or 0
-            expect(result.converged).toBeDefined();
+
+            // Verify no NaN values in results
+            const hasNaN = Object.values(result.ranks).some((v) => Number.isNaN(v));
+            expect(hasNaN).toBe(false);
+
+            // Sum should approximately equal 1
+            const sum = Object.values(result.ranks).reduce((a, b) => a + b, 0);
+            expect(sum).toBeCloseTo(1, 5);
         });
     });
 
@@ -403,9 +411,11 @@ describe("PageRank Algorithm", () => {
 
             const result = personalizedPageRank(directedGraph, []);
 
-            // Should default to regular PageRank
+            // Should default to regular PageRank (no NaN values)
             expect(result.ranks.a).toBeDefined();
             expect(result.ranks.b).toBeDefined();
+            const hasNaN = Object.values(result.ranks).some((v) => Number.isNaN(v));
+            expect(hasNaN).toBe(false);
         });
 
         it("should handle weighted edges with missing edge data", () => {

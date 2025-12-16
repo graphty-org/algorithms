@@ -8,8 +8,6 @@
  * "From Louvain to Leiden: guaranteeing well-connected communities"
  */
 
-// Louvain import removed - not used in this implementation
-
 import type {Graph} from "../../core/graph.js";
 import {graphToMap} from "../../utils/graph-converters.js";
 import {SeededRandom, shuffle} from "../../utils/math-utilities.js";
@@ -32,7 +30,7 @@ export interface LeidenResult {
  * Improves upon Louvain by ensuring well-connected communities
  */
 function leidenImpl(
-    graph: Map<string, Map<string, number>>,
+    inputGraph: Map<string, Map<string, number>>,
     options: LeidenOptions = {},
 ): LeidenResult {
     const {
@@ -43,13 +41,16 @@ function leidenImpl(
     } = options;
 
     // Handle empty graph
-    if (graph.size === 0) {
+    if (inputGraph.size === 0) {
         return {
             communities: new Map(),
             modularity: 0,
             iterations: 0,
         };
     }
+
+    // Use a mutable variable for the current graph state
+    let currentGraph = inputGraph;
 
     // Initialize random number generator
     const random = SeededRandom.createGenerator(randomSeed);
@@ -58,7 +59,7 @@ function leidenImpl(
     let totalWeight = 0;
     const degrees = new Map<string, number>();
 
-    for (const [node, neighbors] of graph) {
+    for (const [node, neighbors] of currentGraph) {
         let degree = 0;
         for (const weight of neighbors.values()) {
             degree += weight;
@@ -70,10 +71,10 @@ function leidenImpl(
 
     // Initialize communities - each node in its own community
     const communities = new Map<string, number>();
-    const nodes = Array.from(graph.keys());
+    const nodes = Array.from(currentGraph.keys());
     nodes.forEach((node, i) => communities.set(node, i));
 
-    let modularity = calculateModularity(graph, communities, degrees, totalWeight, resolution);
+    let modularity = calculateModularity(currentGraph, communities, degrees, totalWeight, resolution);
     let bestModularity = modularity;
     let bestCommunities = new Map(communities);
     let iterations = 0;
@@ -93,7 +94,7 @@ function leidenImpl(
                 continue;
             }
 
-            const neighborCommunities = getNeighborCommunities(node, graph, communities);
+            const neighborCommunities = getNeighborCommunities(node, currentGraph, communities);
 
             let bestCommunity = currentCommunity;
             let bestGain = 0;
@@ -105,7 +106,7 @@ function leidenImpl(
                 }
 
                 const gain = calculateModularityGain(
-                    node, community, graph, communities, degrees, totalWeight, resolution,
+                    node, community, currentGraph, communities, degrees, totalWeight, resolution,
                 );
 
                 if (gain > bestGain) {
@@ -124,11 +125,11 @@ function leidenImpl(
 
         // Phase 2: Refinement (Leiden improvement over Louvain)
         // Create aggregate network based on current partition
-        createAggregateNetwork(graph, communities);
+        createAggregateNetwork(currentGraph, communities);
 
         // Refine partition using aggregate network
         const subsetPartition = refinePartition(
-            graph, communities,
+            currentGraph, communities,
         );
 
         // Apply refined partition
@@ -137,7 +138,7 @@ function leidenImpl(
         }
 
         // Recalculate modularity
-        modularity = calculateModularity(graph, communities, degrees, totalWeight, resolution);
+        modularity = calculateModularity(currentGraph, communities, degrees, totalWeight, resolution);
 
         // Check if we've improved
         if (modularity > bestModularity + threshold) {
@@ -151,17 +152,17 @@ function leidenImpl(
         }
 
         // Phase 3: Aggregate network (create super-nodes)
-        const aggregated = aggregateCommunities(graph, communities);
-        if (aggregated.graph.size === graph.size) {
+        const aggregated = aggregateCommunities(currentGraph, communities);
+        if (aggregated.graph.size === currentGraph.size) {
             break;
         } // No aggregation possible
 
         // Continue with aggregated network
-        const {graph: newGraph} = aggregated;
-        graph = newGraph;
+        const {graph: aggregatedGraph} = aggregated;
+        currentGraph = aggregatedGraph;
         communities.clear();
         let communityId = 0;
-        for (const node of graph.keys()) {
+        for (const node of currentGraph.keys()) {
             communities.set(node, communityId++);
         }
     }

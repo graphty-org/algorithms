@@ -1,5 +1,6 @@
 import {describe, expect, it} from "vitest";
 
+import {Graph} from "../../src/core/graph";
 import {
     createBipartiteFlowNetwork,
     edmondsKarp,
@@ -8,6 +9,26 @@ import {
 import {createGraphFromMap} from "../helpers/graph-test-utils";
 
 describe("Ford-Fulkerson Algorithm", () => {
+    describe("API consistency", () => {
+        it("fordFulkerson should accept Graph type", () => {
+            const graph = new Graph({directed: true});
+            graph.addEdge("source", "a", 10);
+            graph.addEdge("a", "sink", 10);
+
+            const result = fordFulkerson(graph, "source", "sink");
+            expect(result.maxFlow).toBe(10);
+        });
+
+        it("edmondsKarp should accept Graph type", () => {
+            const graph = new Graph({directed: true});
+            graph.addEdge("source", "a", 10);
+            graph.addEdge("a", "sink", 10);
+
+            const result = edmondsKarp(graph, "source", "sink");
+            expect(result.maxFlow).toBe(10);
+        });
+    });
+
     describe("fordFulkerson", () => {
         it("should find maximum flow in a simple network", () => {
             const graphMap = new Map([

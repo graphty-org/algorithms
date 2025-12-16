@@ -15,6 +15,8 @@ export interface TeraHACConfig {
     maxNodes?: number;
     /** Use graph structure for distance calculation */
     useGraphDistance?: boolean;
+    /** Custom warning handler (default: console.warn) */
+    onWarning?: (message: string) => void;
 }
 
 /**
@@ -70,7 +72,13 @@ export function teraHAC(graph: Graph, config: TeraHACConfig = {}): TeraHACResult
         distanceThreshold,
         maxNodes = 10000,
         useGraphDistance = true,
+        onWarning = console.warn,
     } = config;
+
+    // Input validation
+    if (numClusters !== undefined && (numClusters < 1 || !Number.isInteger(numClusters))) {
+        throw new Error("numClusters must be a positive integer");
+    }
 
     const nodes = Array.from(graph.nodes());
     const nodeCount = nodes.length;
@@ -80,7 +88,7 @@ export function teraHAC(graph: Graph, config: TeraHACConfig = {}): TeraHACResult
     }
 
     if (nodeCount > maxNodes) {
-        console.warn(`Graph has ${String(nodeCount)} nodes, which exceeds maxNodes (${String(maxNodes)}). Performance may be degraded.`);
+        onWarning(`Graph has ${String(nodeCount)} nodes, which exceeds maxNodes (${String(maxNodes)}). Performance may be degraded.`);
     }
 
     // Initialize each node as its own cluster
@@ -112,7 +120,7 @@ export function teraHAC(graph: Graph, config: TeraHACConfig = {}): TeraHACResult
     let dendrogram: ClusterNode | undefined;
 
     // Perform agglomerative clustering
-    while (clusters.size > 1) {
+    while (clusters.size > 1 && mergeCandidates.length > 0) {
         // Find closest pair of clusters
         const {cluster1Id, cluster2Id, distance} = findClosestPair(mergeCandidates);
 
